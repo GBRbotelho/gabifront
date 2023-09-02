@@ -1,7 +1,11 @@
+// src/App.js
+import React from "react";
+import Routes from "./Routes"; // Importe o componente de rotas
+
 function App() {
   return (
-    <div className="bg-blue-500 p-5 flex items-center justify-center h-screen">
-      <p className="text-white">Este é um componente com Tailwind CSS!</p>
+    <div className="App">
+      <Routes />
     </div>
   );
 }
