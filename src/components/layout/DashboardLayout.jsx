@@ -16,7 +16,13 @@ function DashboardLayout({ children }) {
       <Navbar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
       <div className="flex">
         <Sidebar isSidebarOpen={isSidebarOpen} />
-        <main>{children}</main>
+        <main
+          className={`${
+            !isSidebarOpen ? "transform translate-x-[-8rem]" : ""
+          } transition-transform duration-300`}
+        >
+          {children}
+        </main>
       </div>
     </div>
   );
