@@ -11,8 +11,10 @@ function LoginPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const response = await login(email, password);
-    console.log(response);
+    const response = await login(email, password).catch((error) => {
+      setLoginError("Falha na requisição com o servidor");
+      console.log(error);
+    });
 
     if (response.token) {
       navigate("/dashboard");
