@@ -6,6 +6,9 @@ function DashboardPage() {
     <div>
       <h1>Dash Page</h1>
       <p>Conteúdo da página de login</p>
+      <p>Conteúdo da página de login</p>
+      <p>Conteúdo da página de login</p>
+      <p>Conteúdo da página de login</p>
     </div>
   );
 }
