@@ -33,7 +33,7 @@ function DashboardRoutes() {
         }
       />
       <Route
-        path="/serviços"
+        path="/servicos"
         element={
           <DashboardLayout>
             <ServicesPage />

@@ -76,7 +76,7 @@ export default function Sidebar() {
               </li>
               <li className="mb-4">
                 <a
-                  href="#"
+                  href="/dashboard/servicos"
                   className="text-emerald-300 text-sm flex items-center hover:text-emerald-100 before:contents-[''] before:w-1 before:h-1 before:rounded-full before:bg-emerald-300 before:mr-3"
                 >
                   Serviços
@@ -84,7 +84,7 @@ export default function Sidebar() {
               </li>
               <li className="mb-4">
                 <a
-                  href="#"
+                  href="/dashboard/produtos"
                   className="text-emerald-300 text-sm flex items-center hover:text-emerald-100 before:contents-[''] before:w-1 before:h-1 before:rounded-full before:bg-emerald-300 before:mr-3"
                 >
                   Produtos
