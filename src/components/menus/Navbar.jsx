@@ -1,6 +1,15 @@
 import React from "react";
+import { useLocation } from "react-router-dom";
 
 function Navbar() {
+  const location = useLocation();
+  const pathSegments = location.pathname.split("/");
+
+  // Acesse o segmento da URL após "dashboard/"
+  const currentSegment = pathSegments[2]
+    ? pathSegments[2].toUpperCase()
+    : "INICIO";
+
   const handleSidebarToggleClick = (e) => {
     e.preventDefault();
     const main = document.querySelector(".main");
@@ -28,7 +37,7 @@ function Navbar() {
           </a>
         </li>
         <li className="text-gray-600 mr-2 font-medium">/</li>
-        <li className="text-gray-600 mr-2 font-medium">Analytics</li>
+        <li className="text-gray-600 mr-2 font-medium">{currentSegment}</li>
       </ul>
       <ul className="ml-auto flex items-center">
         <li className="mr-1 dropdown">
