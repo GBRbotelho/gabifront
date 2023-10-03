@@ -1,9 +1,8 @@
 // DashboardPage.js
 import React from "react";
-import Navbar from "../components/menus/Navbar";
 
 function DashboardPage() {
-  return <div>CONTEUDO</div>;
+  return <div>CONTEUDO Dashboard Inicial</div>;
 }
 
 export default DashboardPage;

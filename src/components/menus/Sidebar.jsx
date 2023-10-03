@@ -42,7 +42,7 @@ export default function Sidebar() {
         <ul className="mt-4">
           <li className="mb-1 group active">
             <a
-              href="#"
+              href="/dashboard"
               className="flex items-center py-2 px-4 text-emerald-300 hover:bg-emerald-950 hover:text-emerald-100 rounded-md group-[.active]:bg-emerald-800 group-[.active]:text-white group-[.selected]:bg-emerald-950 group-[.selected]:text-emerald-100"
             >
               <i className="ri-home-2-line mr-3 text-lg"></i>
@@ -68,7 +68,7 @@ export default function Sidebar() {
             <ul className={`pl-7 mt-2 ${isOrdersOpen ? "block" : "hidden"}`}>
               <li className="mb-4">
                 <a
-                  href="#"
+                  href="/dashboard/clientes"
                   className="text-emerald-300 text-sm flex items-center hover:text-emerald-100 before:contents-[''] before:w-1 before:h-1 before:rounded-full before:bg-emerald-300 before:mr-3"
                 >
                   Clientes
@@ -79,7 +79,15 @@ export default function Sidebar() {
                   href="#"
                   className="text-emerald-300 text-sm flex items-center hover:text-emerald-100 before:contents-[''] before:w-1 before:h-1 before:rounded-full before:bg-emerald-300 before:mr-3"
                 >
-                  Fichas
+                  Serviços
+                </a>
+              </li>
+              <li className="mb-4">
+                <a
+                  href="#"
+                  className="text-emerald-300 text-sm flex items-center hover:text-emerald-100 before:contents-[''] before:w-1 before:h-1 before:rounded-full before:bg-emerald-300 before:mr-3"
+                >
+                  Produtos
                 </a>
               </li>
             </ul>
@@ -91,7 +99,7 @@ export default function Sidebar() {
               onClick={handleDropdownClick("services")}
             >
               <i className="ri-flashlight-line mr-3 text-lg"></i>
-              <span className="text-sm">Serviços</span>
+              <span className="text-sm">-----</span>
               <i
                 className={`ri-arrow-right-s-line ml-auto ${
                   isServicesOpen ? "rotate-90" : ""

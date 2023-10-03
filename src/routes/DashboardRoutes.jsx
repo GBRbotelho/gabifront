@@ -1,6 +1,7 @@
 import { Routes as Router, Route } from "react-router-dom";
-import Dashboard from "../pages/DashboardPage";
 import DashboardLayout from "../components/layout/DashboardLayout";
+import DashboardPage from "../pages/DashboardPage";
+import ClientsPage from "../pages/ClientsPage";
 
 function DashboardRoutes() {
   return (
@@ -9,7 +10,15 @@ function DashboardRoutes() {
         path="/"
         element={
           <DashboardLayout>
-            <Dashboard />
+            <DashboardPage />
+          </DashboardLayout>
+        }
+      />
+      <Route
+        path="/clientes"
+        element={
+          <DashboardLayout>
+            <ClientsPage />
           </DashboardLayout>
         }
       />

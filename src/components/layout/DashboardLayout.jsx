@@ -6,7 +6,7 @@ function DashboardLayout({ children }) {
   return (
     <>
       <Sidebar />
-      <MainLayout />
+      <MainLayout>{children}</MainLayout>
     </>
   );
 }
