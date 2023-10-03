@@ -4,7 +4,7 @@ import Routes from "./routes/Routes"; // Importe o componente de rotas
 
 function App() {
   return (
-    <div className="App">
+    <div className="text-gray-800 font-inter">
       <Routes />
     </div>
   );

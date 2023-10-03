@@ -1,16 +1,9 @@
 // DashboardPage.js
 import React from "react";
+import Navbar from "../components/menus/Navbar";
 
 function DashboardPage() {
-  return (
-    <div>
-      <h1>Dash Page</h1>
-      <p>Conteúdo da página de login</p>
-      <p>Conteúdo da página de login</p>
-      <p>Conteúdo da página de login</p>
-      <p>Conteúdo da página de login</p>
-    </div>
-  );
+  return <div>CONTEUDO</div>;
 }
 
 export default DashboardPage;

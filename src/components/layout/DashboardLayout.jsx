@@ -1,30 +1,13 @@
-import React, { useState } from "react";
-import Navbar from "../menus/Navbar";
+import React from "react";
 import Sidebar from "../menus/Sidebar";
+import MainLayout from "./MainLayout";
 
 function DashboardLayout({ children }) {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-
-  // Função para lidar com a abertura/fechamento do Sidebar
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
-
   return (
-    <div>
-      {/* Passe o estado isSidebarOpen e a função toggleSidebar para o Navbar e o Sidebar */}
-      <Navbar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
-      <div className="flex">
-        <Sidebar isSidebarOpen={isSidebarOpen} />
-        <main
-          className={`${
-            !isSidebarOpen ? "transform translate-x-[-8rem]" : ""
-          } transition-transform duration-300`}
-        >
-          {children}
-        </main>
-      </div>
-    </div>
+    <>
+      <Sidebar />
+      <MainLayout />
+    </>
   );
 }
 
