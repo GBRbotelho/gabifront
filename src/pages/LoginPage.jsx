@@ -1,12 +1,29 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { login } from "../services/authService";
+import { login, verifyToken } from "../services/authService";
 
 function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loginError, setLoginError] = useState("");
-  const navigate = useNavigate(); // Substitua 'history' por 'navigate'
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Verificar o token assim que a página carregar
+    const checkToken = async () => {
+      const tokenRenewed = await verifyToken();
+      console.log(tokenRenewed);
+
+      if (tokenRenewed) {
+        navigate("/dashboard");
+      } else if (tokenRenewed.error) {
+        localStorage.removeItem("token");
+        setLoginError(tokenRenewed.error);
+      }
+    };
+
+    checkToken();
+  }, [navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -17,11 +34,15 @@ function LoginPage() {
     });
 
     if (response.token) {
+      // Salvar o token no localStorage
+      localStorage.setItem("token", response.token);
+
       navigate("/dashboard");
     } else {
       setLoginError(response.error);
     }
   };
+
   return (
     <main className="flex h-screen w-full">
       <section className="flex h-screen w-full md:w-1/2 items-center justify-center rounded-md px-12 xl:px-20">

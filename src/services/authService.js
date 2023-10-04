@@ -15,7 +15,35 @@ export function logout() {
   // Lógica de logout, como limpar os tokens de autenticação
 }
 
-// Função para verificar o status de login
-export function verificarStatusDeLogin() {
-  // Lógica para verificar se o usuário está autenticado
+export async function verifyToken() {
+  const authToken = localStorage.getItem("token");
+
+  if (authToken) {
+    const response = await fetch("http://localhost:3000/users/refresh-token", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ token: authToken }), // Envie o token atual para renovação
+    });
+
+    if (response.status === 200) {
+      const data = await response.json();
+      if (data.token) {
+        localStorage.setItem("token", data.token); // Atualize o token no localStorage
+        return true; // Token renovado com sucesso
+      }
+    }
+
+    // Se a solicitação não retornar um novo token válido ou não retornar 200 OK
+    if (response.status === 500) {
+      const data = await response.json();
+      if (data.error) {
+        localStorage.removeItem("token");
+        return data.error;
+      }
+    }
+
+    return console.log("Quebro");
+  }
 }

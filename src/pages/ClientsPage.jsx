@@ -1,8 +1,26 @@
 // DashboardPage.js
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { fetchClients } from "../services/apiService";
 
 function ClientsPage() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [clients, setClients] = useState([]);
+
+  useEffect(() => {
+    // Função assíncrona para buscar clientes da API
+    async function fetchClientsData() {
+      try {
+        const data = await fetchClients();
+        setClients(data); // Atualiza o estado com os dados dos clientes
+      } catch (error) {
+        console.error("Erro ao buscar clientes:", error);
+      }
+    }
+
+    // Chama a função de busca quando o componente for montado
+    fetchClientsData();
+  }, []);
+
   const handleSearchClick = (e) => {
     e.preventDefault();
     setIsSearchOpen(!isSearchOpen);
