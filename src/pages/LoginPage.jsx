@@ -1,29 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { login, verifyToken } from "../services/authService";
+import { login } from "../services/authService";
+import { useAuth } from "../utils/AuthContext"; // Importe o hook useAuth
 
 function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loginError, setLoginError] = useState("");
   const navigate = useNavigate();
+  const { token } = useAuth(); // Use o hook useAuth para obter o token
 
   useEffect(() => {
-    // Verificar o token assim que a página carregar
-    const checkToken = async () => {
-      const tokenRenewed = await verifyToken();
-      console.log(tokenRenewed);
-
-      if (tokenRenewed) {
-        navigate("/dashboard");
-      } else if (tokenRenewed.error) {
-        localStorage.removeItem("token");
-        setLoginError(tokenRenewed.error);
-      }
-    };
-
-    checkToken();
-  }, [navigate]);
+    // Se o usuário já estiver autenticado, redirecione para o dashboard
+    if (token) {
+      navigate("/dashboard");
+    }
+  }, [token, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

@@ -1,8 +1,5 @@
 import Navbar from "../menus/Navbar";
 import React from "react";
-import { Routes as Router, Route } from "react-router-dom";
-import DashboardPage from "../../pages/DashboardPage";
-import ClientsPage from "../../pages/ClientsPage";
 
 function MainLayout({ children }) {
   return (

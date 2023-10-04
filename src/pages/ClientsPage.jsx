@@ -57,7 +57,7 @@ function ClientsPage() {
           </li>
         </ul>
         <a className=" text-gray-400 w-8 h-8 rounded flex items-center justify-center hover:bg-gray-50 hover:text-gray-600">
-          <i class="ri-user-add-fill"></i>
+          <i className="ri-user-add-fill"></i>
         </a>
       </div>
 

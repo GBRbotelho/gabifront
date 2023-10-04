@@ -45,5 +45,7 @@ export async function verifyToken() {
     }
 
     return console.log("Quebro");
+  } else {
+    return null;
   }
 }
