@@ -44,3 +44,26 @@ export async function addClient(token, clientData) {
     }
   }
 }
+
+export async function deleteClient(clientId, token) {
+  try {
+    const response = await fetch(`http://localhost:3000/clients/${clientId}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      // Se a resposta do servidor não for bem-sucedida, lance um erro
+      throw new Error(`Erro ao excluir cliente (status ${response.status})`);
+    }
+
+    // Se a exclusão for bem-sucedida, não é necessário retornar dados
+  } catch (error) {
+    // Trate qualquer erro aqui
+    console.error("Erro ao excluir cliente:", error);
+    throw error; // Você pode optar por relançar o erro para que ele seja tratado em outro lugar, se necessário
+  }
+}

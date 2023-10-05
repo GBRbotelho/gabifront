@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { fetchClients } from "../services/apiService";
+import { fetchClients, deleteClient } from "../services/apiService";
 import { Link } from "react-router-dom";
 
 function ClientsPage() {
@@ -18,6 +18,20 @@ function ClientsPage() {
 
     fetchClientsData();
   }, []);
+
+  const handleDeleteClient = async (clientId) => {
+    try {
+      const token = await localStorage.getItem("token");
+      const response = await deleteClient(clientId, token);
+
+      const updatedClients = clients.filter(
+        (client) => client._id !== clientId
+      );
+      setClients(updatedClients);
+    } catch (error) {
+      console.error("Erro ao excluir cliente:", error);
+    }
+  };
 
   const handleSearchClick = (e) => {
     e.preventDefault();
@@ -131,6 +145,9 @@ function ClientsPage() {
                         viewBox="0 0 24 24"
                         width="32"
                         height="32"
+                        onClick={() => {
+                          handleDeleteClient(client._id);
+                        }}
                       >
                         <path
                           d="M7 6V3C7 2.44772 7.44772 2 8 2H16C16.5523 2 17 2.44772 17 3V6H22V8H20V21C20 21.5523 19.5523 22 19 22H5C4.44772 22 4 21.5523 4 21V8H2V6H7ZM9 4V6H15V4H9Z"
