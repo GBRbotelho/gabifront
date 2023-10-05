@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { fetchClients } from "../services/apiService";
+import { Link } from "react-router-dom";
 
 function ClientsPage() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -53,9 +54,9 @@ function ClientsPage() {
             </div>
           </li>
         </ul>
-        <a className=" text-gray-400 w-8 h-8 rounded flex items-center justify-center hover:bg-gray-50 hover:text-gray-600">
+        <Link to="/dashboard/clientes/add" className=" text-gray-400 w-8 h-8 rounded flex items-center justify-center hover:bg-gray-50 hover:text-green-600">
           <i className="ri-user-add-fill"></i>
-        </a>
+        </Link>
       </div>
 
       <div className="w-full overflow-x-auto">
@@ -70,7 +71,7 @@ function ClientsPage() {
             </tr>
           </thead>
           <tbody className="bg-white">
-            {clients ? (
+            {clients.length > 0 ? (
               clients.map((client) => (
                 <tr key={client.id} className="text-gray-700">
                   <td className="px-4 py-3 border" key={`name_${client.id}`}>

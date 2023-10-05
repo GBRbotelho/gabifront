@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 export default function Sidebar() {
   const [isOrdersOpen, setIsOrdersOpen] = useState(false);
@@ -41,13 +42,13 @@ export default function Sidebar() {
         </a>
         <ul className="mt-4">
           <li className="mb-1 group active">
-            <a
-              href="/dashboard"
+            <Link
+              to="/dashboard"
               className="flex items-center py-2 px-4 text-emerald-300 hover:bg-emerald-950 hover:text-emerald-100 rounded-md group-[.active]:bg-emerald-800 group-[.active]:text-white group-[.selected]:bg-emerald-950 group-[.selected]:text-emerald-100"
             >
               <i className="ri-home-2-line mr-3 text-lg"></i>
               <span className="text-sm">Inicio</span>
-            </a>
+            </Link>
           </li>
           <li className="mb-1 group">
             <a
@@ -67,28 +68,28 @@ export default function Sidebar() {
             </a>
             <ul className={`pl-7 mt-2 ${isOrdersOpen ? "block" : "hidden"}`}>
               <li className="mb-4">
-                <a
-                  href="/dashboard/clientes"
+                <Link 
+                  to="/dashboard/clientes"
                   className="text-emerald-300 text-sm flex items-center hover:text-emerald-100 before:contents-[''] before:w-1 before:h-1 before:rounded-full before:bg-emerald-300 before:mr-3"
                 >
                   Clientes
-                </a>
+                </Link>
               </li>
               <li className="mb-4">
-                <a
-                  href="/dashboard/servicos"
+                <Link
+                  to="/dashboard/servicos"
                   className="text-emerald-300 text-sm flex items-center hover:text-emerald-100 before:contents-[''] before:w-1 before:h-1 before:rounded-full before:bg-emerald-300 before:mr-3"
                 >
                   Serviços
-                </a>
+                </Link>
               </li>
               <li className="mb-4">
-                <a
-                  href="/dashboard/produtos"
+                <Link
+                  to="/dashboard/produtos"
                   className="text-emerald-300 text-sm flex items-center hover:text-emerald-100 before:contents-[''] before:w-1 before:h-1 before:rounded-full before:bg-emerald-300 before:mr-3"
                 >
                   Produtos
-                </a>
+                </Link>
               </li>
             </ul>
           </li>

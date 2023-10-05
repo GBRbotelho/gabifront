@@ -2,6 +2,7 @@ import { Routes as Router, Route } from "react-router-dom";
 import DashboardLayout from "../components/layout/DashboardLayout";
 import DashboardPage from "../pages/DashboardPage";
 import ClientsPage from "../pages/ClientsPage";
+import ClientsAddPage from "../pages/ClientsAddPage"
 import ServicesPage from "../pages/ServicesPage";
 import ProductsPage from "../pages/ProductsPage";
 
@@ -16,11 +17,21 @@ function DashboardRoutes() {
           </DashboardLayout>
         }
       />
+      
+      {/* Rotas de Clientes */}
       <Route
         path="/clientes"
         element={
           <DashboardLayout>
             <ClientsPage />
+          </DashboardLayout>
+        }
+      />
+      <Route
+        path="/clientes/add"
+        element={
+          <DashboardLayout>
+            <ClientsAddPage />
           </DashboardLayout>
         }
       />
