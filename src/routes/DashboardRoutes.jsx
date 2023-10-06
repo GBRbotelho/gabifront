@@ -6,6 +6,8 @@ import ClientsAddPage from "../pages/ClientsAddPage";
 import ServicesPage from "../pages/ServicesPage";
 import ServicesAddPage from "../pages/ServicesAddPage";
 import ProductsPage from "../pages/ProductsPage";
+import UsersPage from "../pages/UsersPage";
+import UsersAddPage from "../pages/UsersAddPage";
 
 function DashboardRoutes() {
   return (
@@ -41,6 +43,22 @@ function DashboardRoutes() {
         element={
           <DashboardLayout>
             <ProductsPage />
+          </DashboardLayout>
+        }
+      />
+      <Route
+        path="/usuarios"
+        element={
+          <DashboardLayout>
+            <UsersPage />
+          </DashboardLayout>
+        }
+      />
+      <Route
+        path="/usuarios/add"
+        element={
+          <DashboardLayout>
+            <UsersAddPage />
           </DashboardLayout>
         }
       />

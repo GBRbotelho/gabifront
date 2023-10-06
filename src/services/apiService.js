@@ -20,6 +20,28 @@ export async function fetchClients() {
   }
 }
 
+export async function fetchUsers() {
+  try {
+    const token = await localStorage.getItem("token");
+    const response = await fetch("http://localhost:3000/users", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Erro ao buscar usuarios");
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw new Error("Erro na solicitação de usuarios: " + error.message);
+  }
+}
+
 export async function fetchServices() {
   try {
     const token = await localStorage.getItem("token");
@@ -64,6 +86,28 @@ export async function addClient(token, clientData) {
     if (error === "Email already exists") {
       return (error = "CPF ja existe");
     }
+  }
+}
+
+export async function addUsers(token, userData) {
+  try {
+    const response = await fetch("http://localhost:3000/users", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `${token}`,
+      },
+      body: JSON.stringify(userData),
+    });
+    const data = await response.json();
+    console.log(data);
+    if (data.error) {
+      return data;
+    }
+
+    return data;
+  } catch (error) {
+    return error;
   }
 }
 
@@ -133,6 +177,29 @@ export async function deleteService(serviceId, token) {
   } catch (error) {
     // Trate qualquer erro aqui
     console.error("Erro ao excluir Serviço:", error);
+    throw error; // Você pode optar por relançar o erro para que ele seja tratado em outro lugar, se necessário
+  }
+}
+
+export async function deleteUser(userId, token) {
+  try {
+    const response = await fetch(`http://localhost:3000/users/${userId}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      // Se a resposta do servidor não for bem-sucedida, lance um erro
+      throw new Error(`Erro ao excluir Usuario (status ${response.status})`);
+    }
+
+    // Se a exclusão for bem-sucedida, não é necessário retornar dados
+  } catch (error) {
+    // Trate qualquer erro aqui
+    console.error("Erro ao excluir Usuario:", error);
     throw error; // Você pode optar por relançar o erro para que ele seja tratado em outro lugar, se necessário
   }
 }

@@ -91,6 +91,14 @@ export default function Sidebar() {
                   Produtos
                 </Link>
               </li>
+              <li className="mb-4">
+                <Link
+                  to="/dashboard/usuarios"
+                  className="text-emerald-300 text-sm flex items-center hover:text-emerald-100 before:contents-[''] before:w-1 before:h-1 before:rounded-full before:bg-emerald-300 before:mr-3"
+                >
+                  Usuarios
+                </Link>
+              </li>
             </ul>
           </li>
           <li className="mb-1 group">
@@ -100,7 +108,7 @@ export default function Sidebar() {
               onClick={handleDropdownClick("services")}
             >
               <i className="ri-flashlight-line mr-3 text-lg"></i>
-              <span className="text-sm">-----</span>
+              <span className="text-sm">Consultas</span>
               <i
                 className={`ri-arrow-right-s-line ml-auto ${
                   isServicesOpen ? "rotate-90" : ""
@@ -113,15 +121,7 @@ export default function Sidebar() {
                   href="#"
                   className="text-emerald-300 text-sm flex items-center hover:text-emerald-100 before:contents-[''] before:w-1 before:h-1 before:rounded-full before:bg-emerald-300 before:mr-3"
                 >
-                  Serviços
-                </a>
-              </li>
-              <li className="mb-4">
-                <a
-                  href="#"
-                  className="text-emerald-300 text-sm flex items-center hover:text-emerald-100 before:contents-[''] before:w-1 before:h-1 before:rounded-full before:bg-emerald-300 before:mr-3"
-                >
-                  Produtos
+                  Historico
                 </a>
               </li>
             </ul>

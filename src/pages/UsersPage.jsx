@@ -1,36 +1,34 @@
 // DashboardPage.js
 import React, { useState, useEffect } from "react";
-import { fetchServices, deleteService } from "../services/apiService";
+import { fetchUsers, deleteUser } from "../services/apiService";
 import { Link } from "react-router-dom";
 
-function ServicesPage() {
+function UsersPage() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [services, setServices] = useState([]);
+  const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    async function fetchServicesData() {
+    async function fetchUsersData() {
       try {
-        const data = await fetchServices(); // Passe o token na chamada
-        setServices(data);
+        const data = await fetchUsers(); // Passe o token na chamada
+        setUsers(data);
       } catch (error) {
-        console.error("Erro ao buscar serviços:", error);
+        console.error("Erro ao buscar usuarios:", error);
       }
     }
 
-    fetchServicesData();
+    fetchUsersData();
   }, []);
 
-  const handleDeleteService = async (serviceId) => {
+  const handleDeleteUsers = async (userId) => {
     try {
       const token = await localStorage.getItem("token");
-      const response = await deleteService(serviceId, token);
+      const response = await deleteUser(userId, token);
 
-      const updatedServices = services.filter(
-        (service) => service._id !== serviceId
-      );
-      setServices(updatedServices);
+      const updatedUsers = users.filter((user) => user._id !== userId);
+      setUsers(updatedUsers);
     } catch (error) {
-      console.error("Erro ao excluir Serviço:", error);
+      console.error("Erro ao excluir Usuario:", error);
     }
   };
 
@@ -69,7 +67,7 @@ function ServicesPage() {
           </li>
         </ul>
         <Link
-          to="/dashboard/servicos/add"
+          to="/dashboard/usuarios/add"
           className=" text-gray-400 w-8 h-8 rounded flex items-center justify-center hover:bg-gray-50 hover:text-green-600"
         >
           <i className="ri-user-add-fill"></i>
@@ -81,35 +79,48 @@ function ServicesPage() {
           <thead>
             <tr className="text-md font-semibold tracking-wide text-left text-gray-900 bg-gray-100 uppercase border-b border-gray-600">
               <th className="px-4 py-3">Nome</th>
-              <th className="px-4 py-3">Descrição</th>
-              <th className="px-4 py-3">Valor</th>
-              <th className="px-4 py-3">Options</th>
+              <th className="px-4 py-3">Sobrenome</th>
+              <th className="px-4 py-3">Email</th>
+              <th className="px-4 py-3">Nivel de Conta</th>
+              <th className="px-4 py-3">Email Validado</th>
             </tr>
           </thead>
           <tbody className="bg-white">
-            {services.length > 0 ? (
-              services.map((service, index) => (
+            {users.length > 0 ? (
+              users.map((user, index) => (
                 <tr key={index} className="text-gray-700">
-                  <td className="px-4 py-3 border" key={`name_${service.id}`}>
-                    {service.name}
+                  <td className="px-4 py-3 border" key={`firstName_${user.id}`}>
+                    {user.firstName}
                   </td>
                   <td
                     className="px-4 py-3 text-ms border"
-                    key={`description_${service.id}`}
+                    key={`lastName_${user.id}`}
                   >
-                    {service.description}
+                    {user.lastName}
                   </td>
                   <td
                     className="px-4 py-3 text-xs border"
-                    key={`price_${service.id}`}
+                    key={`email_${user.id}`}
                   >
-                    {service.price}
+                    {user.email}
+                  </td>
+                  <td
+                    className="px-4 py-3 text-xs border"
+                    key={`accountLevel_${user.id}`}
+                  >
+                    {user.accountLevel}
+                  </td>
+                  <td
+                    className="px-4 py-3 text-xs border"
+                    key={`isEmailVerified_${user.id}`}
+                  >
+                    {user.isEmailVerified === false ? "Não Validado" : false}
                   </td>
 
                   <td
                     className="px-2 py-3 border options-cell"
                     style={{ width: "50px" }}
-                    key={`options_${service.id}`}
+                    key={`options_${user.id}`}
                   >
                     <div className="flex items-center space-x-2">
                       <svg
@@ -140,7 +151,7 @@ function ServicesPage() {
                         width="32"
                         height="32"
                         onClick={() => {
-                          handleDeleteService(service._id);
+                          handleDeleteUsers(user._id);
                         }}
                       >
                         <path
@@ -155,7 +166,7 @@ function ServicesPage() {
             ) : (
               <tr>
                 <td className="px-4 py-3 text-gray-700 border" colSpan="5">
-                  Não foram encontrados Serviços.
+                  Não foram encontrados Usuarios.
                 </td>
               </tr>
             )}
@@ -166,4 +177,4 @@ function ServicesPage() {
   );
 }
 
-export default ServicesPage;
+export default UsersPage;
