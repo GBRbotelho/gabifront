@@ -41,7 +41,7 @@ export default function Sidebar() {
           <span className="text-lg font-bold text-white ml-3">ByteWave</span>
         </a>
         <ul className="mt-4">
-          <li className="mb-1 group active">
+          {/* <li className="mb-1 group active">
             <Link
               to="/dashboard"
               className="flex items-center py-2 px-4 text-emerald-300 hover:bg-emerald-950 hover:text-emerald-100 rounded-md group-[.active]:bg-emerald-800 group-[.active]:text-white group-[.selected]:bg-emerald-950 group-[.selected]:text-emerald-100"
@@ -49,7 +49,7 @@ export default function Sidebar() {
               <i className="ri-home-2-line mr-3 text-lg"></i>
               <span className="text-sm">Inicio</span>
             </Link>
-          </li>
+          </li> */}
           <li className="mb-1 group">
             <a
               href="#"
@@ -68,7 +68,7 @@ export default function Sidebar() {
             </a>
             <ul className={`pl-7 mt-2 ${isOrdersOpen ? "block" : "hidden"}`}>
               <li className="mb-4">
-                <Link 
+                <Link
                   to="/dashboard/clientes"
                   className="text-emerald-300 text-sm flex items-center hover:text-emerald-100 before:contents-[''] before:w-1 before:h-1 before:rounded-full before:bg-emerald-300 before:mr-3"
                 >

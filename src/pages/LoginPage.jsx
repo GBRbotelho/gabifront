@@ -13,7 +13,7 @@ function LoginPage() {
   useEffect(() => {
     // Se o usuário já estiver autenticado, redirecione para o dashboard
     if (token) {
-      navigate("/dashboard");
+      navigate("/dashboard/clientes");
     }
   }, [token, navigate]);
 

@@ -20,6 +20,28 @@ export async function fetchClients() {
   }
 }
 
+export async function fetchServices() {
+  try {
+    const token = await localStorage.getItem("token");
+    const response = await fetch("http://localhost:3000/services", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Erro ao buscar serviços");
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw new Error("Erro na solicitação de serviços: " + error.message);
+  }
+}
+
 export async function addClient(token, clientData) {
   try {
     const response = await fetch("http://localhost:3000/clients", {
@@ -45,6 +67,27 @@ export async function addClient(token, clientData) {
   }
 }
 
+export async function addService(token, serviceData) {
+  try {
+    const response = await fetch("http://localhost:3000/services", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `${token}`,
+      },
+      body: JSON.stringify(serviceData),
+    });
+    const data = await response.json();
+    console.log(data);
+
+    return data;
+  } catch (error) {
+    if (error) {
+      return error;
+    }
+  }
+}
+
 export async function deleteClient(clientId, token) {
   try {
     const response = await fetch(`http://localhost:3000/clients/${clientId}`, {
@@ -64,6 +107,32 @@ export async function deleteClient(clientId, token) {
   } catch (error) {
     // Trate qualquer erro aqui
     console.error("Erro ao excluir cliente:", error);
+    throw error; // Você pode optar por relançar o erro para que ele seja tratado em outro lugar, se necessário
+  }
+}
+
+export async function deleteService(serviceId, token) {
+  try {
+    const response = await fetch(
+      `http://localhost:3000/services/${serviceId}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      // Se a resposta do servidor não for bem-sucedida, lance um erro
+      throw new Error(`Erro ao excluir Serviço (status ${response.status})`);
+    }
+
+    // Se a exclusão for bem-sucedida, não é necessário retornar dados
+  } catch (error) {
+    // Trate qualquer erro aqui
+    console.error("Erro ao excluir Serviço:", error);
     throw error; // Você pode optar por relançar o erro para que ele seja tratado em outro lugar, se necessário
   }
 }

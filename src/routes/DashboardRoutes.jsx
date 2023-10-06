@@ -2,8 +2,9 @@ import { Routes as Router, Route } from "react-router-dom";
 import DashboardLayout from "../components/layout/DashboardLayout";
 import DashboardPage from "../pages/DashboardPage";
 import ClientsPage from "../pages/ClientsPage";
-import ClientsAddPage from "../pages/ClientsAddPage"
+import ClientsAddPage from "../pages/ClientsAddPage";
 import ServicesPage from "../pages/ServicesPage";
+import ServicesAddPage from "../pages/ServicesAddPage";
 import ProductsPage from "../pages/ProductsPage";
 
 function DashboardRoutes() {
@@ -17,7 +18,7 @@ function DashboardRoutes() {
           </DashboardLayout>
         }
       />
-      
+
       {/* Rotas de Clientes */}
       <Route
         path="/clientes"
@@ -48,6 +49,14 @@ function DashboardRoutes() {
         element={
           <DashboardLayout>
             <ServicesPage />
+          </DashboardLayout>
+        }
+      />
+      <Route
+        path="/servicos/add"
+        element={
+          <DashboardLayout>
+            <ServicesAddPage />
           </DashboardLayout>
         }
       />
