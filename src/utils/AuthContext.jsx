@@ -7,6 +7,7 @@ export const useAuth = () => {
   return useContext(AuthContext);
 };
 
+// ...
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -24,9 +25,14 @@ export const AuthProvider = ({ children }) => {
     checkToken();
   }, []);
 
+  const loginWithToken = (newToken) => {
+    setToken(newToken);
+  };
+
   return (
-    <AuthContext.Provider value={{ token, isLoading }}>
+    <AuthContext.Provider value={{ token, isLoading, loginWithToken }}>
       {children}
     </AuthContext.Provider>
   );
 };
+// ...

@@ -8,7 +8,7 @@ function LoginPage() {
   const [password, setPassword] = useState("");
   const [loginError, setLoginError] = useState("");
   const navigate = useNavigate();
-  const { token } = useAuth(); // Use o hook useAuth para obter o token
+  const { token, loginWithToken } = useAuth(); // Use o hook useAuth para obter o token
 
   useEffect(() => {
     // Se o usuário já estiver autenticado, redirecione para o dashboard
@@ -27,9 +27,9 @@ function LoginPage() {
 
     if (response.token) {
       // Salvar o token no localStorage
-      localStorage.setItem("token", response.token);
-
-      navigate("/dashboard");
+      localStorage.setItem("token", response.token)
+      loginWithToken(response.token);
+      navigate("/dashboard/clientes");
     } else {
       setLoginError(response.error);
     }
