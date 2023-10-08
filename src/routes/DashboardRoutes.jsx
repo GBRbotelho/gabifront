@@ -8,6 +8,7 @@ import ServicesAddPage from "../pages/ServicesAddPage";
 import ProductsPage from "../pages/ProductsPage";
 import UsersPage from "../pages/UsersPage";
 import UsersAddPage from "../pages/UsersAddPage";
+import ClientViewerPage from "../pages/ClientViewerPage";
 
 function DashboardRoutes() {
   return (
@@ -35,6 +36,14 @@ function DashboardRoutes() {
         element={
           <DashboardLayout>
             <ClientsAddPage />
+          </DashboardLayout>
+        }
+      />
+      <Route
+        path="/clientes/view/:id"
+        element={
+          <DashboardLayout>
+            <ClientViewerPage />
           </DashboardLayout>
         }
       />
