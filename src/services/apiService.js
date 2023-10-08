@@ -203,3 +203,58 @@ export async function deleteUser(userId, token) {
     throw error; // Você pode optar por relançar o erro para que ele seja tratado em outro lugar, se necessário
   }
 }
+
+export async function useGetId(userId, subroute, token) {
+  try {
+    const response = await fetch(
+      `http://localhost:3000/${subroute}/${userId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      // Se a resposta do servidor não for bem-sucedida, lance um erro
+      throw new Error(`Erro: (status ${response.status})`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    // Trate qualquer erro aqui
+    console.error("Erro:", error);
+    throw error; // Você pode optar por relançar o erro para que ele seja tratado em outro lugar, se necessário
+  }
+}
+
+export async function useUpdateData(userId, subroute, dataToUpdate, token) {
+  try {
+    const response = await fetch(
+      `http://localhost:3000/${subroute}/${userId}`,
+      {
+        method: "PUT", // Use o método PUT para atualizar dados
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+        body: JSON.stringify(dataToUpdate), // Envie os dados a serem atualizados no corpo da solicitação
+      }
+    );
+
+    if (!response.ok) {
+      // Se a resposta do servidor não for bem-sucedida, lance um erro
+      throw new Error(`Erro: (status ${response.status})`);
+    }
+
+    const updatedData = await response.json();
+    return updatedData;
+  } catch (error) {
+    // Trate qualquer erro aqui
+    console.error("Erro:", error);
+    throw error; // Você pode optar por relançar o erro para que ele seja tratado em outro lugar, se necessário
+  }
+}

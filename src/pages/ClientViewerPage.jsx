@@ -1,10 +1,75 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useGetId, useUpdateData } from "../services/apiService";
+import { useParams } from "react-router-dom";
 
 export default function ClientViewerPage() {
+  const [tempClient, setTempClient] = useState({});
   const [isEditable, setIsEditable] = useState(false);
+  const [client, setClient] = useState({});
+  const { id } = useParams();
+
   const toggleEdit = () => {
     setIsEditable(!isEditable);
   };
+
+  const toggleCancel = () => {
+    if (!isEditable) {
+      setTempClient({ ...client });
+    } else {
+      setClient(tempClient);
+    }
+    setIsEditable(!isEditable);
+  };
+
+  const toggleSave = async () => {
+    const token = localStorage.getItem("token");
+    const update = await useUpdateData(id, "clients", client, token);
+    const formattedDate = update.date
+      ? new Date(update.date).toISOString().split("T")[0]
+      : "";
+    setClient({
+      ...update,
+      date: formattedDate,
+    });
+    setTempClient({
+      ...update,
+      date: formattedDate,
+    });
+    setIsEditable(!isEditable);
+  };
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setClient({
+      ...client,
+      [name]: value,
+    });
+  };
+
+  useEffect(() => {
+    async function fetchGetDataClient() {
+      try {
+        const token = localStorage.getItem("token");
+        const data = await useGetId(id, "clients", token); // Passe o token na chamada
+        const formattedDate = data.date
+          ? new Date(data.date).toISOString().split("T")[0]
+          : "";
+
+        setClient({
+          ...data,
+          date: formattedDate,
+        });
+        setTempClient({
+          ...data,
+          date: formattedDate,
+        });
+      } catch (error) {
+        console.error("Erro ao buscar clientes:", error);
+      }
+    }
+
+    fetchGetDataClient();
+  }, []);
 
   return (
     <div className=" min-h-screen p-6 bg-gray-100 flex items-center justify-center">
@@ -37,157 +102,169 @@ export default function ClientViewerPage() {
               <div className="lg:col-span-2">
                 <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-6">
                   <div className="md:col-span-6">
-                    <label for="full_name">Nome Completo</label>
+                    <label htmlFor="full_name">Nome Completo</label>
                     <input
                       type="text"
-                      name="full_name"
-                      id="full_name"
+                      name="name"
+                      id="name"
                       className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
-                      value=""
+                      value={client.name || ""}
+                      onChange={handleChange}
                       disabled={!isEditable}
                     />
                   </div>
 
                   <div className="md:col-span-2">
-                    <label for="country">CPF</label>
+                    <label htmlFor="country">CPF</label>
                     <div className="h-10 bg-gray-50 flex border border-gray-200 rounded items-center mt-1">
                       <input
-                        name="country"
-                        id="country"
-                        placeholder="Country"
+                        name="cpf"
+                        id="cpf"
+                        placeholder="Preencha este campo"
                         className="px-4 appearance-none outline-none text-gray-800 w-full bg-transparent"
-                        value=""
+                        value={client.cpf || ""}
+                        onChange={handleChange}
                         disabled={!isEditable}
                       />
                     </div>
                   </div>
 
                   <div className="md:col-span-2">
-                    <label for="state">Telefone</label>
+                    <label htmlFor="state">Telefone</label>
                     <div className="h-10 bg-gray-50 flex border border-gray-200 rounded items-center mt-1">
                       <input
-                        name="state"
-                        id="state"
-                        placeholder="State"
+                        name="phone"
+                        id="phone"
+                        placeholder="Preencha este campo"
                         className="px-4 appearance-none outline-none text-gray-800 w-full bg-transparent"
-                        value=""
+                        value={client.phone || ""}
+                        onChange={handleChange}
                         disabled={!isEditable}
                       />
                     </div>
                   </div>
 
                   <div className="md:col-span-2">
-                    <label for="zipcode">Sexo</label>
+                    <label htmlFor="zipcode">Sexo</label>
                     <input
                       type="text"
-                      name="zipcode"
-                      id="zipcode"
+                      name="gender"
+                      id="gender"
                       className="transition-all flex items-center h-10 border mt-1 rounded px-4 w-full bg-gray-50"
-                      placeholder=""
-                      value=""
+                      placeholder="Preencha este campo"
+                      value={client.gender || ""}
+                      onChange={handleChange}
                       disabled={!isEditable}
                     />
                   </div>
                   <div className="md:col-span-2">
-                    <label for="email">Data de Nascimento</label>
+                    <label htmlFor="email">Data de Nascimento</label>
                     <input
                       type="date"
-                      name="email"
-                      id="email"
+                      name="data"
+                      id="date"
                       className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
-                      value=""
+                      value={client.date || ""}
+                      onChange={handleChange}
                       placeholder="email@domain.com"
                       disabled={!isEditable}
                     />
                   </div>
 
                   <div className="md:col-span-4">
-                    <label for="email">Email</label>
+                    <label htmlFor="email">Email</label>
                     <input
                       type="text"
                       name="email"
                       id="email"
                       className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
-                      value=""
+                      value={client.email || ""}
+                      onChange={handleChange}
                       placeholder="email@domain.com"
                       disabled={!isEditable}
                     />
                   </div>
                   <div className="md:col-span-3">
-                    <label for="address">Rua</label>
+                    <label htmlFor="address">Rua</label>
                     <input
                       type="text"
-                      name="address"
-                      id="address"
+                      name="street"
+                      id="street"
                       className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
-                      value=""
-                      placeholder=""
+                      value={client.street || ""}
+                      onChange={handleChange}
+                      placeholder="Preencha este campo"
                       disabled={!isEditable}
                     />
                   </div>
 
                   <div className="md:col-span-2">
-                    <label for="city">Bairro</label>
+                    <label htmlFor="city">Bairro</label>
                     <input
                       type="text"
-                      name="city"
-                      id="city"
+                      name="district"
+                      id="district"
                       className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
-                      value=""
-                      placeholder=""
+                      value={client.district || ""}
+                      onChange={handleChange}
+                      placeholder="Preencha este campo"
                       disabled={!isEditable}
                     />
                   </div>
 
                   <div className="md:col-span-1">
-                    <label for="zipcode">Nº</label>
+                    <label htmlFor="zipcode">Nº</label>
                     <input
                       type="text"
-                      name="zipcode"
-                      id="zipcode"
+                      name="number"
+                      id="number"
                       className="transition-all flex items-center h-10 border mt-1 rounded px-4 w-full bg-gray-50"
-                      placeholder=""
-                      value=""
+                      placeholder="Preencha este campo"
+                      value={client.number || ""}
+                      onChange={handleChange}
                       disabled={!isEditable}
                     />
                   </div>
 
                   <div className="md:col-span-2">
-                    <label for="zipcode">CEP</label>
+                    <label htmlFor="zipcode">CEP</label>
                     <input
                       type="text"
-                      name="zipcode"
-                      id="zipcode"
+                      name="cep"
+                      id="cep"
                       className="transition-all flex items-center h-10 border mt-1 rounded px-4 w-full bg-gray-50"
-                      placeholder=""
-                      value=""
+                      placeholder="Preencha este campo"
+                      value={client.cep || ""}
+                      onChange={handleChange}
                       disabled={!isEditable}
                     />
                   </div>
 
                   <div className="md:col-span-2">
-                    <label for="country">Cidade</label>
+                    <label htmlFor="country">Cidade</label>
                     <div className="h-10 bg-gray-50 flex border border-gray-200 rounded items-center mt-1">
                       <input
-                        name="country"
-                        id="country"
-                        placeholder="Country"
+                        name="city"
+                        id="city"
+                        placeholder="Preencha este campo"
                         className="px-4 appearance-none outline-none text-gray-800 w-full bg-transparent"
-                        value=""
+                        value={client.city || ""}
+                        onChange={handleChange}
                         disabled={!isEditable}
                       />
                     </div>
                   </div>
 
                   <div className="md:col-span-2">
-                    <label for="state">Estado</label>
+                    <label htmlFor="state">Estado</label>
                     <div className="h-10 bg-gray-50 flex border border-gray-200 rounded items-center mt-1">
                       <input
                         name="state"
                         id="state"
-                        placeholder="State"
+                        placeholder="Preencha este campo"
                         className="px-4 appearance-none outline-none text-gray-800 w-full bg-transparent"
-                        value=""
+                        value={client.state || ""}
+                        onChange={handleChange}
                         disabled={!isEditable}
                       />
                     </div>
@@ -196,18 +273,28 @@ export default function ClientViewerPage() {
                   <div className="md:col-span-6 text-right">
                     <div className="inline-flex items-end gap-1">
                       {isEditable ? (
-                        <button className=" bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-                          <i className="ri-pencil-fill"> </i>Save
-                        </button>
+                        <>
+                          <button
+                            className=" bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                            onClick={toggleCancel}
+                          >
+                            <i className="ri-close-fill"></i>Cancel
+                          </button>
+                          <button
+                            className=" bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                            onClick={toggleSave}
+                          >
+                            <i className="ri-save-line"></i>Save
+                          </button>
+                        </>
                       ) : (
-                        ""
+                        <button
+                          className=" bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded"
+                          onClick={toggleEdit}
+                        >
+                          <i className="ri-pencil-fill"> </i>Edit
+                        </button>
                       )}
-                      <button
-                        className=" bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded"
-                        onClick={toggleEdit}
-                      >
-                        <i className="ri-pencil-fill"> </i>Edit
-                      </button>
                     </div>
                   </div>
                 </div>
