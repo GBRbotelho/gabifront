@@ -12,7 +12,7 @@ function RegistrationForm({ closeModal }) {
           <div className="flex items-center justify-center mb-4">
             <h2 className="text-2xl font-semibold">Ficha Cadastral</h2>
           </div>
-          <div className="max-h-80 overflow-y-auto">
+          <div className="max-h-96 overflow-y-auto">
             <div className="flex items-center mb-4">
               <h2 className="text-2xl text-gray-500 font-semibold">
                 Estilo de vida
@@ -36,7 +36,6 @@ function RegistrationForm({ closeModal }) {
                   <input
                     name="cpf"
                     id="cpf"
-                    placeholder="Preencha este campo"
                     className="px-4 appearance-none outline-none text-gray-800 w-full bg-transparent"
                     disabled={!isEditable}
                   />
@@ -49,7 +48,6 @@ function RegistrationForm({ closeModal }) {
                   <input
                     name="phone"
                     id="phone"
-                    placeholder="Preencha este campo"
                     className="px-4 appearance-none outline-none text-gray-800 w-full bg-transparent"
                   />
                 </div>
@@ -62,14 +60,13 @@ function RegistrationForm({ closeModal }) {
                   name="gender"
                   id="gender"
                   className="transition-all flex items-center h-10 border mt-1 rounded px-4 w-full bg-gray-50"
-                  placeholder="Preencha este campo"
                   disabled={!isEditable}
                 />
               </div>
               <div className="md:col-span-2">
                 <label htmlFor="email">Habitos alimentares/social</label>
                 <input
-                  type="date"
+                  type="text"
                   name="data"
                   id="date"
                   className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
@@ -83,7 +80,6 @@ function RegistrationForm({ closeModal }) {
                   name="email"
                   id="email"
                   className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
-                  placeholder="email@domain.com"
                   disabled={!isEditable}
                 />
               </div>
@@ -94,7 +90,6 @@ function RegistrationForm({ closeModal }) {
                   name="street"
                   id="street"
                   className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
-                  placeholder="Preencha este campo"
                 />
               </div>
             </div>
@@ -104,12 +99,109 @@ function RegistrationForm({ closeModal }) {
               </h2>
             </div>
             <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-4">
-              <div className="md:col-span-2">
+              <div className="md:col-span-4">
                 <label htmlFor="full_name">Como posso te ajudar</label>
+                <textarea
+                  type="text"
+                  name="name"
+                  id="name"
+                  className="h-20 border mt-1 rounded px-4 w-full bg-gray-50"
+                />
+              </div>
+            </div>
+            <div className="flex items-center mb-4 mt-6">
+              <h2 className="text-2xl text-gray-500 font-semibold">
+                Referências Sintomatológicas
+              </h2>
+            </div>
+            <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-4">
+              <div className="md:col-span-2">
+                <label htmlFor="full_name">Intensidade</label>
                 <input
                   type="text"
                   name="name"
                   id="name"
+                  className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
+                />
+              </div>
+
+              <div className="md:col-span-2">
+                <label htmlFor="country">Tempo de inicio dos sintomas</label>
+                <div className="h-10 bg-gray-50 flex border border-gray-200 rounded items-center mt-1">
+                  <input
+                    name="cpf"
+                    id="cpf"
+                    className="px-4 appearance-none outline-none text-gray-800 w-full bg-transparent"
+                    disabled={!isEditable}
+                  />
+                </div>
+              </div>
+
+              <div className="md:col-span-2">
+                <label htmlFor="state">Descrição do desconforto</label>
+                <div className="h-10 bg-gray-50 flex border border-gray-200 rounded items-center mt-1">
+                  <input
+                    name="phone"
+                    id="phone"
+                    className="px-4 appearance-none outline-none text-gray-800 w-full bg-transparent"
+                  />
+                </div>
+              </div>
+
+              <div className="md:col-span-2">
+                <label htmlFor="zipcode">Ciclo 24h</label>
+                <input
+                  type="number"
+                  name="gender"
+                  id="gender"
+                  className="transition-all flex items-center h-10 border mt-1 rounded px-4 w-full bg-gray-50"
+                  disabled={!isEditable}
+                />
+              </div>
+              <div className="md:col-span-2">
+                <label htmlFor="email">Estado</label>
+                <input
+                  type="text"
+                  name="data"
+                  id="date"
+                  className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
+                />
+              </div>
+
+              <div className="md:col-span-2">
+                <label htmlFor="email">O que piora</label>
+                <input
+                  type="text"
+                  name="email"
+                  id="email"
+                  className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
+                  disabled={!isEditable}
+                />
+              </div>
+              <div className="md:col-span-2">
+                <label htmlFor="address">O que melhora</label>
+                <input
+                  type="text"
+                  name="street"
+                  id="street"
+                  className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
+                />
+              </div>
+              <div className="md:col-span-2">
+                <label htmlFor="address">Quantos episódios</label>
+                <input
+                  type="text"
+                  name="street"
+                  id="street"
+                  className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
+                />
+              </div>
+              <div className="md:col-span-2">
+                <label htmlFor="address">Tratamentos anteriores</label>
+                <input
+                  type="text"
+                  name="street"
+                  id="street"
                   className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
                 />
               </div>

@@ -117,7 +117,9 @@ export default function ClientViewerPage() {
                       type="text"
                       name="name"
                       id="name"
-                      className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
+                      className={`h-10 border mt-1 rounded px-4 w-full bg-${
+                        !isEditable ? "gray-100" : "white"
+                      }`}
                       value={client.name || ""}
                       onChange={handleChange}
                       disabled={!isEditable}
@@ -126,32 +128,32 @@ export default function ClientViewerPage() {
 
                   <div className="md:col-span-2">
                     <label htmlFor="country">CPF</label>
-                    <div className="h-10 bg-gray-50 flex border border-gray-200 rounded items-center mt-1">
-                      <input
-                        name="cpf"
-                        id="cpf"
-                        placeholder="Preencha este campo"
-                        className="px-4 appearance-none outline-none text-gray-800 w-full bg-transparent"
-                        value={client.cpf || ""}
-                        onChange={handleChange}
-                        disabled={!isEditable}
-                      />
-                    </div>
+                    <input
+                      name="cpf"
+                      id="cpf"
+                      placeholder="Preencha este campo"
+                      className={`h-10 border mt-1 rounded px-4 w-full bg-${
+                        !isEditable ? "gray-100" : "white"
+                      }`}
+                      value={client.cpf || ""}
+                      onChange={handleChange}
+                      disabled={!isEditable}
+                    />
                   </div>
 
                   <div className="md:col-span-2">
                     <label htmlFor="state">Telefone</label>
-                    <div className="h-10 bg-gray-50 flex border border-gray-200 rounded items-center mt-1">
-                      <input
-                        name="phone"
-                        id="phone"
-                        placeholder="Preencha este campo"
-                        className="px-4 appearance-none outline-none text-gray-800 w-full bg-transparent"
-                        value={client.phone || ""}
-                        onChange={handleChange}
-                        disabled={!isEditable}
-                      />
-                    </div>
+                    <input
+                      name="phone"
+                      id="phone"
+                      placeholder="Preencha este campo"
+                      className={`h-10 border mt-1 rounded px-4 w-full bg-${
+                        !isEditable ? "gray-100" : "white"
+                      }`}
+                      value={client.phone || ""}
+                      onChange={handleChange}
+                      disabled={!isEditable}
+                    />
                   </div>
 
                   <div className="md:col-span-2">
@@ -160,7 +162,9 @@ export default function ClientViewerPage() {
                       type="text"
                       name="gender"
                       id="gender"
-                      className="transition-all flex items-center h-10 border mt-1 rounded px-4 w-full bg-gray-50"
+                      className={`h-10 border mt-1 rounded px-4 w-full bg-${
+                        !isEditable ? "gray-100" : "white"
+                      }`}
                       placeholder="Preencha este campo"
                       value={client.gender || ""}
                       onChange={handleChange}
@@ -173,7 +177,9 @@ export default function ClientViewerPage() {
                       type="date"
                       name="data"
                       id="date"
-                      className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
+                      className={`h-10 border mt-1 rounded px-4 w-full bg-${
+                        !isEditable ? "gray-100" : "white"
+                      }`}
                       value={client.date || ""}
                       onChange={handleChange}
                       placeholder="email@domain.com"
@@ -187,7 +193,9 @@ export default function ClientViewerPage() {
                       type="text"
                       name="email"
                       id="email"
-                      className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
+                      className={`h-10 border mt-1 rounded px-4 w-full bg-${
+                        !isEditable ? "gray-100" : "white"
+                      }`}
                       value={client.email || ""}
                       onChange={handleChange}
                       placeholder="email@domain.com"
@@ -200,7 +208,9 @@ export default function ClientViewerPage() {
                       type="text"
                       name="street"
                       id="street"
-                      className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
+                      className={`h-10 border mt-1 rounded px-4 w-full bg-${
+                        !isEditable ? "gray-100" : "white"
+                      }`}
                       value={client.street || ""}
                       onChange={handleChange}
                       placeholder="Preencha este campo"
@@ -214,7 +224,9 @@ export default function ClientViewerPage() {
                       type="text"
                       name="district"
                       id="district"
-                      className="h-10 border mt-1 rounded px-4 w-full bg-gray-50"
+                      className={`h-10 border mt-1 rounded px-4 w-full bg-${
+                        !isEditable ? "gray-100" : "white"
+                      }`}
                       value={client.district || ""}
                       onChange={handleChange}
                       placeholder="Preencha este campo"
@@ -228,7 +240,9 @@ export default function ClientViewerPage() {
                       type="text"
                       name="number"
                       id="number"
-                      className="transition-all flex items-center h-10 border mt-1 rounded px-4 w-full bg-gray-50"
+                      className={`h-10 border mt-1 rounded px-4 w-full bg-${
+                        !isEditable ? "gray-100" : "white"
+                      }`}
                       placeholder="Preencha este campo"
                       value={client.number || ""}
                       onChange={handleChange}
@@ -242,7 +256,9 @@ export default function ClientViewerPage() {
                       type="text"
                       name="cep"
                       id="cep"
-                      className="transition-all flex items-center h-10 border mt-1 rounded px-4 w-full bg-gray-50"
+                      className={`h-10 border mt-1 rounded px-4 w-full bg-${
+                        !isEditable ? "gray-100" : "white"
+                      }`}
                       placeholder="Preencha este campo"
                       value={client.cep || ""}
                       onChange={handleChange}
@@ -252,32 +268,33 @@ export default function ClientViewerPage() {
 
                   <div className="md:col-span-2">
                     <label htmlFor="country">Cidade</label>
-                    <div className="h-10 bg-gray-50 flex border border-gray-200 rounded items-center mt-1">
-                      <input
-                        name="city"
-                        id="city"
-                        placeholder="Preencha este campo"
-                        className="px-4 appearance-none outline-none text-gray-800 w-full bg-transparent"
-                        value={client.city || ""}
-                        onChange={handleChange}
-                        disabled={!isEditable}
-                      />
-                    </div>
+                    <input
+                      name="city"
+                      id="city"
+                      placeholder="Preencha este campo"
+                      className={`h-10 border mt-1 rounded px-4 w-full bg-${
+                        !isEditable ? "gray-100" : "white"
+                      }`}
+                      value={client.city || ""}
+                      onChange={handleChange}
+                      disabled={!isEditable}
+                    />
                   </div>
 
                   <div className="md:col-span-2">
                     <label htmlFor="state">Estado</label>
-                    <div className="h-10 bg-gray-50 flex border border-gray-200 rounded items-center mt-1">
-                      <input
-                        name="state"
-                        id="state"
-                        placeholder="Preencha este campo"
-                        className="px-4 appearance-none outline-none text-gray-800 w-full bg-transparent"
-                        value={client.state || ""}
-                        onChange={handleChange}
-                        disabled={!isEditable}
-                      />
-                    </div>
+
+                    <input
+                      name="state"
+                      id="state"
+                      placeholder="Preencha este campo"
+                      className={`h-10 border mt-1 rounded px-4 w-full bg-${
+                        !isEditable ? "gray-100" : "white"
+                      }`}
+                      value={client.state || ""}
+                      onChange={handleChange}
+                      disabled={!isEditable}
+                    />
                   </div>
 
                   <div className="md:col-span-6 text-right">
@@ -285,16 +302,16 @@ export default function ClientViewerPage() {
                       {isEditable ? (
                         <>
                           <button
-                            className=" bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                            className=" bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded"
                             onClick={toggleCancel}
                           >
-                            <i className="ri-close-fill"></i>Cancel
+                            <i className="ri-close-fill"></i>Cancelar
                           </button>
                           <button
                             className=" bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
                             onClick={toggleSave}
                           >
-                            <i className="ri-save-line"></i>Save
+                            <i className="ri-save-line"></i>Salvar
                           </button>
                         </>
                       ) : (
@@ -302,7 +319,7 @@ export default function ClientViewerPage() {
                           className=" bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded"
                           onClick={toggleEdit}
                         >
-                          <i className="ri-pencil-fill"> </i>Edit
+                          <i className="ri-pencil-fill"> </i>Editar
                         </button>
                       )}
                     </div>
@@ -310,15 +327,21 @@ export default function ClientViewerPage() {
                 </div>
               </div>
             </div>
-            <div className="md:w-1/3 md:ml-4">
+            <div className="md:w-full flex justify-between mt-3">
               <button
                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4 md:mt-0"
                 onClick={openModal}
               >
                 Abrir Ficha Cadastral
               </button>
+              <button
+                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-4 md:mt-0"
+                onClick={openModal}
+              >
+                Deletar Cliente
+              </button>
             </div>
-            {showModal && <RegistrationForm closeModal={closeModal}/>}
+            {showModal && <RegistrationForm closeModal={closeModal} />}
           </div>
         </div>
       </div>
