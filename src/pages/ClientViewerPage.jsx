@@ -142,18 +142,38 @@ export default function ClientViewerPage() {
                   </div>
 
                   <div className="md:col-span-2">
-                    <label htmlFor="state">Telefone</label>
-                    <input
-                      name="phone"
-                      id="phone"
-                      placeholder="Preencha este campo"
-                      className={`h-10 border mt-1 rounded px-4 w-full bg-${
-                        !isEditable ? "gray-100" : "white"
-                      }`}
-                      value={client.phone || ""}
-                      onChange={handleChange}
-                      disabled={!isEditable}
-                    />
+                    <label htmlFor="phone">Telefone</label>
+                    <div className="flex items-center">
+                      <input
+                        name="phone"
+                        id="phone"
+                        placeholder="Preencha este campo"
+                        className={`h-10 border mt-1 rounded px-4 w-full bg-${
+                          !isEditable ? "gray-100" : "white"
+                        }`}
+                        value={client.phone || ""}
+                        onChange={handleChange}
+                        disabled={!isEditable}
+                      />
+                      <a
+                        href={`https://wa.me/${client.phone}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`ml-2 text-2xl text-green-500 ${
+                          !isEditable ? "scale-08" : ""
+                        } transition-transform duration-200 pointer-events-${
+                          isEditable ? "none" : "auto"
+                        }`}
+                        onMouseOver={(e) =>
+                          (e.currentTarget.style.transform = "scale(1)")
+                        }
+                        onMouseOut={(e) =>
+                          (e.currentTarget.style.transform = "scale(0.8)")
+                        }
+                      >
+                        <i className="ri-whatsapp-line"></i>
+                      </a>
+                    </div>
                   </div>
 
                   <div className="md:col-span-2">
