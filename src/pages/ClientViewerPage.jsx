@@ -175,7 +175,7 @@ export default function ClientViewerPage() {
                     <label htmlFor="email">Data de Nascimento</label>
                     <input
                       type="date"
-                      name="data"
+                      name="date"
                       id="date"
                       className={`h-10 border mt-1 rounded px-4 w-full bg-${
                         !isEditable ? "gray-100" : "white"
