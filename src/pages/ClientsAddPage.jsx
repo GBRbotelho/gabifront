@@ -24,7 +24,6 @@ function ClientsAddPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(clientData);
     try {
       const token = await localStorage.getItem("token");
       const response = await addClient(token, clientData).catch((error) => {

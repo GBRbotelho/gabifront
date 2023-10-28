@@ -258,3 +258,23 @@ export async function useUpdateData(userId, subroute, dataToUpdate, token) {
     throw error; // Você pode optar por relançar o erro para que ele seja tratado em outro lugar, se necessário
   }
 }
+
+export async function usePostData(token, subroute, dataPost) {
+  try {
+    const response = await fetch(`http://localhost:3000/${subroute}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `${token}`,
+      },
+      body: JSON.stringify(dataPost),
+    });
+    const data = await response.json();
+
+    return data;
+  } catch (error) {
+    if (error) {
+      return error;
+    }
+  }
+}

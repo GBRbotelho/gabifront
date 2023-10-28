@@ -2,15 +2,47 @@ import React, { useState, useEffect } from "react";
 import { useGetId, useUpdateData } from "../services/apiService";
 import { useParams } from "react-router-dom";
 import RegistrationForm from "../components/forms/RegistrationForm";
+import ModalTreatment from "../components/forms/ModalTreatment";
+import ModalConsultation from "../components/forms/ModalConsultation";
 
 export default function ClientViewerPage() {
   const [tempClient, setTempClient] = useState({});
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isEditable, setIsEditable] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [modalTreatment, setModalTreatment] = useState(false);
+  const [modalConsultation, setModalConsultation] = useState(false);
   const [client, setClient] = useState({});
   const [treatment, setTreatment] = useState([]);
   const [consultation, setConsultation] = useState([]);
   const { id } = useParams();
+  const token = localStorage.getItem("token");
+
+  const reloadTreatments = async () => {
+    const response = await useGetId(id, "services/client", token);
+    setTreatment(response);
+  };
+
+  const reloadConsultations = async () => {
+    const response = await useGetId(id, "consultations/client", token);
+    setConsultation(response);
+  };
+
+  const openModalConsultation = () => {
+    setModalConsultation(true);
+  };
+
+  const closeModalConsultation = () => {
+    setModalConsultation(false);
+  };
+
+  const openModalTreatment = () => {
+    setModalTreatment(true);
+  };
+
+  const closeModalTreatment = () => {
+    setModalTreatment(false);
+  };
 
   const openModal = () => {
     setShowModal(true);
@@ -34,7 +66,6 @@ export default function ClientViewerPage() {
   };
 
   const toggleSave = async () => {
-    const token = localStorage.getItem("token");
     const update = await useUpdateData(id, "clients", client, token);
     const formattedDate = update.date
       ? new Date(update.date).toISOString().split("T")[0]
@@ -64,10 +95,12 @@ export default function ClientViewerPage() {
         const token = localStorage.getItem("token");
 
         // Faz as duas chamadas de API simultaneamente
-        const [clientData, treatmentsData] = await Promise.all([
-          useGetId(id, "clients", token),
-          useGetId(id, "services/client", token),
-        ]);
+        const [clientData, treatmentsData, consultationsData] =
+          await Promise.all([
+            useGetId(id, "clients", token),
+            useGetId(id, "services/client", token),
+            useGetId(id, "consultations/client", token),
+          ]);
 
         const formattedClientDate = clientData.date
           ? new Date(clientData.date).toISOString().split("T")[0]
@@ -83,6 +116,8 @@ export default function ClientViewerPage() {
         });
 
         setTreatment(treatmentsData);
+
+        setConsultation(consultationsData);
       } catch (error) {
         console.error("Erro ao buscar clientes e tratamentos:", error);
       }
@@ -376,15 +411,28 @@ export default function ClientViewerPage() {
             <h2 className="font-semibold text-xl text-gray-600 mt-6">
               Tratamentos
             </h2>
+            <div className="flex justify-end w-full overflow-y-auto">
+              <button
+                className=" text-gray-400 w-8 h-8 rounded flex items-center justify-center hover:bg-gray-50 hover:text-green-600"
+                onClick={openModalTreatment}
+              >
+                <i className="ri-user-add-fill"></i>
+              </button>
+            </div>
+
             <div className="w-full overflow-x-auto">
               <table className="w-full">
                 <thead>
                   <tr className="text-md font-semibold tracking-wide text-left text-gray-900 bg-gray-100 uppercase border-b border-gray-600">
-                    <th className="px-4 py-3">Nome do tratamento</th>
-                    <th className="px-4 py-3">Preço</th>
-                    <th className="px-4 py-3">Sessões Completadas</th>
-                    <th className="px-4 py-3">Total de Sessões</th>
-                    <th className="px-4 py-3">Status</th>
+                    <th className="px-4 py-3 text-center">
+                      Nome do tratamento
+                    </th>
+                    <th className="px-4 py-3 text-center">Preço</th>
+                    <th className="px-4 py-3 text-center">
+                      Sessões Completadas
+                    </th>
+                    <th className="px-4 py-3 text-center">Total de Sessões</th>
+                    <th className="px-4 py-3 text-center">Status</th>
                   </tr>
                 </thead>
                 <tbody className="bg-white">
@@ -398,7 +446,12 @@ export default function ClientViewerPage() {
                           R$ {treatment.price}
                         </td>
                         <td className="px-4 py-3 border text-center">
-                          {consultation.length}
+                          {
+                            consultation.filter(
+                              (consultationItem) =>
+                                consultationItem.service === treatment._id
+                            ).length
+                          }
                         </td>
                         <td className="px-4 py-3 border text-center">
                           {treatment.totalSessions}
@@ -425,20 +478,75 @@ export default function ClientViewerPage() {
             <h2 className="font-semibold text-xl text-gray-600 mt-6">
               Consultas
             </h2>
+            <div className="flex justify-end w-full overflow-y-auto">
+              <button
+                className=" text-gray-400 w-8 h-8 rounded flex items-center justify-center hover:bg-gray-50 hover:text-green-600"
+                onClick={openModalConsultation}
+              >
+                <i className="ri-user-add-fill"></i>
+              </button>
+            </div>
             <div className="w-full overflow-x-auto">
               <table className="w-full">
                 <thead>
                   <tr className="text-md font-semibold tracking-wide text-left text-gray-900 bg-gray-100 uppercase border-b border-gray-600">
-                    <th className="px-4 py-3">Data</th>
-                    <th className="px-4 py-3">Hora</th>
-                    <th className="px-4 py-3">Tratamento</th>
-                    <th className="px-4 py-3">Sessão</th>
-                    <th className="px-4 py-3">Status</th>
+                    <th className="px-4 py-3 text-center">Data</th>
+                    <th className="px-4 py-3 text-center">Hora</th>
+                    <th className="px-4 py-3 text-center">Tratamento</th>
+                    <th className="px-4 py-3 text-center">Status</th>
                   </tr>
                 </thead>
-                <tbody className="bg-white"></tbody>
+                <tbody className="bg-white">
+                  {consultation.length > 0 ? (
+                    consultation.map((consultation) => (
+                      <tr key={consultation._id} className="text-gray-700">
+                        <td className="px-4 py-3 border text-center">
+                          {new Date(consultation.date).toLocaleDateString(
+                            "pt-BR"
+                          )}
+                        </td>
+                        <td className="px-4 py-3 border text-center">
+                          {consultation.time}
+                        </td>
+                        <td className="px-4 py-3 border text-center">
+                          {treatment
+                            .filter(
+                              (treatmentItem) =>
+                                treatmentItem._id === consultation.service
+                            )
+                            .map((matchingTreatment) => matchingTreatment.name)}
+                        </td>
+                        <td className="px-4 py-3 border text-center">
+                          {consultation.status}
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td
+                        className="px-4 py-3 text-gray-700 border"
+                        colSpan="5"
+                      >
+                        Não foram encontrados consultas para esse cliente.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
               </table>
             </div>
+            {modalTreatment && (
+              <ModalTreatment
+                closeModalTreatment={closeModalTreatment}
+                reloadTreatments={reloadTreatments}
+              />
+            )}
+            {modalConsultation && (
+              <ModalConsultation
+                closeModalConsultation={closeModalConsultation}
+                reloadConsultations={reloadConsultations}
+                treatment={treatment}
+              />
+            )}
           </div>
         </div>
       </div>

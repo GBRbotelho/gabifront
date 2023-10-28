@@ -1,0 +1,105 @@
+import React, { useState } from "react";
+import { useParams } from "react-router-dom";
+import { usePostData } from "../../services/apiService";
+
+export default function ModalTreatment({
+  closeModalTreatment,
+  reloadTreatments,
+}) {
+  const [treatment, setTreatment] = useState({});
+  const [error, setError] = useState("");
+  const { id } = useParams();
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setTreatment({
+      ...treatment,
+      [name]: value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    treatment.clientId = id;
+    const token = localStorage.getItem("token");
+    const response = await usePostData(token, "services", treatment);
+
+    if (response.error) {
+      setError(response.error);
+    } else {
+      reloadTreatments();
+      closeModalTreatment();
+    }
+  };
+
+  return (
+    <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center">
+      <div className="absolute bg-white p-4 w-96 rounded shadow-md">
+        <div className="flex items-center justify-center mb-4">
+          <h2 className="text-2xl font-semibold">Tratamentos</h2>
+        </div>
+        <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-4">
+          <div className="md:col-span-4">
+            <label htmlFor="name">Nome do Tratamento</label>
+            <input
+              type="text"
+              name="name"
+              id="name"
+              className="h-10 border mt-1 rounded px-4 w-full bg-white"
+              value={treatment.name || ""}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="md:col-span-2">
+            <label htmlFor="price">Preço</label>
+            <input
+              type="number"
+              name="price"
+              id="price"
+              className="h-10 border mt-1 rounded px-4 w-full bg-white"
+              value={treatment.price || ""}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="md:col-span-2">
+            <label htmlFor="totalSessions">Nº Total de Sessões</label>
+            <input
+              type="number"
+              name="totalSessions"
+              id="totalSessions"
+              className="h-10 border mt-1 rounded px-4 w-full bg-white"
+              value={treatment.totalSessions || ""}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="md:col-span-4">
+            <label htmlFor="description">Descrição</label>
+            <textarea
+              type="text"
+              name="description"
+              id="description"
+              className="h-10 border mt-1 rounded px-4 w-full bg-white"
+              value={treatment.description || ""}
+              onChange={handleChange}
+            />
+          </div>
+        </div>
+        {error && <p>{error}</p>}
+        <div className="flex justify-between mt-3">
+          <button
+            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+            onClick={closeModalTreatment}
+          >
+            Cancelar
+          </button>
+          <button
+            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+            onClick={handleSubmit}
+          >
+            Salvar
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
