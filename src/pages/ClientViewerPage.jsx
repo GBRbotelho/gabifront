@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { useGetId, useUpdateData } from "../services/apiService";
-import { useParams } from "react-router-dom";
+import { useGetId, useUpdateData, useDeleteData } from "../services/apiService";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import RegistrationForm from "../components/forms/RegistrationForm";
 import ModalTreatment from "../components/forms/ModalTreatment";
 import ModalConsultation from "../components/forms/ModalConsultation";
@@ -17,6 +17,12 @@ export default function ClientViewerPage() {
   const [consultation, setConsultation] = useState([]);
   const { id } = useParams();
   const token = localStorage.getItem("token");
+  const navigate = useNavigate();
+
+  const handleDelete = async () => {
+    const response = await useDeleteData(id, "clients", token);
+    navigate("/dashboard/clientes");
+  };
 
   const reloadTreatments = async () => {
     const response = await useGetId(id, "services/client", token);
@@ -401,7 +407,7 @@ export default function ClientViewerPage() {
               </button>
               <button
                 className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-4 md:mt-0"
-                onClick={openModal}
+                onClick={handleDelete}
               >
                 Deletar Cliente
               </button>

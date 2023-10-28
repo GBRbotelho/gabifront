@@ -278,3 +278,26 @@ export async function usePostData(token, subroute, dataPost) {
     }
   }
 }
+
+export async function useDeleteData(userId, subroute, token) {
+  try {
+    const response = await fetch(
+      `http://localhost:3000/${subroute}/${userId}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${token}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Erro ao excluir(status ${response.status})`);
+    }
+  } catch (error) {
+    // Trate qualquer erro aqui
+    console.error("Erro ao excluir:", error);
+    throw error;
+  }
+}
