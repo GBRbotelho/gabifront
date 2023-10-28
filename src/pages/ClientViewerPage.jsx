@@ -8,6 +8,8 @@ export default function ClientViewerPage() {
   const [isEditable, setIsEditable] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [client, setClient] = useState({});
+  const [treatment, setTreatment] = useState([]);
+  const [consultation, setConsultation] = useState([]);
   const { id } = useParams();
 
   const openModal = () => {
@@ -57,28 +59,36 @@ export default function ClientViewerPage() {
   };
 
   useEffect(() => {
-    async function fetchGetDataClient() {
+    async function fetchData() {
       try {
         const token = localStorage.getItem("token");
-        const data = await useGetId(id, "clients", token); // Passe o token na chamada
-        const formattedDate = data.date
-          ? new Date(data.date).toISOString().split("T")[0]
+
+        // Faz as duas chamadas de API simultaneamente
+        const [clientData, treatmentsData] = await Promise.all([
+          useGetId(id, "clients", token),
+          useGetId(id, "services/client", token),
+        ]);
+
+        const formattedClientDate = clientData.date
+          ? new Date(clientData.date).toISOString().split("T")[0]
           : "";
 
         setClient({
-          ...data,
-          date: formattedDate,
+          ...clientData,
+          date: formattedClientDate,
         });
         setTempClient({
-          ...data,
-          date: formattedDate,
+          ...clientData,
+          date: formattedClientDate,
         });
+
+        setTreatment(treatmentsData);
       } catch (error) {
-        console.error("Erro ao buscar clientes:", error);
+        console.error("Erro ao buscar clientes e tratamentos:", error);
       }
     }
 
-    fetchGetDataClient();
+    fetchData();
   }, []);
 
   return (
@@ -362,6 +372,73 @@ export default function ClientViewerPage() {
               </button>
             </div>
             {showModal && <RegistrationForm closeModal={closeModal} />}
+            <div className="bg-gray-300 my-6 h-0.5"></div>
+            <h2 className="font-semibold text-xl text-gray-600 mt-6">
+              Tratamentos
+            </h2>
+            <div className="w-full overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="text-md font-semibold tracking-wide text-left text-gray-900 bg-gray-100 uppercase border-b border-gray-600">
+                    <th className="px-4 py-3">Nome do tratamento</th>
+                    <th className="px-4 py-3">Preço</th>
+                    <th className="px-4 py-3">Sessões Completadas</th>
+                    <th className="px-4 py-3">Total de Sessões</th>
+                    <th className="px-4 py-3">Status</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white">
+                  {treatment.length > 0 ? (
+                    treatment.map((treatment) => (
+                      <tr key={treatment._id} className="text-gray-700">
+                        <td className="px-4 py-3 border text-center">
+                          {treatment.name}
+                        </td>
+                        <td className="px-4 py-3 border text-center">
+                          R$ {treatment.price}
+                        </td>
+                        <td className="px-4 py-3 border text-center">
+                          {consultation.length}
+                        </td>
+                        <td className="px-4 py-3 border text-center">
+                          {treatment.totalSessions}
+                        </td>
+                        <td className="px-4 py-3 border text-center">
+                          {treatment.status}
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td
+                        className="px-4 py-3 text-gray-700 border"
+                        colSpan="5"
+                      >
+                        Não foram encontrados tratamentos para esse cliente.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+            <div className="bg-gray-300 my-6 h-0.5"></div>
+            <h2 className="font-semibold text-xl text-gray-600 mt-6">
+              Consultas
+            </h2>
+            <div className="w-full overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="text-md font-semibold tracking-wide text-left text-gray-900 bg-gray-100 uppercase border-b border-gray-600">
+                    <th className="px-4 py-3">Data</th>
+                    <th className="px-4 py-3">Hora</th>
+                    <th className="px-4 py-3">Tratamento</th>
+                    <th className="px-4 py-3">Sessão</th>
+                    <th className="px-4 py-3">Status</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white"></tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
