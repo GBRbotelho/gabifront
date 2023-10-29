@@ -4,6 +4,7 @@ import { Navigate, useNavigate, useParams } from "react-router-dom";
 import RegistrationForm from "../components/forms/RegistrationForm";
 import ModalTreatment from "../components/forms/ModalTreatment";
 import ModalConsultation from "../components/forms/ModalConsultation";
+import OpenConsultation from "../components/forms/OpenConsultation";
 
 export default function ClientViewerPage() {
   const [tempClient, setTempClient] = useState({});
@@ -15,6 +16,7 @@ export default function ClientViewerPage() {
   const [client, setClient] = useState({});
   const [treatment, setTreatment] = useState([]);
   const [consultation, setConsultation] = useState([]);
+  const [consultationSelect, setConsultationSelect] = useState(null);
   const { id } = useParams();
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
@@ -22,6 +24,15 @@ export default function ClientViewerPage() {
   const handleDelete = async () => {
     const response = await useDeleteData(id, "clients", token);
     navigate("/dashboard/clientes");
+  };
+
+  const toggleDeleteConsultation = async (consultationId) => {
+    const response = await useDeleteData(
+      consultationId,
+      "consultations",
+      token
+    );
+    reloadConsultations();
   };
 
   const reloadTreatments = async () => {
@@ -36,6 +47,14 @@ export default function ClientViewerPage() {
 
   const openModalConsultation = () => {
     setModalConsultation(true);
+  };
+
+  const openSelectItem = (consultationItem) => {
+    setConsultationSelect(consultationItem);
+  };
+
+  const closeSelectItem = () => {
+    setConsultationSelect(null);
   };
 
   const closeModalConsultation = () => {
@@ -439,6 +458,7 @@ export default function ClientViewerPage() {
                     </th>
                     <th className="px-4 py-3 text-center">Total de Sessões</th>
                     <th className="px-4 py-3 text-center">Status</th>
+                    <th className="px-4 py-3 text-center">Opções</th>
                   </tr>
                 </thead>
                 <tbody className="bg-white">
@@ -464,6 +484,20 @@ export default function ClientViewerPage() {
                         </td>
                         <td className="px-4 py-3 border text-center">
                           {treatment.status}
+                        </td>
+                        <td
+                          className="px-2 py-3 border options-cell"
+                          style={{ width: "50px" }}
+                          key={`options_${client.id}`}
+                        >
+                          <div className="flex items-center space-x-2">
+                            <button className="w-8 h-8 text-green-500 transform hover:scale-110 transition-transform">
+                              <i className="ri-eye-line text-3xl"></i>
+                            </button>
+                            <button className="w-8 h-8 text-red-500 transform hover:scale-110 transition-transform">
+                              <i className="ri-delete-bin-5-line text-3xl"></i>
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     ))
@@ -500,30 +534,56 @@ export default function ClientViewerPage() {
                     <th className="px-4 py-3 text-center">Hora</th>
                     <th className="px-4 py-3 text-center">Tratamento</th>
                     <th className="px-4 py-3 text-center">Status</th>
+                    <th className="px-4 py-3 text-center">Opções</th>
                   </tr>
                 </thead>
                 <tbody className="bg-white">
                   {consultation.length > 0 ? (
-                    consultation.map((consultation) => (
-                      <tr key={consultation._id} className="text-gray-700">
+                    consultation.map((consultationItem) => (
+                      <tr key={consultationItem._id} className="text-gray-700">
                         <td className="px-4 py-3 border text-center">
-                          {new Date(consultation.date).toLocaleDateString(
+                          {new Date(consultationItem.date).toLocaleDateString(
                             "pt-BR"
                           )}
                         </td>
                         <td className="px-4 py-3 border text-center">
-                          {consultation.time}
+                          {consultationItem.time}
                         </td>
                         <td className="px-4 py-3 border text-center">
                           {treatment
                             .filter(
                               (treatmentItem) =>
-                                treatmentItem._id === consultation.service
+                                treatmentItem._id === consultationItem.service
                             )
                             .map((matchingTreatment) => matchingTreatment.name)}
                         </td>
                         <td className="px-4 py-3 border text-center">
-                          {consultation.status}
+                          {consultationItem.status}
+                        </td>
+                        <td
+                          className="px-2 py-3 border options-cell"
+                          style={{ width: "50px" }}
+                          key={`options_${consultationItem._id}`}
+                        >
+                          <div className="flex items-center space-x-2">
+                            <div>
+                              <button
+                                className="w-8 h-8 text-green-500 transform hover:scale-110 transition-transform"
+                                onClick={() => openSelectItem(consultationItem)}
+                              >
+                                <i className="ri-eye-line text-3xl"></i>
+                              </button>
+                            </div>
+
+                            <button
+                              className="w-8 h-8 text-red-500 transform hover:scale-110 transition-transform"
+                              onClick={() => {
+                                toggleDeleteConsultation(consultationItem._id);
+                              }}
+                            >
+                              <i className="ri-delete-bin-5-line text-3xl"></i>
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     ))
@@ -551,6 +611,16 @@ export default function ClientViewerPage() {
                 closeModalConsultation={closeModalConsultation}
                 reloadConsultations={reloadConsultations}
                 treatment={treatment}
+              />
+            )}
+
+            {consultationSelect && (
+              <OpenConsultation
+                closeSelectItem={closeSelectItem}
+                reloadConsultations={reloadConsultations}
+                treatment={treatment}
+                consultationItem={consultationSelect}
+                setConsultationSelect={setConsultationSelect}
               />
             )}
           </div>
