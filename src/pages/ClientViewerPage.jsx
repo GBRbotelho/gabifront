@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { useGetId, useUpdateData, useDeleteData } from "../services/apiService";
+import {
+  useGetId,
+  useUpdateData,
+  useDeleteData,
+  useGetAll,
+} from "../services/apiService";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 import RegistrationForm from "../components/forms/RegistrationForm";
 import ModalTreatment from "../components/forms/ModalTreatment";
@@ -16,6 +21,7 @@ export default function ClientViewerPage() {
   const [client, setClient] = useState({});
   const [treatment, setTreatment] = useState([]);
   const [consultation, setConsultation] = useState([]);
+  const [service, setService] = useState([]);
   const [consultationSelect, setConsultationSelect] = useState(null);
   const { id } = useParams();
   const token = localStorage.getItem("token");
@@ -125,11 +131,12 @@ export default function ClientViewerPage() {
         const token = localStorage.getItem("token");
 
         // Faz as duas chamadas de API simultaneamente
-        const [clientData, treatmentsData, consultationsData] =
+        const [clientData, treatmentsData, consultationsData, servicesData] =
           await Promise.all([
             useGetId(id, "clients", token),
             useGetId(id, "treatments/client", token),
             useGetId(id, "consultations/client", token),
+            useGetAll("services", token),
           ]);
 
         const formattedClientDate = clientData.date
@@ -148,6 +155,8 @@ export default function ClientViewerPage() {
         setTreatment(treatmentsData);
 
         setConsultation(consultationsData);
+
+        setService(servicesData);
       } catch (error) {
         console.error("Erro ao buscar clientes e tratamentos:", error);
       }
@@ -471,7 +480,12 @@ export default function ClientViewerPage() {
                     treatment.map((treatmentItem) => (
                       <tr key={treatmentItem._id} className="text-gray-700">
                         <td className="px-4 py-3 border text-center">
-                          {treatmentItem.name}
+                          {service
+                            .filter(
+                              (serviceItem) =>
+                                serviceItem._id === treatmentItem.name
+                            )
+                            .map((item) => item.name)}
                         </td>
                         <td className="px-4 py-3 border text-center">
                           R$ {treatmentItem.price}
@@ -515,7 +529,7 @@ export default function ClientViewerPage() {
                     <tr>
                       <td
                         className="px-4 py-3 text-gray-700 border"
-                        colSpan="5"
+                        colSpan="6"
                       >
                         Não foram encontrados tratamentos para esse cliente.
                       </td>
@@ -560,12 +574,17 @@ export default function ClientViewerPage() {
                           {consultationItem.time}
                         </td>
                         <td className="px-4 py-3 border text-center">
-                          {treatment
-                            .filter(
-                              (treatmentItem) =>
-                                treatmentItem._id === consultationItem.service
-                            )
-                            .map((matchingTreatment) => matchingTreatment.name)}
+                          {
+                            service.find(
+                              (serviceItem) =>
+                                serviceItem._id ===
+                                treatment.filter(
+                                  (treatmentItem) =>
+                                    treatmentItem._id ===
+                                    consultationItem.service
+                                )[0].name
+                            ).name
+                          }
                         </td>
                         <td className="px-4 py-3 border text-center">
                           {consultationItem.status}
@@ -614,6 +633,7 @@ export default function ClientViewerPage() {
               <ModalTreatment
                 closeModalTreatment={closeModalTreatment}
                 reloadTreatments={reloadTreatments}
+                service={service}
               />
             )}
             {modalConsultation && (
@@ -621,6 +641,7 @@ export default function ClientViewerPage() {
                 closeModalConsultation={closeModalConsultation}
                 reloadConsultations={reloadConsultations}
                 treatment={treatment}
+                service={service}
               />
             )}
 
@@ -631,6 +652,7 @@ export default function ClientViewerPage() {
                 treatment={treatment}
                 consultationItem={consultationSelect}
                 setConsultationSelect={setConsultationSelect}
+                service={service}
               />
             )}
           </div>

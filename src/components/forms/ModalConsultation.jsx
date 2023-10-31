@@ -6,6 +6,7 @@ export default function ModalConsultation({
   closeModalConsultation,
   reloadConsultations,
   treatment,
+  service,
 }) {
   const [consultation, setConsultation] = useState({});
   const [error, setError] = useState("");
@@ -76,7 +77,11 @@ export default function ModalConsultation({
               </option>
               {treatment.map((treatmentItem) => (
                 <option key={treatmentItem._id} value={treatmentItem._id}>
-                  {treatmentItem.name}
+                  {service
+                    .filter(
+                      (serviceItem) => serviceItem._id === treatmentItem.name
+                    )
+                    .map((item) => item.name)}
                 </option>
               ))}
             </select>

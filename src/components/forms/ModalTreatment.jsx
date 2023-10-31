@@ -5,6 +5,7 @@ import { usePostData } from "../../services/apiService";
 export default function ModalTreatment({
   closeModalTreatment,
   reloadTreatments,
+  service,
 }) {
   const [treatment, setTreatment] = useState({});
   const [error, setError] = useState("");
@@ -41,14 +42,23 @@ export default function ModalTreatment({
         <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-4">
           <div className="md:col-span-4">
             <label htmlFor="name">Nome do Tratamento</label>
-            <input
+            <select
               type="text"
               name="name"
               id="name"
               className="h-10 border mt-1 rounded px-4 w-full bg-white"
               value={treatment.name || ""}
               onChange={handleChange}
-            />
+            >
+              <option value="" disabled>
+                Selecione um tratamento
+              </option>
+              {service.map((serviceItem) => (
+                <option key={serviceItem._id} value={serviceItem._id}>
+                  {serviceItem.name}
+                </option>
+              ))}
+            </select>
           </div>
           <div className="md:col-span-2">
             <label htmlFor="price">Preço</label>

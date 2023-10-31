@@ -8,6 +8,7 @@ export default function ModalConsultation({
   treatment,
   consultationItem,
   setConsultationSelect,
+  service,
 }) {
   const [error, setError] = useState("");
   const [isEditable, setIsEditable] = useState(false);
@@ -112,7 +113,11 @@ export default function ModalConsultation({
               </option>
               {treatment.map((treatmentItem) => (
                 <option key={treatmentItem._id} value={treatmentItem._id}>
-                  {treatmentItem.name}
+                  {
+                    service.find(
+                      (serviceItem) => serviceItem._id === treatmentItem.name
+                    ).name
+                  }
                 </option>
               ))}
             </select>

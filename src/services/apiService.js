@@ -301,3 +301,27 @@ export async function useDeleteData(userId, subroute, token) {
     throw error;
   }
 }
+
+export async function useGetAll(subroute, token) {
+  try {
+    const response = await fetch(`http://localhost:3000/${subroute}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      // Se a resposta do servidor não for bem-sucedida, lance um erro
+      throw new Error(`Erro: (status ${response.status})`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    // Trate qualquer erro aqui
+    console.error("Erro:", error);
+    throw error; // Você pode optar por relançar o erro para que ele seja tratado em outro lugar, se necessário
+  }
+}
