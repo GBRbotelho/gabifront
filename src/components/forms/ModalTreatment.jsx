@@ -22,7 +22,7 @@ export default function ModalTreatment({
     e.preventDefault();
     treatment.clientId = id;
     const token = localStorage.getItem("token");
-    const response = await usePostData(token, "services", treatment);
+    const response = await usePostData(token, "treatments", treatment);
 
     if (response.error) {
       setError(response.error);

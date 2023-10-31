@@ -35,8 +35,13 @@ export default function ClientViewerPage() {
     reloadConsultations();
   };
 
+  const toggleDeleteTreatment = async (consultationId) => {
+    const response = await useDeleteData(consultationId, "treatments", token);
+    reloadTreatments();
+  };
+
   const reloadTreatments = async () => {
-    const response = await useGetId(id, "services/client", token);
+    const response = await useGetId(id, "treatments/client", token);
     setTreatment(response);
   };
 
@@ -123,7 +128,7 @@ export default function ClientViewerPage() {
         const [clientData, treatmentsData, consultationsData] =
           await Promise.all([
             useGetId(id, "clients", token),
-            useGetId(id, "services/client", token),
+            useGetId(id, "treatments/client", token),
             useGetId(id, "consultations/client", token),
           ]);
 
@@ -463,27 +468,27 @@ export default function ClientViewerPage() {
                 </thead>
                 <tbody className="bg-white">
                   {treatment.length > 0 ? (
-                    treatment.map((treatment) => (
-                      <tr key={treatment._id} className="text-gray-700">
+                    treatment.map((treatmentItem) => (
+                      <tr key={treatmentItem._id} className="text-gray-700">
                         <td className="px-4 py-3 border text-center">
-                          {treatment.name}
+                          {treatmentItem.name}
                         </td>
                         <td className="px-4 py-3 border text-center">
-                          R$ {treatment.price}
+                          R$ {treatmentItem.price}
                         </td>
                         <td className="px-4 py-3 border text-center">
                           {
                             consultation.filter(
                               (consultationItem) =>
-                                consultationItem.service === treatment._id
+                                consultationItem.service === treatmentItem._id
                             ).length
                           }
                         </td>
                         <td className="px-4 py-3 border text-center">
-                          {treatment.totalSessions}
+                          {treatmentItem.totalSessions}
                         </td>
                         <td className="px-4 py-3 border text-center">
-                          {treatment.status}
+                          {treatmentItem.status}
                         </td>
                         <td
                           className="px-2 py-3 border options-cell"
@@ -494,7 +499,12 @@ export default function ClientViewerPage() {
                             <button className="w-8 h-8 text-green-500 transform hover:scale-110 transition-transform">
                               <i className="ri-eye-line text-3xl"></i>
                             </button>
-                            <button className="w-8 h-8 text-red-500 transform hover:scale-110 transition-transform">
+                            <button
+                              className="w-8 h-8 text-red-500 transform hover:scale-110 transition-transform"
+                              onClick={() => {
+                                toggleDeleteTreatment(treatmentItem._id);
+                              }}
+                            >
                               <i className="ri-delete-bin-5-line text-3xl"></i>
                             </button>
                           </div>
