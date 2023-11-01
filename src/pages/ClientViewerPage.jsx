@@ -174,6 +174,30 @@ export default function ClientViewerPage() {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    const updateTreatments = async () => {
+      for (const treatmentItem of treatment) {
+        if (
+          consultation.filter(
+            (consultationItem) => consultationItem.service === treatmentItem._id
+          ).length === treatmentItem.totalSessions &&
+          treatmentItem.status !== "Concluído"
+        ) {
+          treatmentItem.status = "Concluído";
+          await useUpdateData(
+            treatmentItem._id,
+            "treatments",
+            treatmentItem,
+            token
+          );
+          reloadTreatments();
+        }
+      }
+    };
+
+    updateTreatments();
+  }, [consultation]);
+
   return (
     <div className=" min-h-screen p-6 bg-gray-100 flex items-center justify-center">
       <div className="container max-w-screen-lg mx-auto">
