@@ -13,6 +13,7 @@ import OpenConsultation from "../components/forms/OpenConsultation";
 
 export default function ClientViewerPage() {
   const [tempClient, setTempClient] = useState({});
+  const [errorTreatment, setErrorTreatment] = useState(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isEditable, setIsEditable] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -42,8 +43,16 @@ export default function ClientViewerPage() {
   };
 
   const toggleDeleteTreatment = async (consultationId) => {
-    const response = await useDeleteData(consultationId, "treatments", token);
-    reloadTreatments();
+    if (
+      consultation.filter(
+        (consultationItem) => consultationItem.service === consultationId
+      ).length > 0
+    ) {
+      setErrorTreatment("Existe consultas com esse tratamento");
+    } else {
+      const response = await useDeleteData(consultationId, "treatments", token);
+      reloadTreatments();
+    }
   };
 
   const reloadTreatments = async () => {
@@ -537,6 +546,9 @@ export default function ClientViewerPage() {
                   )}
                 </tbody>
               </table>
+              {errorTreatment && (
+                <p className="text-red-500">{errorTreatment}</p>
+              )}
             </div>
             <div className="bg-gray-300 my-6 h-0.5"></div>
             <h2 className="font-semibold text-xl text-gray-600 mt-6">
