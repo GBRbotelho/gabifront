@@ -190,7 +190,7 @@ export default function ClientViewerPage() {
         const completedConsultations = consultation.filter(
           (consultationItem) =>
             consultationItem.service === treatmentItem._id &&
-            consultationItem.status === "Concluido"
+            consultationItem.status === "Concluído"
         );
   
         if (
@@ -558,15 +558,22 @@ export default function ClientViewerPage() {
                             consultation.filter(
                               (consultationItem) =>
                                 consultationItem.service === treatmentItem._id
-                            ).filter((consultationItem)=>consultationItem.status === "Concluido").length
+                            ).filter((consultationItem)=>consultationItem.status === "Concluído").length
                           }
                         </td>
                         <td className="px-4 py-3 border text-center">
                           {treatmentItem.totalSessions}
                         </td>
-                        <td className="px-4 py-3 border text-center">
-                          {treatmentItem.status}
-                        </td>
+                        {
+                          treatmentItem.status === "Em andamento" && <td className="px-4 py-3 border text-center">
+                            <span className="px-2 py-1 font-semibold leading-tight text-orange-700 bg-orange-100 rounded-sm">{treatmentItem.status}</span>
+                        </td> 
+                        }
+                        {
+                          treatmentItem.status === "Concluído" && <td className="px-4 py-3 border text-center">
+                            <span className="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-sm">{treatmentItem.status}</span>
+                        </td> 
+                        }
                         <td
                           className="px-2 py-3 border options-cell"
                           style={{ width: "50px" }}
@@ -654,9 +661,21 @@ export default function ClientViewerPage() {
                             ).name
                           }
                         </td>
-                        <td className="px-4 py-3 border text-center">
-                          {consultationItem.status}
-                        </td>
+                        {
+                          consultationItem.status === "Concluído" && <td className="px-4 py-3 border text-center"><span className="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-sm">{consultationItem.status}</span>
+                          
+                        </td> 
+                        }
+                        {
+                          consultationItem.status === "Faltou" && <td className="px-4 py-3 border text-center"><span className="px-2 py-1 font-semibold leading-tight text-red-700 bg-red-100 rounded-sm">{consultationItem.status}</span>
+                          
+                        </td> 
+                        }
+                        {
+                          consultationItem.status === "Agendado" && <td className="px-4 py-3 border text-center"><span className="px-2 py-1 font-semibold leading-tight text-orange-700 bg-orange-100 rounded-sm">{consultationItem.status}</span>
+                          
+                        </td> 
+                        }
                         <td
                           className="px-2 py-3 border options-cell"
                           style={{ width: "50px" }}

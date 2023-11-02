@@ -137,8 +137,8 @@ export default function ModalConsultation({
                 <option value="Agendado">
                   Agendado
                 </option>
-                <option value="Concluido">
-                  Concluido
+                <option value="Concluído">
+                  Concluído
                 </option>
                 <option value="Faltou">
                   Faltou
