@@ -10,6 +10,7 @@ import RegistrationForm from "../components/forms/RegistrationForm";
 import ModalTreatment from "../components/forms/ModalTreatment";
 import ModalConsultation from "../components/forms/ModalConsultation";
 import OpenConsultation from "../components/forms/OpenConsultation";
+import OpenTreatment from "../components/forms/OpenTreatment";
 
 export default function ClientViewerPage() {
   const [tempClient, setTempClient] = useState({});
@@ -24,6 +25,7 @@ export default function ClientViewerPage() {
   const [consultation, setConsultation] = useState([]);
   const [service, setService] = useState([]);
   const [consultationSelect, setConsultationSelect] = useState(null);
+  const [treatmentSelect, setTreatmentSelect] = useState(null);
   const { id } = useParams();
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
@@ -68,6 +70,14 @@ export default function ClientViewerPage() {
   const openModalConsultation = () => {
     setModalConsultation(true);
   };
+
+  const openTreatmentSelect = (treatmentItem)=>{
+    setTreatmentSelect(treatmentItem)
+  }
+
+  const closeTreatmentSelect = ()=>{
+    setTreatmentSelect(null)
+  }
 
   const openSelectItem = (consultationItem) => {
     setConsultationSelect(consultationItem);
@@ -177,10 +187,14 @@ export default function ClientViewerPage() {
   useEffect(() => {
     const updateTreatments = async () => {
       for (const treatmentItem of treatment) {
+        const completedConsultations = consultation.filter(
+          (consultationItem) =>
+            consultationItem.service === treatmentItem._id &&
+            consultationItem.status === "Concluido"
+        );
+  
         if (
-          consultation.filter(
-            (consultationItem) => consultationItem.service === treatmentItem._id
-          ).length === treatmentItem.totalSessions &&
+          completedConsultations.length === treatmentItem.totalSessions &&
           treatmentItem.status !== "Concluído"
         ) {
           treatmentItem.status = "Concluído";
@@ -192,11 +206,27 @@ export default function ClientViewerPage() {
           );
           reloadTreatments();
         }
+  
+        // Verifique o cancelamento da consulta
+        if (
+          completedConsultations.length < treatmentItem.totalSessions &&
+          treatmentItem.status === "Concluído"
+        ) {
+          treatmentItem.status = "Em andamento";
+          await useUpdateData(
+            treatmentItem._id,
+            "treatments",
+            treatmentItem,
+            token
+          );
+          reloadTreatments();
+        }
       }
     };
-
+  
     updateTreatments();
   }, [consultation]);
+  
 
   return (
     <div className=" min-h-screen p-6 bg-gray-100 flex items-center justify-center">
@@ -528,7 +558,7 @@ export default function ClientViewerPage() {
                             consultation.filter(
                               (consultationItem) =>
                                 consultationItem.service === treatmentItem._id
-                            ).length
+                            ).filter((consultationItem)=>consultationItem.status === "Concluido").length
                           }
                         </td>
                         <td className="px-4 py-3 border text-center">
@@ -543,7 +573,9 @@ export default function ClientViewerPage() {
                           key={`options_${client.id}`}
                         >
                           <div className="flex items-center space-x-2">
-                            <button className="w-8 h-8 text-green-500 transform hover:scale-110 transition-transform">
+                            <button className="w-8 h-8 text-green-500 transform hover:scale-110 transition-transform" onClick={()=> {
+                              openTreatmentSelect(treatmentItem)
+                            }}>
                               <i className="ri-eye-line text-3xl"></i>
                             </button>
                             <button
@@ -689,6 +721,15 @@ export default function ClientViewerPage() {
                 consultationItem={consultationSelect}
                 setConsultationSelect={setConsultationSelect}
                 service={service}
+              />
+            )}
+            {treatmentSelect && (
+              <OpenTreatment
+                closeTreatmentSelect={closeTreatmentSelect}
+                reloadTreatments={reloadTreatments}
+                treatmentSelect={treatmentSelect}
+                service={service}
+                setTreatmentSelect={setTreatmentSelect}
               />
             )}
           </div>

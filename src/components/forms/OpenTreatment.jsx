@@ -1,28 +1,27 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
 import { useUpdateData } from "../../services/apiService";
 
-export default function ModalConsultation({
-  closeSelectItem,
-  reloadConsultations,
-  treatment,
-  consultationItem,
-  setConsultationSelect,
-  service,
-}) {
-  const [error, setError] = useState("");
-  const [isEditable, setIsEditable] = useState(false);
-  const [tempConsultation, setTempConsultation] = useState({});
+export default function ModalTreatment({
+    closeTreatmentSelect,
+    treatmentSelect,
+    service,
+    reloadTreatments,
+    setTreatmentSelect
 
-  useEffect(() => {
-    setTempConsultation(consultationItem);
+}) {
+const [error, setError] = useState(null);
+const [isEditable, setIsEditable] = useState(false);
+const [tempTreatment, setTempTreatment] = useState({});
+
+useEffect(() => {
+    setTempTreatment(treatmentSelect);
   }, []);
 
   const toggleCancel = () => {
     if (!isEditable) {
-      setTempConsultation({ ...consultationItem });
+      setTempTreatment({ ...treatmentSelect });
     } else {
-      setConsultationSelect(tempConsultation);
+      setTreatmentSelect(tempTreatment);
     }
     setIsEditable(!isEditable);
   };
@@ -33,8 +32,8 @@ export default function ModalConsultation({
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setConsultationSelect({
-      ...consultationItem,
+    setTreatmentSelect({
+      ...treatmentSelect,
       [name]: value,
     });
   };
@@ -43,15 +42,15 @@ export default function ModalConsultation({
     try {
       const token = localStorage.getItem("token");
       const update = await useUpdateData(
-        consultationItem._id,
-        "consultations",
-        consultationItem,
+        treatmentSelect._id,
+        "treatments",
+        treatmentSelect,
         token
       );
-      setConsultationSelect(update);
-      setTempConsultation(update);
+      setTreatmentSelect(update);
+      setTempTreatment(update);
       setIsEditable(!isEditable);
-      reloadConsultations();
+      reloadTreatments();
     } catch (err) {
       setError(err.error);
     }
@@ -61,89 +60,59 @@ export default function ModalConsultation({
     <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center">
       <div className="absolute bg-white p-4 w-96 rounded shadow-md">
         <div className="flex items-center justify-center mb-4">
-          <h2 className="text-2xl font-semibold">Consultas</h2>
+          <h2 className="text-2xl font-semibold">Tratamentos</h2>
         </div>
         <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-4">
           <div className="md:col-span-4">
-            <label htmlFor="date">Data da Consulta</label>
-            <input
-              type="date"
-              name="date"
-              id="date"
-              className={`h-10 border mt-1 rounded px-4 w-full bg-${
-                !isEditable ? "gray-100" : "white"
-              }`}
-              value={
-                consultationItem.date
-                  ? new Date(consultationItem.date).toISOString().split("T")[0]
-                  : ""
-              }
-              onChange={handleChange}
-              disabled={!isEditable}
-            />
-          </div>
-          <div className="md:col-span-2">
-            <label htmlFor="time">Horário</label>
-            <input
-              type="time"
-              name="time"
-              id="time"
-              className={`h-10 border mt-1 rounded px-4 w-full bg-${
-                !isEditable ? "gray-100" : "white"
-              }`}
-              value={consultationItem.time || ""}
-              onChange={handleChange}
-              disabled={!isEditable}
-            />
-          </div>
-          <div className="md:col-span-2">
-            <label htmlFor="service">Tratamento</label>
+            <label htmlFor="name">Nome do Tratamento</label>
             <select
-              name="service"
-              id="service"
+              type="text"
+              name="name"
+              id="name"
               className={`h-10 border mt-1 rounded px-4 w-full bg-${
                 !isEditable ? "gray-100" : "white"
               }`}
-              value={consultationItem.service || ""}
+              value={treatmentSelect.name || ""}
               onChange={handleChange}
               disabled={!isEditable}
             >
               <option value="" disabled>
                 Selecione um tratamento
               </option>
-              {treatment.map((treatmentItem) => (
-                <option key={treatmentItem._id} value={treatmentItem._id}>
-                  {
-                    service.find(
-                      (serviceItem) => serviceItem._id === treatmentItem.name
-                    ).name
-                  }
+              {service.map((serviceItem) => (
+                <option key={serviceItem._id} value={serviceItem._id}>
+                  {serviceItem.name}
                 </option>
               ))}
             </select>
           </div>
-          <div className="md:col-span-4">
-            <label htmlFor="status">Status da Consulta</label>
-            <select
-              name="status"
-              id="status"
+          <div className="md:col-span-2">
+            <label htmlFor="price">Preço</label>
+            <input
+              type="number"
+              name="price"
+              id="price"
               className={`h-10 border mt-1 rounded px-4 w-full bg-${
                 !isEditable ? "gray-100" : "white"
               }`}
-              value={consultationItem.status || ""}
+              value={treatmentSelect.price || ""}
               onChange={handleChange}
               disabled={!isEditable}
-            >
-                <option value="Agendado">
-                  Agendado
-                </option>
-                <option value="Concluido">
-                  Concluido
-                </option>
-                <option value="Faltou">
-                  Faltou
-                </option>
-            </select>
+            />
+          </div>
+          <div className="md:col-span-2">
+            <label htmlFor="totalSessions">Nº Total de Sessões</label>
+            <input
+              type="number"
+              name="totalSessions"
+              id="totalSessions"
+              className={`h-10 border mt-1 rounded px-4 w-full bg-${
+                !isEditable ? "gray-100" : "white"
+              }`}
+              value={treatmentSelect.totalSessions || ""}
+              onChange={handleChange}
+              disabled={!isEditable}
+            />
           </div>
           <div className="md:col-span-4">
             <label htmlFor="description">Descrição</label>
@@ -154,7 +123,7 @@ export default function ModalConsultation({
               className={`h-10 border mt-1 rounded px-4 w-full bg-${
                 !isEditable ? "gray-100" : "white"
               }`}
-              value={consultationItem.description || ""}
+              value={treatmentSelect.description || ""}
               onChange={handleChange}
               disabled={!isEditable}
             />
@@ -164,7 +133,7 @@ export default function ModalConsultation({
         <div className="flex justify-between mt-3">
           <button
             className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-            onClick={closeSelectItem}
+            onClick={closeTreatmentSelect}
           >
             Fechar
           </button>
