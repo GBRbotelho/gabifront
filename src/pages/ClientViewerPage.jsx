@@ -641,9 +641,7 @@ export default function ClientViewerPage() {
                     consultation.map((consultationItem) => (
                       <tr key={consultationItem._id} className="text-gray-700">
                         <td className="px-4 py-3 border text-center">
-                          {new Date(consultationItem.date).toLocaleDateString(
-                            "pt-BR"
-                          )}
+                        {new Date(new Date(consultationItem.date).getTime() + 24 * 60 * 60 * 1000).toLocaleDateString("pt-BR")}
                         </td>
                         <td className="px-4 py-3 border text-center">
                           {consultationItem.time}

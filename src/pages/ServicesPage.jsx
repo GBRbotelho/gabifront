@@ -80,34 +80,26 @@ function ServicesPage() {
         <table className="w-full">
           <thead>
             <tr className="text-md font-semibold tracking-wide text-left text-gray-900 bg-gray-100 uppercase border-b border-gray-600">
-              <th className="px-4 py-3">Nome</th>
-              <th className="px-4 py-3">Descrição</th>
-              <th className="px-4 py-3">Valor</th>
-              <th className="px-4 py-3">Options</th>
+              <th className="px-4 py-3 text-center">Nome</th>
+              <th className="px-4 py-3 text-center">Descrição</th>
+              <th className="px-4 py-3 text-center">Options</th>
             </tr>
           </thead>
           <tbody className="bg-white">
             {services.length > 0 ? (
               services.map((service, index) => (
                 <tr key={index} className="text-gray-700">
-                  <td className="px-4 py-3 border" key={`name_${service.id}`}>
+                  <td className="px-4 py-3 border text-center" key={`name_${service.id}`}>
                     {service.name}
                   </td>
                   <td
-                    className="px-4 py-3 text-ms border"
+                    className="px-4 py-3 text-ms border text-center"
                     key={`description_${service.id}`}
                   >
                     {service.description}
                   </td>
                   <td
-                    className="px-4 py-3 text-xs border"
-                    key={`price_${service.id}`}
-                  >
-                    {service.price}
-                  </td>
-
-                  <td
-                    className="px-2 py-3 border options-cell"
+                    className="px-2 py-3 border text-center options-cell"
                     style={{ width: "50px" }}
                     key={`options_${service.id}`}
                   >
