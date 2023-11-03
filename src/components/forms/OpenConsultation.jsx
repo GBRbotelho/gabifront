@@ -111,7 +111,7 @@ export default function ModalConsultation({
               <option value="" disabled>
                 Selecione um tratamento
               </option>
-              {treatment.map((treatmentItem) => (
+              {treatment.filter((treatmentItem)=>treatmentItem.status === "Em andamento" || treatmentItem._id === consultationItem.service).map((treatmentItem) => (
                 <option key={treatmentItem._id} value={treatmentItem._id}>
                   {
                     service.find(

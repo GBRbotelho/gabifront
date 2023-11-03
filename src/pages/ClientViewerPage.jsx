@@ -553,7 +553,7 @@ export default function ClientViewerPage() {
                         <td className="px-4 py-3 border text-center">
                           R$ {treatmentItem.price}
                         </td>
-                        <td className="px-4 py-3 border text-center">
+                        <td className="px-4 py-3 border text-center w-min">
                           {
                             consultation.filter(
                               (consultationItem) =>
@@ -565,7 +565,7 @@ export default function ClientViewerPage() {
                           {treatmentItem.totalSessions}
                         </td>
                         {
-                          treatmentItem.status === "Em andamento" && <td className="px-4 py-3 border text-center">
+                          treatmentItem.status === "Em andamento" && <td className="px-4 py-3 border text-center" style={{width: "190px"}}>
                             <span className="px-2 py-1 font-semibold leading-tight text-orange-700 bg-orange-100 rounded-sm">{treatmentItem.status}</span>
                         </td> 
                         }
