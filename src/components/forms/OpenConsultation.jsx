@@ -188,7 +188,7 @@ export default function ModalConsultation({
             </select>
           </div>
           <div className="md:col-span-4">
-            <label htmlFor="products">Produtos</label>
+            <label htmlFor="products">Produtos usados na consulta</label>
             <Select
               name="products"
               id="products"
@@ -216,6 +216,56 @@ export default function ModalConsultation({
               onChange={handleChange}
               disabled={!isEditable}
             />
+          </div>
+          <div className="md:col-span-4">
+            <label htmlFor="products">
+              Informações dos produtos selecionados
+            </label>
+            <table className="w-full">
+              <thead>
+                <tr className="text-md font-semibold tracking-wide text-left text-gray-900 bg-gray-100 uppercase border-b border-gray-600">
+                  <th className="px-4 py-3 text-center">Nome</th>
+                  <th className="px-4 py-3 text-center">Lote</th>
+                  <th className="px-4 py-3 text-center">Validade</th>
+                </tr>
+              </thead>
+              <tbody>
+                {consultationItem.products.length > 0 ? (
+                  consultationItem.products.map((productId) => {
+                    const productItem = products.find(
+                      (product) => product._id === productId
+                    );
+
+                    if (!productItem) {
+                      return null;
+                    }
+
+                    return (
+                      <tr key={productItem._id}>
+                        <td className="px-4 py-3 text-center">
+                          {productItem.name}
+                        </td>
+                        <td className="px-4 py-3 text-center">
+                          {productItem.lote}
+                        </td>
+                        <td className="px-4 py-3 text-center">
+                          {new Date(
+                            new Date(productItem.validade).getTime() +
+                              24 * 60 * 60 * 1000
+                          ).toLocaleDateString("pt-BR")}
+                        </td>
+                      </tr>
+                    );
+                  })
+                ) : (
+                  <tr>
+                    <td className="px-4 py-3 text-gray-700 border" colSpan="4">
+                      Não foram encontrados produtos selecionados.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
           </div>
         </div>
         {error && <p>{error}</p>}
