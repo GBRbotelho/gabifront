@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { useUpdateData } from "../../services/apiService";
+import { useUpdateData, useGetAll } from "../../services/apiService";
+
 
 export default function ModalConsultation({
   closeSelectItem,
@@ -13,10 +14,24 @@ export default function ModalConsultation({
   const [error, setError] = useState("");
   const [isEditable, setIsEditable] = useState(false);
   const [tempConsultation, setTempConsultation] = useState({});
+  const [products, setProducts] = useState([])
+
 
   useEffect(() => {
     setTempConsultation(consultationItem);
+    const fetchProducts=async ()=>{
+      const token = await localStorage.getItem("token");
+      const data = await useGetAll("products", token); // Passe o token na chamada
+      setProducts(data);
+    }
+    fetchProducts();
   }, []);
+
+  const handleChangeProducts = (event) => {
+    const selectedOptions = Array.from(event.target.selectedOptions).map(option => option.value);
+    console.log(selectedOptions);
+  }
+  
 
   const toggleCancel = () => {
     if (!isEditable) {
@@ -122,7 +137,7 @@ export default function ModalConsultation({
               ))}
             </select>
           </div>
-          <div className="md:col-span-4">
+          <div className="md:col-span-2">
             <label htmlFor="status">Status da Consulta</label>
             <select
               name="status"
@@ -134,15 +149,36 @@ export default function ModalConsultation({
               onChange={handleChange}
               disabled={!isEditable}
             >
-                <option value="Agendado">
+                <option value="Agendado" >
                   Agendado
                 </option>
-                <option value="Concluído">
+                <option value="Concluído" >
                   Concluído
                 </option>
-                <option value="Faltou">
+                <option value="Faltou" >
                   Faltou
                 </option>
+            </select>
+          </div>
+          <div className="md:col-span-2">
+            <label htmlFor="products">Produtos</label>
+            <select
+              name="products"
+              id="products"
+              className={`h-10 border mt-1 rounded px-4 w-full bg-${
+                !isEditable ? "gray-100" : "white"
+              }`}
+              value={consultationItem.products || ""}
+              disabled={!isEditable}
+              onChange={handleChangeProducts}
+            >
+              <option>{consultationItem.products.length + " selecionado(s)"}</option>
+              {products.length > 0 &&
+                products.map((product) => (
+                  <option key={product._id} value={product._id}>
+                    {product.name}
+                  </option>
+                ))}
             </select>
           </div>
           <div className="md:col-span-4">
