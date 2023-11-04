@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useUpdateData, useGetAll } from "../../services/apiService";
-
+import Select from "react-select";
 
 export default function ModalConsultation({
   closeSelectItem,
@@ -14,30 +14,56 @@ export default function ModalConsultation({
   const [error, setError] = useState("");
   const [isEditable, setIsEditable] = useState(false);
   const [tempConsultation, setTempConsultation] = useState({});
-  const [products, setProducts] = useState([]) 
-
+  const [products, setProducts] = useState([]);
+  const [selectedProductIds, setSelectedProductIds] = useState([]);
+  const [tempSelectedProductIds, setTempSelectedProductIds] = useState([]);
 
   useEffect(() => {
     setTempConsultation(consultationItem);
-    const fetchProducts=async ()=>{
+
+    const fetchProducts = async () => {
       const token = await localStorage.getItem("token");
-      const data = await useGetAll("products", token); // Passe o token na chamada
+      const data = await useGetAll("products", token);
       setProducts(data);
-    }
+
+      setTempSelectedProductIds(
+        consultationItem.products.map((productId) => ({
+          value: productId,
+          label: data.find((product) => product._id === productId).name,
+        }))
+      );
+
+      setSelectedProductIds(
+        consultationItem.products.map((productId) => ({
+          value: productId,
+          label: data.find((product) => product._id === productId).name,
+        }))
+      );
+    };
+
     fetchProducts();
   }, []);
 
-  const handleChangeProducts = (event) => {
-    const selectedOptions = Array.from(event.target.selectedOptions).map(option => option.value);
-    console.log(selectedOptions);
-  }
-  
+  const handleChangeProducts = (selectedOptions) => {
+    setSelectedProductIds(selectedOptions);
+  };
+
+  useEffect(() => {
+    const selectedProducts = selectedProductIds.map((option) => option.value);
+
+    setConsultationSelect({
+      ...consultationItem,
+      products: selectedProducts,
+    });
+  }, [selectedProductIds]);
 
   const toggleCancel = () => {
     if (!isEditable) {
       setTempConsultation({ ...consultationItem });
+      setTempSelectedProductIds({ ...selectedProductIds });
     } else {
       setConsultationSelect(tempConsultation);
+      handleChangeProducts(tempSelectedProductIds);
     }
     setIsEditable(!isEditable);
   };
@@ -65,6 +91,7 @@ export default function ModalConsultation({
       );
       setConsultationSelect(update);
       setTempConsultation(update);
+      setTempSelectedProductIds(selectedProductIds);
       setIsEditable(!isEditable);
       reloadConsultations();
     } catch (err) {
@@ -79,7 +106,7 @@ export default function ModalConsultation({
           <h2 className="text-2xl font-semibold">Consultas</h2>
         </div>
         <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-4">
-          <div className="md:col-span-4">
+          <div className="md:col-span-2">
             <label htmlFor="date">Data da Consulta</label>
             <input
               type="date"
@@ -126,15 +153,21 @@ export default function ModalConsultation({
               <option value="" disabled>
                 Selecione um tratamento
               </option>
-              {treatment.filter((treatmentItem)=>treatmentItem.status === "Em andamento" || treatmentItem._id === consultationItem.service).map((treatmentItem) => (
-                <option key={treatmentItem._id} value={treatmentItem._id}>
-                  {
-                    service.find(
-                      (serviceItem) => serviceItem._id === treatmentItem.name
-                    ).name
-                  }
-                </option>
-              ))}
+              {treatment
+                .filter(
+                  (treatmentItem) =>
+                    treatmentItem.status === "Em andamento" ||
+                    treatmentItem._id === consultationItem.service
+                )
+                .map((treatmentItem) => (
+                  <option key={treatmentItem._id} value={treatmentItem._id}>
+                    {
+                      service.find(
+                        (serviceItem) => serviceItem._id === treatmentItem.name
+                      ).name
+                    }
+                  </option>
+                ))}
             </select>
           </div>
           <div className="md:col-span-2">
@@ -149,37 +182,26 @@ export default function ModalConsultation({
               onChange={handleChange}
               disabled={!isEditable}
             >
-                <option value="Agendado" >
-                  Agendado
-                </option>
-                <option value="Concluído" >
-                  Concluído
-                </option>
-                <option value="Faltou" >
-                  Faltou
-                </option>
+              <option value="Agendado">Agendado</option>
+              <option value="Concluído">Concluído</option>
+              <option value="Faltou">Faltou</option>
             </select>
           </div>
-          <div className="md:col-span-2">
+          <div className="md:col-span-4">
             <label htmlFor="products">Produtos</label>
-            <select
+            <Select
               name="products"
               id="products"
-              className={`h-10 border mt-1 rounded px-4 w-full bg-${
-                !isEditable ? "gray-100" : "white"
-              }`}
-              value={consultationItem.products || ""}
-              disabled={!isEditable}
+              isMulti
+              placeholder="Selecione os produtos usados"
+              value={selectedProductIds}
               onChange={handleChangeProducts}
-            >
-              <option>{consultationItem.products.length + " selecionado(s)"}</option>
-              {products.length > 0 &&
-                products.map((product) => (
-                  <option key={product._id} value={product._id}>
-                    {product.name}
-                  </option>
-                ))}
-            </select>
+              options={products.map((product) => ({
+                value: product._id,
+                label: product.name,
+              }))}
+              isDisabled={!isEditable}
+            />
           </div>
           <div className="md:col-span-4">
             <label htmlFor="description">Descrição</label>
