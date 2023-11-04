@@ -6,15 +6,9 @@ import { Link } from "react-router-dom";
 function ClientsAddPage() {
   const navigate = useNavigate();
   const [error, setError] = useState("");
-  const [clientData, setClientData] = useState({
-    name: "",
-    cpf: "",
-    phone: "",
-    email: "",
-    date: "",
-  });
+  const [clientData, setClientData] = useState({});
 
-  const handleInputChange = (e) => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
     setClientData({
       ...clientData,
@@ -47,165 +41,213 @@ function ClientsAddPage() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-100">
-      <div className="m-auto">
+    <div className=" min-h-screen p-6 bg-gray-100 flex items-center justify-center">
+      <div className="container max-w-screen-lg mx-auto">
         <div>
-          <button
-            type="button"
-            className="relative w-full flex justify-center items-center px-5 py-2.5 font-medium tracking-wide text-white capitalize   bg-emerald-900 rounded-md hover:bg-gray-900  focus:outline-none   transition duration-300 transform active:scale-95 ease-in-out"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              enableBackground="new 0 0 24 24"
-              height="24px"
-              viewBox="0 0 24 24"
-              width="24px"
-              fill="#FFFFFF"
-            >
-              <g>
-                <rect fill="none" height="24" width="24"></rect>
-              </g>
-              <g>
-                <g>
-                  <path d="M19,13h-6v6h-2v-6H5v-2h6V5h2v6h6V13z"></path>
-                </g>
-              </g>
-            </svg>
-            <span className="pl-2 mx-1">CLIENTE</span>
-          </button>
-          <div className="mt-5 bg-white rounded-lg shadow">
-            <div className="flex">
-              <div className="flex-1 py-5 pl-5 overflow-hidden">
-                <svg
-                  className="inline align-text-top"
-                  height="24px"
-                  viewBox="0 0 24 24"
-                  width="24px"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="#000000"
-                >
-                  <g>
-                    <path
-                      d="m4.88889,2.07407l14.22222,0l0,20l-14.22222,0l0,-20z"
-                      fill="none"
-                      id="svg_1"
-                      stroke="null"
-                    ></path>
-                    <path
-                      d="m7.07935,0.05664c-3.87,0 -7,3.13 -7,7c0,5.25 7,13 7,13s7,-7.75 7,-13c0,-3.87 -3.13,-7 -7,-7zm-5,7c0,-2.76 2.24,-5 5,-5s5,2.24 5,5c0,2.88 -2.88,7.19 -5,9.88c-2.08,-2.67 -5,-7.03 -5,-9.88z"
-                      id="svg_2"
-                    ></path>
-                    <circle
-                      cx="7.04807"
-                      cy="6.97256"
-                      r="2.5"
-                      id="svg_3"
-                    ></circle>
-                  </g>
-                </svg>
-                <h1 className="inline text-2xl font-semibold leading-none">
-                  DADOS
-                </h1>
-              </div>
-            </div>
-            <div className="px-5 pb-5">
-              <input
-                name="name"
-                placeholder="Nome"
-                value={clientData.name}
-                onChange={handleInputChange}
-                className=" text-black placeholder-gray-600 w-full px-4 py-2.5 mt-2 text-base   transition duration-500 ease-in-out transform border-transparent rounded-lg bg-gray-200  focus:border-blueGray-500 focus:bg-white dark:focus:bg-gray-800 focus:outline-none focus:shadow-outline focus:ring-2 ring-offset-current ring-offset-2 ring-gray-400"
-              />
-              <input
-                name="email"
-                placeholder="Email"
-                value={clientData.email}
-                onChange={handleInputChange}
-                className=" text-black placeholder-gray-600 w-full px-4 py-2.5 mt-2 text-base   transition duration-500 ease-in-out transform border-transparent rounded-lg bg-gray-200  focus:border-blueGray-500 focus:bg-white dark:focus:bg-gray-800 focus:outline-none focus:shadow-outline focus:ring-2 ring-offset-current ring-offset-2 ring-gray-400"
-              />
-              <div className="flex-grow">
-                <input
-                  name="cpf"
-                  placeholder="CPF"
-                  value={clientData.cpf}
-                  onChange={handleInputChange}
-                  className=" text-black placeholder-gray-600 w-full px-4 py-2.5 mt-2 text-base   transition duration-500 ease-in-out transform border-transparent rounded-lg bg-gray-200  focus:border-blueGray-500 focus:bg-white dark:focus:bg-gray-800 focus:outline-none focus:shadow-outline focus:ring-2 ring-offset-current ring-offset-2 ring-gray-400"
-                />
-              </div>
-              <div className="flex">
-                <div className="flex-grow w-1/4 pr-2">
-                  <input
-                    name="date"
-                    placeholder="Data de Nascimento"
-                    type="date"
-                    value={clientData.date}
-                    onChange={handleInputChange}
-                    className=" text-black placeholder-gray-600 w-full px-4 py-2.5 mt-2 text-base   transition duration-500 ease-in-out transform border-transparent rounded-lg bg-gray-200  focus:border-blueGray-500 focus:bg-white dark:focus:bg-gray-800 focus:outline-none focus:shadow-outline focus:ring-2 ring-offset-current ring-offset-2 ring-gray-400"
-                  />
-                </div>
-                <div className="flex-grow">
-                  <input
-                    name="phone"
-                    placeholder="Telefone"
-                    value={clientData.phone}
-                    onChange={handleInputChange}
-                    className=" text-black placeholder-gray-600 w-full px-4 py-2.5 mt-2 text-base   transition duration-500 ease-in-out transform border-transparent rounded-lg bg-gray-200  focus:border-blueGray-500 focus:bg-white dark:focus:bg-gray-800 focus:outline-none focus:shadow-outline focus:ring-2 ring-offset-current ring-offset-2 ring-gray-400"
-                  />
+          <h2 className="font-semibold text-xl text-gray-600">
+            Dados do Cliente
+          </h2>
+
+          <div className="bg-white rounded shadow-lg p-4 px-4 md:p-8 mb-6">
+            <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-3">
+              <div className="text-gray-600">
+                <div className=" flex justify-center">
+                  <div className="bg-gray-200">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      width="240"
+                      height="240"
+                    >
+                      <path
+                        d="M4 22C4 17.5817 7.58172 14 12 14C16.4183 14 20 17.5817 20 22H18C18 18.6863 15.3137 16 12 16C8.68629 16 6 18.6863 6 22H4ZM12 13C8.685 13 6 10.315 6 7C6 3.685 8.685 1 12 1C15.315 1 18 3.685 18 7C18 10.315 15.315 13 12 13ZM12 11C14.21 11 16 9.21 16 7C16 4.79 14.21 3 12 3C9.79 3 8 4.79 8 7C8 9.21 9.79 11 12 11Z"
+                        fill="rgba(0,0,0,1)"
+                      ></path>
+                    </svg>
+                  </div>
                 </div>
               </div>
-            </div>
-            <hr className="mt-4" />
-            <div className="flex flex-row-reverse p-3">
-              <div className="flex-initial pl-3">
-                <button
-                  type="button"
-                  onClick={handleSubmit}
-                  className="flex items-center px-5 py-2.5 font-medium tracking-wide text-white capitalize   bg-black rounded-md hover:bg-gray-800  focus:outline-none focus:bg-gray-900  transition duration-300 transform active:scale-95 ease-in-out"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    height="24px"
-                    viewBox="0 0 24 24"
-                    width="24px"
-                    fill="#FFFFFF"
-                  >
-                    <path d="M0 0h24v24H0V0z" fill="none"></path>
-                    <path
-                      d="M5 5v14h14V7.83L16.17 5H5zm7 13c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-8H6V6h9v4z"
-                      opacity=".3"
-                    ></path>
-                    <path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm2 16H5V5h11.17L19 7.83V19zm-7-7c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3zM6 6h9v4H6z"></path>
-                  </svg>
-                  <span className="pl-2 mx-1">Save</span>
-                </button>
+
+              <div className="lg:col-span-2">
+                <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-6">
+                  <div className="md:col-span-6">
+                    <label htmlFor="full_name">Nome Completo</label>
+                    <input
+                      type="text"
+                      name="name"
+                      id="name"
+                      placeholder="Preencha este campo"
+                      className="h-10 border mt-1 rounded px-4 w-full bg-white"
+                      value={clientData.name || ""}
+                      onChange={handleChange}
+                    />
+                  </div>
+
+                  <div className="md:col-span-2">
+                    <label htmlFor="country">CPF</label>
+                    <input
+                      name="cpf"
+                      id="cpf"
+                      placeholder="Preencha este campo"
+                      className="h-10 border mt-1 rounded px-4 w-full bg-white"
+                      value={clientData.cpf || ""}
+                      onChange={handleChange}
+                    />
+                  </div>
+
+                  <div className="md:col-span-2">
+                    <label htmlFor="phone">Telefone</label>
+                    <div className="flex items-center">
+                      <input
+                        name="phone"
+                        id="phone"
+                        placeholder="Preencha este campo"
+                        className="h-10 border mt-1 rounded px-4 w-full bg-white"
+                        value={clientData.phone || ""}
+                        onChange={handleChange}
+
+                      />
+                    </div>
+                  </div>
+
+                  <div className="md:col-span-2">
+                    <label htmlFor="zipcode">Sexo</label>
+                    <input
+                      type="text"
+                      name="gender"
+                      id="gender"
+                      className="h-10 border mt-1 rounded px-4 w-full bg-white"
+                      placeholder="Preencha este campo"
+                      value={clientData.gender || ""}
+                      onChange={handleChange}
+                    />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label htmlFor="email">Data de Nascimento</label>
+                    <input
+                      type="date"
+                      name="date"
+                      id="date"
+                      className="h-10 border mt-1 rounded px-4 w-full bg-white"
+                      value={clientData.date || ""}
+                      onChange={handleChange}
+                      placeholder="email@domain.com"
+                    />
+                  </div>
+
+                  <div className="md:col-span-4">
+                    <label htmlFor="email">Email</label>
+                    <input
+                      type="text"
+                      name="email"
+                      id="email"
+                      className="h-10 border mt-1 rounded px-4 w-full bg-white"
+                      value={clientData.email || ""}
+                      onChange={handleChange}
+                      placeholder="email@domain.com"
+                    />
+                  </div>
+                  <div className="md:col-span-3">
+                    <label htmlFor="address">Rua</label>
+                    <input
+                      type="text"
+                      name="street"
+                      id="street"
+                      className="h-10 border mt-1 rounded px-4 w-full bg-white"
+                      value={clientData.street || ""}
+                      onChange={handleChange}
+                      placeholder="Preencha este campo"
+                    />
+                  </div>
+
+                  <div className="md:col-span-2">
+                    <label htmlFor="city">Bairro</label>
+                    <input
+                      type="text"
+                      name="district"
+                      id="district"
+                      className="h-10 border mt-1 rounded px-4 w-full bg-white"
+                      value={clientData.district || ""}
+                      onChange={handleChange}
+                      placeholder="Preencha este campo"
+                    />
+                  </div>
+
+                  <div className="md:col-span-1">
+                    <label htmlFor="zipcode">Nº</label>
+                    <input
+                      type="text"
+                      name="number"
+                      id="number"
+                      className="h-10 border mt-1 rounded px-4 w-full bg-white"
+                      placeholder="Preencha este campo"
+                      value={clientData.number || ""}
+                      onChange={handleChange}
+                    />
+                  </div>
+
+                  <div className="md:col-span-2">
+                    <label htmlFor="zipcode">CEP</label>
+                    <input
+                      type="text"
+                      name="cep"
+                      id="cep"
+                      className="h-10 border mt-1 rounded px-4 w-full bg-white"
+                      placeholder="Preencha este campo"
+                      value={clientData.cep || ""}
+                      onChange={handleChange}
+                    />
+                  </div>
+
+                  <div className="md:col-span-2">
+                    <label htmlFor="country">Cidade</label>
+                    <input
+                      name="city"
+                      id="city"
+                      placeholder="Preencha este campo"
+                      className="h-10 border mt-1 rounded px-4 w-full bg-white"
+                      value={clientData.city || ""}
+                      onChange={handleChange}
+                    />
+                  </div>
+
+                  <div className="md:col-span-2">
+                    <label htmlFor="state">Estado</label>
+
+                    <input
+                      name="state"
+                      id="state"
+                      placeholder="Preencha este campo"
+                      className="h-10 border mt-1 rounded px-4 w-full bg-white"
+                      value={clientData.state || ""}
+                      onChange={handleChange}
+                    />
+                  </div>
+
+                  <div className="md:col-span-6 text-right">
+                    <div className="inline-flex items-end gap-1">
+                          <Link
+                            to="/dashboard/clientes"
+                            className=" bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                          >
+                            <i className="ri-close-fill"></i>Fechar
+                          </Link>
+                          <button
+                            className=" bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                            onClick={handleSubmit}
+                          >
+                            <i className="ri-save-line"></i>Salvar
+                          </button>
+                    </div>
+                  </div>
+                </div>
+                {error && <p>{error}</p>}
               </div>
-              <div className="flex-initial">
-                <Link
-                  to="/dashboard/clientes"
-                  type="button"
-                  className="flex items-center px-5 py-2.5 font-medium tracking-wide text-black capitalize rounded-md  hover:bg-red-200 hover:fill-current hover:text-red-600  focus:outline-none  transition duration-300 transform active:scale-95 ease-in-out"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    height="24px"
-                    viewBox="0 0 24 24"
-                    width="24px"
-                  >
-                    <path d="M0 0h24v24H0V0z" fill="none"></path>
-                    <path d="M8 9h8v10H8z" opacity=".3"></path>
-                    <path d="M15.5 4l-1-1h-5l-1 1H5v2h14V4zM6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM8 9h8v10H8V9z"></path>
-                  </svg>
-                  <span className="pl-2 mx-1">Delete</span>
-                </Link>
               </div>
-              {error && (
-                <div className="text-red-500 text-sm mt-2">{error}</div>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+              </div>
+              </div>
+              </div>
+              </div>
   );
 }
 
