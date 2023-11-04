@@ -14,7 +14,7 @@ export default function ModalConsultation({
   const [error, setError] = useState("");
   const [isEditable, setIsEditable] = useState(false);
   const [tempConsultation, setTempConsultation] = useState({});
-  const [products, setProducts] = useState([])
+  const [products, setProducts] = useState([]) 
 
 
   useEffect(() => {
