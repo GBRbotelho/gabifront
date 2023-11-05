@@ -196,7 +196,7 @@ export default function ModalConsultation({
               placeholder="Selecione os produtos usados"
               value={selectedProductIds}
               onChange={handleChangeProducts}
-              options={products.map((product) => ({
+              options={products.filter((product)=>product.status === "Disponível").map((product) => ({
                 value: product._id,
                 label: product.name,
               }))}
