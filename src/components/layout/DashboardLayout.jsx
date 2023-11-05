@@ -6,17 +6,19 @@ import { useNavigate } from "react-router-dom";
 
 function DashboardLayout({ children }) {
   const navigate = useNavigate();
-  const { token, isLoading } = useAuth(); // Obtenha o token e o isLoading do useAuth
+  const { token, isLoading, user } = useAuth(); // Obtenha o token e o isLoading do useAuth
 
   if (isLoading) {
     // Renderize algum indicador de carregamento, se necessário
     return <div>Carregando...</div>;
   }
 
-  if (!token) {
+  if (!token || !user) {
+    // Verifique se o token ou o usuário é nulo
     navigate("/");
+  } else if (token && !user.isEmailVerified) {
+    navigate("/confirmation");
   }
-
   // O usuário está autenticado, renderize o layout do dashboard
   return (
     <>

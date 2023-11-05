@@ -89,14 +89,17 @@ function ServicesPage() {
             {services.length > 0 ? (
               services.map((service, index) => (
                 <tr key={index} className="text-gray-700">
-                  <td className="px-4 py-3 border text-center" key={`name_${service.id}`}>
+                  <td
+                    className="px-4 py-3 border text-center"
+                    key={`name_${service.id}`}
+                  >
                     {service.name}
                   </td>
                   <td
                     className="px-4 py-3 text-ms border text-center"
                     key={`description_${service.id}`}
                   >
-                    {service.description}
+                    {service.description || "---"}
                   </td>
                   <td
                     className="px-2 py-3 border text-center options-cell"
