@@ -5,15 +5,6 @@ export default function Sidebar() {
   const [isOrdersOpen, setIsOrdersOpen] = useState(false);
   const [isServicesOpen, setIsServicesOpen] = useState(false);
 
-  const handleDropdownClick = (menuName) => (e) => {
-    e.preventDefault();
-    if (menuName === "orders") {
-      setIsOrdersOpen(!isOrdersOpen);
-    } else if (menuName === "services") {
-      setIsServicesOpen(!isServicesOpen);
-    }
-  };
-
   // Manipulador de clique para o overlay
   const handleSidebarOverlayClick = (e) => {
     e.preventDefault();
@@ -41,91 +32,34 @@ export default function Sidebar() {
           <span className="text-lg font-bold text-white ml-3">ByteWave</span>
         </a>
         <ul className="mt-4">
-          {/* <li className="mb-1 group active">
+        <li className="mb-1 group">
             <Link
-              to="/dashboard"
+              to="/dashboard/clientes"
               className="flex items-center py-2 px-4 text-emerald-300 hover:bg-emerald-950 hover:text-emerald-100 rounded-md group-[.active]:bg-emerald-800 group-[.active]:text-white group-[.selected]:bg-emerald-950 group-[.selected]:text-emerald-100"
             >
-              <i className="ri-home-2-line mr-3 text-lg"></i>
-              <span className="text-sm">Inicio</span>
+              <i class="ri-contacts-line  mr-3 text-lg"></i>
+              <span className="text-sm">Clientes</span>
             </Link>
-          </li> */}
-          <li className="mb-1 group">
-            <a
-              href="#"
-              className={`flex items-center py-2 px-4 text-emerald-300 hover:bg-emerald-950 hover:text-emerald-100 rounded-md group-[.active]:bg-emerald-800 group-[.active]:text-white group-[.selected]:bg-emerald-950 group-[.selected]:text-emerald-100 sidebar-dropdown-toggle ${
-                isOrdersOpen ? "selected" : ""
-              }`}
-              onClick={handleDropdownClick("orders")}
-            >
-              <i className="ri-instance-line mr-3 text-lg"></i>
-              <span className="text-sm">Tabelas</span>
-              <i
-                className={`ri-arrow-right-s-line ml-auto ${
-                  isOrdersOpen ? "rotate-90" : ""
-                }`}
-              ></i>
-            </a>
-            <ul className={`pl-7 mt-2 ${isOrdersOpen ? "block" : "hidden"}`}>
-              <li className="mb-4">
-                <Link
-                  to="/dashboard/clientes"
-                  className="text-emerald-300 text-sm flex items-center hover:text-emerald-100 before:contents-[''] before:w-1 before:h-1 before:rounded-full before:bg-emerald-300 before:mr-3"
-                >
-                  Clientes
-                </Link>
-              </li>
-              <li className="mb-4">
-                <Link
-                  to="/dashboard/servicos"
-                  className="text-emerald-300 text-sm flex items-center hover:text-emerald-100 before:contents-[''] before:w-1 before:h-1 before:rounded-full before:bg-emerald-300 before:mr-3"
-                >
-                  Serviços
-                </Link>
-              </li>
-              <li className="mb-4">
-                <Link
-                  to="/dashboard/produtos"
-                  className="text-emerald-300 text-sm flex items-center hover:text-emerald-100 before:contents-[''] before:w-1 before:h-1 before:rounded-full before:bg-emerald-300 before:mr-3"
-                >
-                  Produtos
-                </Link>
-              </li>
-              <li className="mb-4">
-                <Link
-                  to="/dashboard/usuarios"
-                  className="text-emerald-300 text-sm flex items-center hover:text-emerald-100 before:contents-[''] before:w-1 before:h-1 before:rounded-full before:bg-emerald-300 before:mr-3"
-                >
-                  Usuarios
-                </Link>
-              </li>
-            </ul>
           </li>
           <li className="mb-1 group">
-            <a
-              href="#"
-              className="flex items-center py-2 px-4 text-emerald-300 hover:bg-emerald-950 hover:text-emerald-100 rounded-md group-[.active]:bg-emerald-800 group-[.active]:text-white group-[.selected]:bg-emerald-950 group-[.selected]:text-emerald-100 sidebar-dropdown-toggle"
-              onClick={handleDropdownClick("services")}
+            <Link
+              to="/dashboard/servicos"
+              className="flex items-center py-2 px-4 text-emerald-300 hover:bg-emerald-950 hover:text-emerald-100 rounded-md group-[.active]:bg-emerald-800 group-[.active]:text-white group-[.selected]:bg-emerald-950 group-[.selected]:text-emerald-100"
             >
-              <i className="ri-flashlight-line mr-3 text-lg"></i>
-              <span className="text-sm">Consultas</span>
-              <i
-                className={`ri-arrow-right-s-line ml-auto ${
-                  isServicesOpen ? "rotate-90" : ""
-                }`}
-              ></i>
-            </a>
-            <ul className={`pl-7 mt-2 ${isServicesOpen ? "block" : "hidden"}`}>
-              <li className="mb-4">
-                <a
-                  href="#"
-                  className="text-emerald-300 text-sm flex items-center hover:text-emerald-100 before:contents-[''] before:w-1 before:h-1 before:rounded-full before:bg-emerald-300 before:mr-3"
-                >
-                  Historico
-                </a>
-              </li>
-            </ul>
+              <i className="ri-service-line mr-3 text-lg"></i>
+              <span className="text-sm">Serviços</span>
+            </Link>
           </li>
+          <li className="mb-1 group">
+            <Link
+              to="/dashboard/produtos"
+              className="flex items-center py-2 px-4 text-emerald-300 hover:bg-emerald-950 hover:text-emerald-100 rounded-md group-[.active]:bg-emerald-800 group-[.active]:text-white group-[.selected]:bg-emerald-950 group-[.selected]:text-emerald-100"
+            >
+              <i className="ri-ink-bottle-line mr-3 text-lg"></i>
+              <span className="text-sm">Produtos</span>
+            </Link>
+          </li>
+
           <li className="mb-1 group">
             <a
               href="#"

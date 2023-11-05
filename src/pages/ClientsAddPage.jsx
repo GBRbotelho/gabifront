@@ -50,25 +50,7 @@ function ClientsAddPage() {
 
           <div className="bg-white rounded shadow-lg p-4 px-4 md:p-8 mb-6">
             <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-3">
-              <div className="text-gray-600">
-                <div className=" flex justify-center">
-                  <div className="bg-gray-200">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      width="240"
-                      height="240"
-                    >
-                      <path
-                        d="M4 22C4 17.5817 7.58172 14 12 14C16.4183 14 20 17.5817 20 22H18C18 18.6863 15.3137 16 12 16C8.68629 16 6 18.6863 6 22H4ZM12 13C8.685 13 6 10.315 6 7C6 3.685 8.685 1 12 1C15.315 1 18 3.685 18 7C18 10.315 15.315 13 12 13ZM12 11C14.21 11 16 9.21 16 7C16 4.79 14.21 3 12 3C9.79 3 8 4.79 8 7C8 9.21 9.79 11 12 11Z"
-                        fill="rgba(0,0,0,1)"
-                      ></path>
-                    </svg>
-                  </div>
-                </div>
-              </div>
-
-              <div className="lg:col-span-2">
+              <div className="lg:col-span-3">
                 <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-6">
                   <div className="md:col-span-6">
                     <label htmlFor="full_name">Nome Completo</label>
