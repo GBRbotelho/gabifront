@@ -41,7 +41,7 @@ export default function Sidebar() {
                   to="/dashboard/clientes"
                   className="flex items-center py-2 px-4 text-emerald-300 hover:bg-emerald-950 hover:text-emerald-100 rounded-md group-[.active]:bg-emerald-800 group-[.active]:text-white group-[.selected]:bg-emerald-950 group-[.selected]:text-emerald-100"
                 >
-                  <i className="ri-contacts-line  mr-3 text-lg"></i>
+                  <i class="ri-contacts-line  mr-3 text-lg"></i>
                   <span className="text-sm">Clientes</span>
                 </Link>
               </li>
@@ -65,7 +65,7 @@ export default function Sidebar() {
               </li>
             </ul>
           </div>
-          <div className="mb-1 group">
+          <a className="mb-1 group">
             <a
               href="#"
               className="flex items-center py-2 px-4 text-emerald-300 hover:bg-emerald-950 hover:text-emerald-100 rounded-md group-[.active]:bg-emerald-800 group-[.active]:text-white group-[.selected]:bg-emerald-950 group-[.selected]:text-emerald-100"
@@ -73,7 +73,7 @@ export default function Sidebar() {
               <i className="ri-settings-2-line mr-3 text-lg"></i>
               <span className="text-sm">Configurações</span>
             </a>
-          </div>
+          </a>
         </div>
       </div>
       <div

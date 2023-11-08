@@ -8,26 +8,27 @@ function LoginPage() {
   const [password, setPassword] = useState("");
   const [loginError, setLoginError] = useState("");
   const navigate = useNavigate();
-  const { loginWithToken } = useAuth(); // Use o hook useAuth para obter o token
+  const { token, loginWithToken } = useAuth(); // Use o hook useAuth para obter o token
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    // Se o usuário já estiver autenticado, redirecione para o dashboard
     if (token) {
       navigate("/dashboard/clientes");
     }
-  }, []);
+  }, [token, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const response = await login(email, password).catch((error) => {
       setLoginError("Falha na requisição com o servidor");
+      console.log(error);
     });
 
     if (response.token) {
       // Salvar o token no localStorage
-      localStorage.setItem("token", response.token);
-      await loginWithToken(response.token);
+      localStorage.setItem("token", response.token)
+      loginWithToken(response.token);
       navigate("/dashboard/clientes");
     } else {
       setLoginError(response.error);

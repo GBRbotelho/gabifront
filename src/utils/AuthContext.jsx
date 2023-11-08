@@ -21,6 +21,7 @@ export const AuthProvider = ({ children }) => {
         setToken(tokenRenewed);
         const tokenLocal = localStorage.getItem("token");
         const userData = await useGetUserData(tokenLocal);
+        console.log(userData);
         setUser(userData); // Defina as informações do usuário no estado
       }
     };
