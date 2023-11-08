@@ -1,21 +1,31 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../utils/AuthContext";
+import { usePostData } from "../services/apiService";
 
 export default function ConfirmationEmailPage() {
   const navigate = useNavigate();
-  const { token, isLoading, user } = useAuth();
+  const { isLoading, user } = useAuth();
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    // Verifique se o token ou o usuário é nulo
+    navigate("/");
+  }
+  useEffect(() => {
+    console.log(user);
+    if (user) {
+      if (user.isEmailVerified) {
+        navigate("/dashboard/clientes");
+      }
+    }
+  }, [user]);
 
   if (isLoading) {
     // Renderize algum indicador de carregamento, se necessário
     return <div>Carregando...</div>;
   }
 
-  if (!token || !user) {
-    navigate("/");
-  } else if (token && user.isEmailVerified) {
-    navigate("/dashboard/clientes");
-  }
   return (
     <div className="bg-emerald-300">
       <div className="app font-sans min-w-screen min-h-screen bg-grey-lighter py-8 px-4">

@@ -114,7 +114,9 @@ function UsersPage() {
                     className="px-4 py-3 text-xs border"
                     key={`isEmailVerified_${user.id}`}
                   >
-                    {user.isEmailVerified === false ? "Não Validado" : false}
+                    {user.isEmailVerified === false
+                      ? "Não Validado"
+                      : "Validado"}
                   </td>
 
                   <td
