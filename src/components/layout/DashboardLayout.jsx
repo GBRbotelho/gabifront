@@ -16,14 +16,8 @@ function DashboardLayout({ children }) {
         navigate("/confirmation");
       }
     }
-  }, [user, token, isLoading]);
+  }, [user, token]);
 
-  if (isLoading) {
-    // Renderize algum indicador de carregamento, se necessário
-    return <div>Carregando...</div>;
-  }
-
-  // O usuário está autenticado, renderize o layout do dashboard
   return (
     <>
       <Sidebar />

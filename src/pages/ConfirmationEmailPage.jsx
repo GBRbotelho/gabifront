@@ -4,7 +4,7 @@ import { useAuth } from "../utils/AuthContext";
 
 export default function ConfirmationEmailPage() {
   const navigate = useNavigate();
-  const { token, isLoading, user } = useAuth();
+  const { token, user } = useAuth();
 
   useEffect(() => {
     if (token === "NO") {
@@ -15,11 +15,6 @@ export default function ConfirmationEmailPage() {
       }
     }
   }, [user, token]);
-
-  if (isLoading) {
-    // Renderize algum indicador de carregamento, se necessário
-    return <div>Carregando...</div>;
-  }
 
   return (
     <div className="bg-emerald-300">

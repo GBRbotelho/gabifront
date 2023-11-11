@@ -17,6 +17,10 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const checkToken = async () => {
       const tokenRenewed = await verifyToken();
+      if (!tokenRenewed) {
+        setToken("NO");
+        localStorage.removeItem("token");
+      }
       if (tokenRenewed.error) {
         setToken("NO");
         localStorage.removeItem("token");
