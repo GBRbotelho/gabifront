@@ -1,11 +1,19 @@
 // DashboardPage.js
 import React, { useState, useEffect } from "react";
-import { fetchServices, deleteService } from "../services/apiService";
-import { Link } from "react-router-dom";
+import {
+  fetchServices,
+  deleteService,
+  useGetAll,
+} from "../services/apiService";
+import ModalAddService from "../components/forms/ModalAddService";
+import ModalViewService from "../components/forms/ModalViewService";
 
 function ServicesPage() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [addServiceActive, setAddServiceActive] = useState(false);
   const [services, setServices] = useState([]);
+  const [viewService, setViewService] = useState(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     async function fetchServicesData() {
@@ -20,15 +28,35 @@ function ServicesPage() {
     fetchServicesData();
   }, []);
 
+  const reloadServices = async () => {
+    try {
+      const token = await localStorage.getItem("token");
+      const data = await useGetAll("services", token); // Passe o token na chamada
+      setServices(data);
+    } catch (error) {
+      console.error("Erro ao buscar serviços:", error);
+    }
+  };
+
   const handleDeleteService = async (serviceId) => {
     try {
       const token = await localStorage.getItem("token");
-      const response = await deleteService(serviceId, token);
-
-      const updatedServices = services.filter(
-        (service) => service._id !== serviceId
-      );
-      setServices(updatedServices);
+      const treatments = await useGetAll("treatments", token);
+      if (
+        treatments.filter((treatment) => {
+          treatment.name === serviceId;
+        }).length !== 0
+      ) {
+        const response = await deleteService(serviceId, token);
+        const updatedServices = services.filter(
+          (service) => service._id !== serviceId
+        );
+        setServices(updatedServices);
+      } else {
+        setError(
+          "Esse serviço esta vinculado a algum tratamento, e não pode ser excluido!"
+        );
+      }
     } catch (error) {
       console.error("Erro ao excluir Serviço:", error);
     }
@@ -68,12 +96,12 @@ function ServicesPage() {
             </div>
           </li>
         </ul>
-        <Link
-          to="/dashboard/servicos/add"
+        <button
+          onClick={() => setAddServiceActive(true)}
           className=" text-gray-400 w-8 h-8 rounded flex items-center justify-center hover:bg-gray-50 hover:text-green-600"
         >
           <i className="ri-user-add-fill"></i>
-        </Link>
+        </button>
       </div>
 
       <div className="w-full overflow-x-auto">
@@ -107,12 +135,12 @@ function ServicesPage() {
                     key={`options_${service.id}`}
                   >
                     <div className="flex items-center space-x-2">
-                      <Link
-                        to={`/dashboard/servicos/view/${service._id}`}
+                      <button
                         className="w-8 h-8 text-green-500 transform hover:scale-110 transition-transform"
+                        onClick={() => setViewService(service)}
                       >
                         <i className="ri-eye-line text-3xl"></i>
-                      </Link>
+                      </button>
                       <button
                         className="w-8 h-8 text-red-500 transform hover:scale-110 transition-transform"
                         onClick={() => {
@@ -134,7 +162,21 @@ function ServicesPage() {
             )}
           </tbody>
         </table>
+        {error && <p className="text-red-500">{error}</p>}
       </div>
+      {addServiceActive && (
+        <ModalAddService
+          reloadServices={reloadServices}
+          setAddServiceActive={setAddServiceActive}
+        />
+      )}
+      {viewService && (
+        <ModalViewService
+          viewService={viewService}
+          setViewService={setViewService}
+          reloadServices={reloadServices}
+        />
+      )}
     </section>
   );
 }
