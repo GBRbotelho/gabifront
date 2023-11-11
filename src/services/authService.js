@@ -31,16 +31,16 @@ export async function verifyToken() {
       const data = await response.json();
       if (data.token) {
         localStorage.setItem("token", data.token); // Atualize o token no localStorage
-        return true; // Token renovado com sucesso
+        return data; // Token renovado com sucesso
       }
     }
 
     // Se a solicitação não retornar um novo token válido ou não retornar 200 OK
-    if (response.status === 500) {
+    if (response.status === 401) {
       const data = await response.json();
       if (data.error) {
         localStorage.removeItem("token");
-        return data.error;
+        return data;
       }
     }
 

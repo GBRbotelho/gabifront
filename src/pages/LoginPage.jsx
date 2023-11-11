@@ -12,7 +12,7 @@ function LoginPage() {
 
   useEffect(() => {
     // Se o usuário já estiver autenticado, redirecione para o dashboard
-    if (token) {
+    if (token && token !== "NO") {
       navigate("/dashboard/clientes");
     }
   }, [token, navigate]);
@@ -27,7 +27,7 @@ function LoginPage() {
 
     if (response.token) {
       // Salvar o token no localStorage
-      localStorage.setItem("token", response.token)
+      localStorage.setItem("token", response.token);
       loginWithToken(response.token);
       navigate("/dashboard/clientes");
     } else {

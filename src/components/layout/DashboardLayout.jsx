@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useAuth } from "../../utils/AuthContext"; // Importe o useAuth
 import Sidebar from "../menus/Sidebar";
 import MainLayout from "./MainLayout";
@@ -8,17 +8,21 @@ function DashboardLayout({ children }) {
   const navigate = useNavigate();
   const { token, isLoading, user } = useAuth(); // Obtenha o token e o isLoading do useAuth
 
+  useEffect(() => {
+    if (token === "NO") {
+      navigate("/");
+    } else if (user) {
+      if (token && user.isEmailVerified === "NO") {
+        navigate("/confirmation");
+      }
+    }
+  }, [user, token, isLoading]);
+
   if (isLoading) {
     // Renderize algum indicador de carregamento, se necessário
     return <div>Carregando...</div>;
   }
 
-  if (!token || !user) {
-    // Verifique se o token ou o usuário é nulo
-    navigate("/");
-  } else if (token && !user.isEmailVerified) {
-    navigate("/confirmation");
-  }
   // O usuário está autenticado, renderize o layout do dashboard
   return (
     <>

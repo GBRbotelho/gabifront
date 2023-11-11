@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../utils/AuthContext";
 
@@ -6,16 +6,21 @@ export default function ConfirmationEmailPage() {
   const navigate = useNavigate();
   const { token, isLoading, user } = useAuth();
 
+  useEffect(() => {
+    if (token === "NO") {
+      navigate("/");
+    } else if (user) {
+      if (token && user.isEmailVerified === "SIM") {
+        navigate("/dashboard/clientes");
+      }
+    }
+  }, [user, token]);
+
   if (isLoading) {
     // Renderize algum indicador de carregamento, se necessário
     return <div>Carregando...</div>;
   }
 
-  if (!token || !user) {
-    navigate("/");
-  } else if (token && user.isEmailVerified) {
-    navigate("/dashboard/clientes");
-  }
   return (
     <div className="bg-emerald-300">
       <div className="app font-sans min-w-screen min-h-screen bg-grey-lighter py-8 px-4">

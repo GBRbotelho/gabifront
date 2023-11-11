@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { verifyToken, useGetUserData } from "../services/authService"; // Adicione a função para obter dados do usuário
+import { useNavigate } from "react-router-dom";
 
 const AuthContext = createContext();
 
@@ -8,6 +9,7 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }) => {
+  const navigate = useNavigate();
   const [token, setToken] = useState(null);
   const [user, setUser] = useState(null); // Adicione o estado para armazenar informações do usuário
   const [isLoading, setIsLoading] = useState(true);
@@ -15,15 +17,17 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const checkToken = async () => {
       const tokenRenewed = await verifyToken();
-      setIsLoading(false);
-
-      if (tokenRenewed) {
-        setToken(tokenRenewed);
-        const tokenLocal = localStorage.getItem("token");
-        const userData = await useGetUserData(tokenLocal);
-        console.log(userData);
-        setUser(userData); // Defina as informações do usuário no estado
+      if (tokenRenewed.error) {
+        setToken("NO");
+        localStorage.removeItem("token");
       }
+
+      if (!tokenRenewed.error) {
+        setToken(tokenRenewed.token);
+        const userData = await useGetUserData(tokenRenewed.token);
+        setUser(userData);
+      }
+      setIsLoading(false);
     };
 
     checkToken();
