@@ -9,6 +9,7 @@ import TreatmentsPage from "../pages/TreatmentsPage";
 import UsersPage from "../pages/UsersPage";
 import UsersAddPage from "../pages/UsersAddPage";
 import ClientViewerPage from "../pages/ClientViewerPage";
+import TreatmentViewerPage from "../pages/TreatmentViewerPage";
 
 function DashboardRoutes() {
   return (
@@ -84,6 +85,14 @@ function DashboardRoutes() {
         element={
           <DashboardLayout>
             <TreatmentsPage />
+          </DashboardLayout>
+        }
+      />
+      <Route
+        path="/tratamentos/:clientid/:treatmentid"
+        element={
+          <DashboardLayout>
+            <TreatmentViewerPage />
           </DashboardLayout>
         }
       />

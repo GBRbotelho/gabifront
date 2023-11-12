@@ -5,7 +5,7 @@ import {
   useDeleteData,
   useGetAll,
 } from "../services/apiService";
-import { Navigate, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import RegistrationForm from "../components/forms/RegistrationForm";
 import ModalTreatment from "../components/forms/ModalTreatment";
 import ModalConsultation from "../components/forms/ModalConsultation";
@@ -221,11 +221,21 @@ export default function ClientViewerPage() {
           );
           reloadTreatments();
         }
+        if (completedConsultations.length !== treatmentItem.sessionsCompleted) {
+          treatmentItem.sessionsCompleted = completedConsultations.length;
+          await useUpdateData(
+            treatmentItem._id,
+            "treatments",
+            treatmentItem,
+            token
+          );
+          reloadTreatments();
+        }
       }
     };
 
     updateTreatments();
-  }, [consultation]);
+  }, [consultation, treatment]);
 
   return (
     <div className=" min-h-screen p-6 bg-gray-100 flex items-center justify-center">
@@ -573,9 +583,12 @@ export default function ClientViewerPage() {
                           key={`options_${client.id}`}
                         >
                           <div className="flex items-center space-x-2">
-                            <button className="w-8 h-8 text-green-500 transform hover:scale-110 transition-transform">
+                            <Link
+                              to={`/dashboard/tratamentos/${client._id}/${treatmentItem._id}`}
+                              className="w-8 h-8 text-green-500 transform hover:scale-110 transition-transform"
+                            >
                               <i className="ri-eye-line text-3xl"></i>
-                            </button>
+                            </Link>
                             <button
                               className="w-8 h-8 text-yellow-500 transform hover:scale-110 transition-transform"
                               onClick={() => {

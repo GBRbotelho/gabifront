@@ -1,6 +1,7 @@
 // DashboardPage.js
 import React, { useState, useEffect } from "react";
 import { useGetAll, useDeleteData } from "../services/apiService";
+import { Link } from "react-router-dom";
 
 function TreatmentsPage() {
   const token = localStorage.getItem("token");
@@ -38,8 +39,18 @@ function TreatmentsPage() {
     ) {
       setError("Existe consultas com esse tratamento");
     } else {
-      const response = await useDeleteData(consultationId, "treatments", token);
+      await useDeleteData(consultationId, "treatments", token);
       reloadTreatments();
+    }
+  };
+
+  const reloadTreatments = async () => {
+    try {
+      const token = await localStorage.getItem("token");
+      const data = await useGetAll("treatments", token); // Passe o token na chamada
+      setTreatments(data);
+    } catch (error) {
+      console.error("Erro ao buscar tratamentos:", error);
     }
   };
 
@@ -85,7 +96,7 @@ function TreatmentsPage() {
             <tr className="text-md font-semibold tracking-wide text-left text-gray-900 bg-gray-100 uppercase border-b border-gray-600">
               <th className="px-4 py-3 text-center">Nome do Cliente</th>
               <th className="px-4 py-3 text-center">Serviço</th>
-              <th className="px-4 py-3 text-center">Sessões Completadas</th>
+              <th className="px-4 py-3 text-center">Sessões Concluídas</th>
               <th className="px-4 py-3 text-center">Total de Sessões</th>
               <th className="px-4 py-3 text-center">Status</th>
               <th className="px-4 py-3 text-center">Options</th>
@@ -147,9 +158,12 @@ function TreatmentsPage() {
                     key={`options_${treatment._id}`}
                   >
                     <div className="flex items-center space-x-2">
-                      <button className="w-8 h-8 text-green-500 transform hover:scale-110 transition-transform">
+                      <Link
+                        to={`/dashboard/tratamentos/${treatment.clientId}/${treatment._id}`}
+                        className="w-8 h-8 text-green-500 transform hover:scale-110 transition-transform"
+                      >
                         <i className="ri-eye-line text-3xl"></i>
-                      </button>
+                      </Link>
                       <button
                         className="w-8 h-8 text-red-500 transform hover:scale-110 transition-transform"
                         onClick={() => {
