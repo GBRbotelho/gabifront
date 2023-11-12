@@ -63,6 +63,15 @@ export default function Sidebar() {
                   <span className="text-sm">Produtos</span>
                 </Link>
               </li>
+              <li className="mb-1 group">
+                <Link
+                  to="/dashboard/tratamentos"
+                  className="flex items-center py-2 px-4 text-emerald-300 hover:bg-emerald-950 hover:text-emerald-100 rounded-md group-[.active]:bg-emerald-800 group-[.active]:text-white group-[.selected]:bg-emerald-950 group-[.selected]:text-emerald-100"
+                >
+                  <i className="ri-survey-line mr-3 text-lg"></i>
+                  <span className="text-sm">Tratamentos</span>
+                </Link>
+              </li>
             </ul>
           </div>
           <div className="mb-1 group">

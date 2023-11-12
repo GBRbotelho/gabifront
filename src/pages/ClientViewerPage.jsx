@@ -71,13 +71,13 @@ export default function ClientViewerPage() {
     setModalConsultation(true);
   };
 
-  const openTreatmentSelect = (treatmentItem)=>{
-    setTreatmentSelect(treatmentItem)
-  }
+  const openTreatmentSelect = (treatmentItem) => {
+    setTreatmentSelect(treatmentItem);
+  };
 
-  const closeTreatmentSelect = ()=>{
-    setTreatmentSelect(null)
-  }
+  const closeTreatmentSelect = () => {
+    setTreatmentSelect(null);
+  };
 
   const openSelectItem = (consultationItem) => {
     setConsultationSelect(consultationItem);
@@ -192,7 +192,7 @@ export default function ClientViewerPage() {
             consultationItem.service === treatmentItem._id &&
             consultationItem.status === "Concluído"
         );
-  
+
         if (
           completedConsultations.length === treatmentItem.totalSessions &&
           treatmentItem.status !== "Concluído"
@@ -206,7 +206,7 @@ export default function ClientViewerPage() {
           );
           reloadTreatments();
         }
-  
+
         // Verifique o cancelamento da consulta
         if (
           completedConsultations.length < treatmentItem.totalSessions &&
@@ -223,10 +223,9 @@ export default function ClientViewerPage() {
         }
       }
     };
-  
+
     updateTreatments();
   }, [consultation]);
-  
 
   return (
     <div className=" min-h-screen p-6 bg-gray-100 flex items-center justify-center">
@@ -537,35 +536,53 @@ export default function ClientViewerPage() {
                         </td>
                         <td className="px-4 py-3 border text-center w-min">
                           {
-                            consultation.filter(
-                              (consultationItem) =>
-                                consultationItem.service === treatmentItem._id
-                            ).filter((consultationItem)=>consultationItem.status === "Concluído").length
+                            consultation
+                              .filter(
+                                (consultationItem) =>
+                                  consultationItem.service === treatmentItem._id
+                              )
+                              .filter(
+                                (consultationItem) =>
+                                  consultationItem.status === "Concluído"
+                              ).length
                           }
                         </td>
                         <td className="px-4 py-3 border text-center">
                           {treatmentItem.totalSessions}
                         </td>
-                        {
-                          treatmentItem.status === "Em andamento" && <td className="px-4 py-3 border text-center" style={{width: "190px"}}>
-                            <span className="px-2 py-1 font-semibold leading-tight text-orange-700 bg-orange-100 rounded-sm">{treatmentItem.status}</span>
-                        </td> 
-                        }
-                        {
-                          treatmentItem.status === "Concluído" && <td className="px-4 py-3 border text-center">
-                            <span className="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-sm">{treatmentItem.status}</span>
-                        </td> 
-                        }
+                        {treatmentItem.status === "Em andamento" && (
+                          <td
+                            className="px-4 py-3 border text-center"
+                            style={{ width: "190px" }}
+                          >
+                            <span className="px-2 py-1 font-semibold leading-tight text-orange-700 bg-orange-100 rounded-sm">
+                              {treatmentItem.status}
+                            </span>
+                          </td>
+                        )}
+                        {treatmentItem.status === "Concluído" && (
+                          <td className="px-4 py-3 border text-center">
+                            <span className="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-sm">
+                              {treatmentItem.status}
+                            </span>
+                          </td>
+                        )}
                         <td
                           className="px-2 py-3 border options-cell"
                           style={{ width: "50px" }}
                           key={`options_${client.id}`}
                         >
                           <div className="flex items-center space-x-2">
-                            <button className="w-8 h-8 text-green-500 transform hover:scale-110 transition-transform" onClick={()=> {
-                              openTreatmentSelect(treatmentItem)
-                            }}>
+                            <button className="w-8 h-8 text-green-500 transform hover:scale-110 transition-transform">
                               <i className="ri-eye-line text-3xl"></i>
+                            </button>
+                            <button
+                              className="w-8 h-8 text-yellow-500 transform hover:scale-110 transition-transform"
+                              onClick={() => {
+                                openTreatmentSelect(treatmentItem);
+                              }}
+                            >
+                              <i className="ri-pencil-line text-3xl"></i>
                             </button>
                             <button
                               className="w-8 h-8 text-red-500 transform hover:scale-110 transition-transform"
@@ -623,7 +640,10 @@ export default function ClientViewerPage() {
                     consultation.map((consultationItem) => (
                       <tr key={consultationItem._id} className="text-gray-700">
                         <td className="px-4 py-3 border text-center">
-                        {new Date(new Date(consultationItem.date).getTime() + 24 * 60 * 60 * 1000).toLocaleDateString("pt-BR")}
+                          {new Date(
+                            new Date(consultationItem.date).getTime() +
+                              24 * 60 * 60 * 1000
+                          ).toLocaleDateString("pt-BR")}
                         </td>
                         <td className="px-4 py-3 border text-center">
                           {consultationItem.time}
@@ -641,21 +661,27 @@ export default function ClientViewerPage() {
                             ).name
                           }
                         </td>
-                        {
-                          consultationItem.status === "Concluído" && <td className="px-4 py-3 border text-center"><span className="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-sm">{consultationItem.status}</span>
-                          
-                        </td> 
-                        }
-                        {
-                          consultationItem.status === "Faltou" && <td className="px-4 py-3 border text-center"><span className="px-2 py-1 font-semibold leading-tight text-red-700 bg-red-100 rounded-sm">{consultationItem.status}</span>
-                          
-                        </td> 
-                        }
-                        {
-                          consultationItem.status === "Agendado" && <td className="px-4 py-3 border text-center"><span className="px-2 py-1 font-semibold leading-tight text-orange-700 bg-orange-100 rounded-sm">{consultationItem.status}</span>
-                          
-                        </td> 
-                        }
+                        {consultationItem.status === "Concluído" && (
+                          <td className="px-4 py-3 border text-center">
+                            <span className="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-sm">
+                              {consultationItem.status}
+                            </span>
+                          </td>
+                        )}
+                        {consultationItem.status === "Faltou" && (
+                          <td className="px-4 py-3 border text-center">
+                            <span className="px-2 py-1 font-semibold leading-tight text-red-700 bg-red-100 rounded-sm">
+                              {consultationItem.status}
+                            </span>
+                          </td>
+                        )}
+                        {consultationItem.status === "Agendado" && (
+                          <td className="px-4 py-3 border text-center">
+                            <span className="px-2 py-1 font-semibold leading-tight text-orange-700 bg-orange-100 rounded-sm">
+                              {consultationItem.status}
+                            </span>
+                          </td>
+                        )}
                         <td
                           className="px-2 py-3 border options-cell"
                           style={{ width: "50px" }}
@@ -664,10 +690,10 @@ export default function ClientViewerPage() {
                           <div className="flex items-center space-x-2">
                             <div>
                               <button
-                                className="w-8 h-8 text-green-500 transform hover:scale-110 transition-transform"
+                                className="w-8 h-8 text-yellow-500 transform hover:scale-110 transition-transform"
                                 onClick={() => openSelectItem(consultationItem)}
                               >
-                                <i className="ri-eye-line text-3xl"></i>
+                                <i className="ri-pencil-line text-3xl"></i>
                               </button>
                             </div>
 
