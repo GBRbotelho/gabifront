@@ -43,16 +43,15 @@ function ServicesPage() {
       const token = await localStorage.getItem("token");
       const treatments = await useGetAll("treatments", token);
       if (
-        treatments.filter((treatment) => {
-          treatment.name === serviceId;
-        }).length !== 0
+        treatments.filter((treatment) => treatment.name === serviceId)
+          .length === 0
       ) {
-        const response = await deleteService(serviceId, token);
-        const updatedServices = services.filter(
-          (service) => service._id !== serviceId
-        );
-        setServices(updatedServices);
-      } else {
+        await deleteService(serviceId, token);
+        reloadServices();
+      } else if (
+        treatments.filter((treatment) => treatment.name === serviceId)
+          .length !== 0
+      ) {
         setError(
           "Esse serviço esta vinculado a algum tratamento, e não pode ser excluido!"
         );

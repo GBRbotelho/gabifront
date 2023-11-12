@@ -9,10 +9,11 @@ function ProductsPage() {
   const [products, setProducts] = useState([]);
   const [addProductActive, setAddProductActive] = useState(false);
   const [viewProduct, setViewProduct] = useState(null);
+  const [error, setError] = useState(null);
+  const token = localStorage.getItem("token");
 
   const reloadProducts = async () => {
     try {
-      const token = await localStorage.getItem("token");
       const data = await useGetAll("products", token); // Passe o token na chamada
       setProducts(data);
     } catch (error) {
@@ -21,9 +22,22 @@ function ProductsPage() {
   };
 
   const handleDelete = async (productItem) => {
-    const token = await localStorage.getItem("token");
-    await useDeleteData(productItem._id, "products", token);
-    await reloadProducts();
+    const consultations = await useGetAll("consultations", token);
+    console.log(consultations);
+    const isUsedInConsultation = consultations.some((consultation) =>
+      consultation.products.some(
+        (productId) => productId.toString() === productItem._id
+      )
+    );
+
+    if (!isUsedInConsultation) {
+      await useDeleteData(productItem._id, "products", token);
+      await reloadProducts();
+    } else if (isUsedInConsultation) {
+      setError(
+        "O produto está sendo usado em alguma consulta. Não pode ser excluído."
+      );
+    }
   };
 
   const handleSearchClick = (e) => {
@@ -162,6 +176,7 @@ function ProductsPage() {
             )}
           </tbody>
         </table>
+        {error && <div className="text-red-500">{error}</div>}
         {addProductActive && (
           <ModalAddProduct
             reloadProducts={reloadProducts}
