@@ -35,7 +35,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     checkToken();
-  }, []);
+  }, [token]);
 
   const loginWithToken = (newToken) => {
     setToken(newToken);

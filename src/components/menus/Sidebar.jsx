@@ -75,13 +75,13 @@ export default function Sidebar() {
             </ul>
           </div>
           <div className="mb-1 group">
-            <a
-              href="#"
+            <Link
+              to={"/dashboard/usuarios"}
               className="flex items-center py-2 px-4 text-emerald-300 hover:bg-emerald-950 hover:text-emerald-100 rounded-md group-[.active]:bg-emerald-800 group-[.active]:text-white group-[.selected]:bg-emerald-950 group-[.selected]:text-emerald-100"
             >
               <i className="ri-settings-2-line mr-3 text-lg"></i>
-              <span className="text-sm">Configurações</span>
-            </a>
+              <span className="text-sm">Usuarios</span>
+            </Link>
           </div>
         </div>
       </div>
