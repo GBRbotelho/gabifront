@@ -29,7 +29,17 @@ function DashboardPage() {
       );
     })
     .sort((a, b) => {
-      return new Date(a.date).getTime() - new Date(b.date).getTime();
+      const dateA = new Date(a.date).getTime();
+      const dateB = new Date(b.date).getTime();
+
+      if (dateA === dateB) {
+        // Se as datas são iguais, comparar pelos horários
+        const timeA = new Date(`1970-01-01T${a.time}`).getTime();
+        const timeB = new Date(`1970-01-01T${b.time}`).getTime();
+        return timeA - timeB;
+      }
+
+      return dateA - dateB;
     });
 
   useEffect(() => {
