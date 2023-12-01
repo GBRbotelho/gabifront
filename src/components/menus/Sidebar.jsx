@@ -38,6 +38,15 @@ export default function Sidebar() {
             <ul className="mt-4">
               <li className="mb-1 group">
                 <Link
+                  to="/dashboard/"
+                  className="flex items-center py-2 px-4 text-emerald-300 hover:bg-emerald-950 hover:text-emerald-100 rounded-md group-[.active]:bg-emerald-800 group-[.active]:text-white group-[.selected]:bg-emerald-950 group-[.selected]:text-emerald-100"
+                >
+                  <i className="ri-calendar-check-line  mr-3 text-lg"></i>
+                  <span className="text-sm">Consultas</span>
+                </Link>
+              </li>
+              <li className="mb-1 group">
+                <Link
                   to="/dashboard/clientes"
                   className="flex items-center py-2 px-4 text-emerald-300 hover:bg-emerald-950 hover:text-emerald-100 rounded-md group-[.active]:bg-emerald-800 group-[.active]:text-white group-[.selected]:bg-emerald-950 group-[.selected]:text-emerald-100"
                 >

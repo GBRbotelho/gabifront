@@ -8,7 +8,7 @@ function Navbar() {
   // Acesse o segmento da URL após "dashboard/"
   const currentSegment = pathSegments[2]
     ? pathSegments[2].toUpperCase()
-    : "INICIO";
+    : "CONSULTAS";
 
   const handleSidebarToggleClick = (e) => {
     e.preventDefault();

@@ -14,7 +14,7 @@ export default function ConfirmationEmailPage() {
       navigate("/");
     } else if (user) {
       if (token && user.isEmailVerified === "SIM") {
-        navigate("/dashboard/clientes");
+        navigate("/dashboard/");
       }
     }
   }, [user, token]);
