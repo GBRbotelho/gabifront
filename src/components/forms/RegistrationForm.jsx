@@ -92,34 +92,30 @@ function RegistrationForm({ closeModal }) {
 
               <div className="md:col-span-2">
                 <label htmlFor="occupation">Profissão</label>
-                <div className="h-10 bg-gray-50 flex border border-gray-200 rounded items-center mt-1">
-                  <input
-                    name="occupation"
-                    id="occupation"
-                    className={`h-10 border mt-1 rounded px-4 w-full bg-${
-                      !isEditable ? "gray-100" : "white"
-                    }`}
-                    value={registrationForm.occupation || ""}
-                    onChange={handleChange}
-                    disabled={!isEditable}
-                  />
-                </div>
+                <input
+                  name="occupation"
+                  id="occupation"
+                  className={`h-10 border mt-1 rounded px-4 w-full bg-${
+                    !isEditable ? "gray-100" : "white"
+                  }`}
+                  value={registrationForm.occupation || ""}
+                  onChange={handleChange}
+                  disabled={!isEditable}
+                />
               </div>
 
               <div className="md:col-span-2">
                 <label htmlFor="physicalActivity">Atividade Fisica</label>
-                <div className="h-10 bg-gray-50 flex border border-gray-200 rounded items-center mt-1">
-                  <input
-                    name="physicalActivity"
-                    id="physicalActivity"
-                    className={`h-10 border mt-1 rounded px-4 w-full bg-${
-                      !isEditable ? "gray-100" : "white"
-                    }`}
-                    value={registrationForm.physicalActivity || ""}
-                    onChange={handleChange}
-                    disabled={!isEditable}
-                  />
-                </div>
+                <input
+                  name="physicalActivity"
+                  id="physicalActivity"
+                  className={`h-10 border mt-1 rounded px-4 w-full bg-${
+                    !isEditable ? "gray-100" : "white"
+                  }`}
+                  value={registrationForm.physicalActivity || ""}
+                  onChange={handleChange}
+                  disabled={!isEditable}
+                />
               </div>
 
               <div className="md:col-span-2">

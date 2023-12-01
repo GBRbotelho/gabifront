@@ -650,78 +650,103 @@ export default function ClientViewerPage() {
                 </thead>
                 <tbody className="bg-white">
                   {consultation.length > 0 ? (
-                    consultation.map((consultationItem) => (
-                      <tr key={consultationItem._id} className="text-gray-700">
-                        <td className="px-4 py-3 border text-center">
-                          {new Date(
-                            new Date(consultationItem.date).getTime() +
-                              24 * 60 * 60 * 1000
-                          ).toLocaleDateString("pt-BR")}
-                        </td>
-                        <td className="px-4 py-3 border text-center">
-                          {consultationItem.time}
-                        </td>
-                        <td className="px-4 py-3 border text-center">
-                          {
-                            service.find(
-                              (serviceItem) =>
-                                serviceItem._id ===
-                                treatment.filter(
-                                  (treatmentItem) =>
-                                    treatmentItem._id ===
-                                    consultationItem.service
-                                )[0].name
-                            ).name
-                          }
-                        </td>
-                        {consultationItem.status === "Concluído" && (
-                          <td className="px-4 py-3 border text-center">
-                            <span className="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-sm">
-                              {consultationItem.status}
-                            </span>
-                          </td>
-                        )}
-                        {consultationItem.status === "Faltou" && (
-                          <td className="px-4 py-3 border text-center">
-                            <span className="px-2 py-1 font-semibold leading-tight text-red-700 bg-red-100 rounded-sm">
-                              {consultationItem.status}
-                            </span>
-                          </td>
-                        )}
-                        {consultationItem.status === "Agendado" && (
-                          <td className="px-4 py-3 border text-center">
-                            <span className="px-2 py-1 font-semibold leading-tight text-orange-700 bg-orange-100 rounded-sm">
-                              {consultationItem.status}
-                            </span>
-                          </td>
-                        )}
-                        <td
-                          className="px-2 py-3 border options-cell"
-                          style={{ width: "50px" }}
-                          key={`options_${consultationItem._id}`}
+                    consultation
+                      .sort((a, b) => {
+                        const dateA = new Date(a.date).getTime();
+                        const dateB = new Date(b.date).getTime();
+
+                        if (dateA === dateB) {
+                          // Se as datas são iguais, comparar pelos horários
+                          const timeA = new Date(
+                            `1970-01-01T${a.time}`
+                          ).getTime();
+                          const timeB = new Date(
+                            `1970-01-01T${b.time}`
+                          ).getTime();
+                          return timeA - timeB;
+                        }
+
+                        return dateA - dateB;
+                      })
+                      .map((consultationItem) => (
+                        <tr
+                          key={consultationItem._id}
+                          className="text-gray-700"
                         >
-                          <div className="flex items-center space-x-2">
-                            <div>
+                          <td className="px-4 py-3 border text-center">
+                            {new Date(
+                              new Date(consultationItem.date).getTime() +
+                                24 * 60 * 60 * 1000
+                            ).toLocaleDateString("pt-BR")}
+                          </td>
+                          <td className="px-4 py-3 border text-center">
+                            {consultationItem.time}
+                          </td>
+                          <td className="px-4 py-3 border text-center">
+                            {
+                              service.find(
+                                (serviceItem) =>
+                                  serviceItem._id ===
+                                  treatment.filter(
+                                    (treatmentItem) =>
+                                      treatmentItem._id ===
+                                      consultationItem.service
+                                  )[0].name
+                              ).name
+                            }
+                          </td>
+                          {consultationItem.status === "Concluído" && (
+                            <td className="px-4 py-3 border text-center">
+                              <span className="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-sm">
+                                {consultationItem.status}
+                              </span>
+                            </td>
+                          )}
+                          {consultationItem.status === "Faltou" && (
+                            <td className="px-4 py-3 border text-center">
+                              <span className="px-2 py-1 font-semibold leading-tight text-red-700 bg-red-100 rounded-sm">
+                                {consultationItem.status}
+                              </span>
+                            </td>
+                          )}
+                          {consultationItem.status === "Agendado" && (
+                            <td className="px-4 py-3 border text-center">
+                              <span className="px-2 py-1 font-semibold leading-tight text-orange-700 bg-orange-100 rounded-sm">
+                                {consultationItem.status}
+                              </span>
+                            </td>
+                          )}
+                          <td
+                            className="px-2 py-3 border options-cell"
+                            style={{ width: "50px" }}
+                            key={`options_${consultationItem._id}`}
+                          >
+                            <div className="flex items-center space-x-2">
+                              <div>
+                                <button
+                                  className="w-8 h-8 text-yellow-500 transform hover:scale-110 transition-transform"
+                                  onClick={() =>
+                                    openSelectItem(consultationItem)
+                                  }
+                                >
+                                  <i className="ri-pencil-line text-3xl"></i>
+                                </button>
+                              </div>
+
                               <button
-                                className="w-8 h-8 text-yellow-500 transform hover:scale-110 transition-transform"
-                                onClick={() => openSelectItem(consultationItem)}
+                                className="w-8 h-8 text-red-500 transform hover:scale-110 transition-transform"
+                                onClick={() => {
+                                  toggleDeleteConsultation(
+                                    consultationItem._id
+                                  );
+                                }}
                               >
-                                <i className="ri-pencil-line text-3xl"></i>
+                                <i className="ri-delete-bin-5-line text-3xl"></i>
                               </button>
                             </div>
-
-                            <button
-                              className="w-8 h-8 text-red-500 transform hover:scale-110 transition-transform"
-                              onClick={() => {
-                                toggleDeleteConsultation(consultationItem._id);
-                              }}
-                            >
-                              <i className="ri-delete-bin-5-line text-3xl"></i>
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))
+                          </td>
+                        </tr>
+                      ))
                   ) : (
                     <tr>
                       <td
