@@ -14,7 +14,10 @@ function ModalFiltrosDashboard({
   setFaltas,
 }) {
   return (
-    <div className="fixed top-0 left-0 w-full h-full flex items-center bg-black/50 justify-center">
+    <div
+      className="fixed top-0 left-0 w-full h-full flex items-center bg-black/50 justify-center"
+      style={{ zIndex: 100 }}
+    >
       <div className="absolute bg-white p-4 w-96 rounded shadow-md">
         <div className="flex items-center justify-center mb-4">
           <h2 className="text-2xl font-semibold">Filtros</h2>
