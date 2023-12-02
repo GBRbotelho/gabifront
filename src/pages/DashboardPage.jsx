@@ -15,8 +15,8 @@ function DashboardPage() {
       .map((part, index) => (index === 0 ? part : part.padStart(2, "0")))
       .join("-")
   );
+  const [searchTerm, setSearchTerm] = useState("");
 
-  console.log(initialDate);
   const fiveDaysLater = new Date();
   fiveDaysLater.setDate(fiveDaysLater.getDate() + 5);
   const [finalDate, setFinalDate] = useState(
@@ -46,6 +46,25 @@ function DashboardPage() {
       }
 
       return dateA - dateB;
+    })
+    .filter((consultationItem) => {
+      const formattedDate = new Date(
+        new Date(consultationItem.date).getTime() + 24 * 60 * 60 * 1000
+      ).toLocaleDateString("pt-BR");
+
+      // Obtenha o nome do cliente usando a filtragem nos clientes
+      const clientName =
+        clients.find((clientItem) => clientItem._id === consultationItem.client)
+          ?.name || "";
+
+      // Adicione verificações para evitar erros se as propriedades estiverem indefinidas
+      return (
+        (formattedDate && formattedDate.includes(searchTerm)) ||
+        (consultationItem.time && consultationItem.time.includes(searchTerm)) ||
+        (clientName && clientName.includes(searchTerm)) ||
+        (consultationItem.status &&
+          consultationItem.status.includes(searchTerm))
+      );
     });
 
   useEffect(() => {
@@ -82,6 +101,8 @@ function DashboardPage() {
                   type="text"
                   className="px-2 text-gray-400 w-38 h-8 rounded pl-8 flex items-center justify-center hover:bg-gray-50 hover:text-gray-600"
                   placeholder="Procurar"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
                 />
                 <i className="ri-search-line absolute left-2 top-1 h-4"></i>
               </div>
@@ -133,7 +154,6 @@ function DashboardPage() {
                       {consultationItem.time}
                     </td>
                     <td className="px-4 py-3 text-ms border text-center">
-                      {" "}
                       {clients
                         .filter(
                           (clientItem) =>
