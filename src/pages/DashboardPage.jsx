@@ -9,8 +9,14 @@ function DashboardPage() {
   const [consultations, setConsultations] = useState([]);
   const [clients, setClients] = useState([]);
   const [initialDate, setInitialDate] = useState(
-    new Date().toISOString().split("T")[0]
+    new Date()
+      .toLocaleDateString("en-CA", { timeZone: "America/Sao_Paulo" })
+      .split("-")
+      .map((part, index) => (index === 0 ? part : part.padStart(2, "0")))
+      .join("-")
   );
+
+  console.log(initialDate);
   const fiveDaysLater = new Date();
   fiveDaysLater.setDate(fiveDaysLater.getDate() + 5);
   const [finalDate, setFinalDate] = useState(
