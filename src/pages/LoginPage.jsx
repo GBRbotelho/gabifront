@@ -29,7 +29,7 @@ function LoginPage() {
       // Salvar o token no localStorage
       localStorage.setItem("token", response.token);
       loginWithToken(response.token);
-      navigate("/dashboard/clientes");
+      navigate("/dashboard/");
     } else {
       setLoginError(response.error);
     }

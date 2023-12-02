@@ -16,6 +16,9 @@ function DashboardPage() {
       .join("-")
   );
   const [searchTerm, setSearchTerm] = useState("");
+  const [concluidos, setConcluidos] = useState(true);
+  const [faltas, setFaltas] = useState(true);
+  const [agendados, setAgendados] = useState(true);
 
   const fiveDaysLater = new Date();
   fiveDaysLater.setDate(fiveDaysLater.getDate() + 5);
@@ -47,6 +50,14 @@ function DashboardPage() {
 
       return dateA - dateB;
     })
+    .filter((consultationItem) => {
+      return (
+        (concluidos && consultationItem.status === "Concluído") ||
+        (agendados && consultationItem.status === "Agendado") ||
+        (faltas && consultationItem.status === "Faltou")
+      );
+    })
+
     .filter((consultationItem) => {
       const formattedDate = new Date(
         new Date(consultationItem.date).getTime() + 24 * 60 * 60 * 1000
@@ -126,6 +137,12 @@ function DashboardPage() {
             setInitialDate={setInitialDate}
             finalDate={finalDate}
             setFinalDate={setFinalDate}
+            concluidos={concluidos}
+            setConcluidos={setConcluidos}
+            agendados={agendados}
+            setAgendados={setAgendados}
+            faltas={faltas}
+            setFaltas={setFaltas}
           />
         )}
 
