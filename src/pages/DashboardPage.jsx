@@ -16,8 +16,8 @@ function DashboardPage() {
       .join("-")
   );
   const [searchTerm, setSearchTerm] = useState("");
-  const [concluidos, setConcluidos] = useState(true);
-  const [faltas, setFaltas] = useState(true);
+  const [concluidos, setConcluidos] = useState(false);
+  const [faltas, setFaltas] = useState(false);
   const [agendados, setAgendados] = useState(true);
 
   const fiveDaysLater = new Date();
