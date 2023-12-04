@@ -1,5 +1,8 @@
+require("dotenv").config();
+const ROTA = process.env.ROTA || "http://localhost:3000/";
+
 export async function login(email, password) {
-  const response = await fetch("http://localhost:3000/users/login", {
+  const response = await fetch(`${ROTA}/users/login`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -19,7 +22,7 @@ export async function verifyToken() {
   const authToken = localStorage.getItem("token");
 
   if (authToken) {
-    const response = await fetch("http://localhost:3000/users/refresh-token", {
+    const response = await fetch(`${ROTA}/users/refresh-token`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -52,7 +55,7 @@ export async function verifyToken() {
 
 export async function useGetUserData(token) {
   try {
-    const response = await fetch(`http://localhost:3000/users/data`, {
+    const response = await fetch(`${ROTA}/users/data`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

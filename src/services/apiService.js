@@ -1,7 +1,10 @@
+require("dotenv").config();
+const ROTA = process.env.ROTA || "http://localhost:3000/";
+
 export async function fetchClients() {
   try {
     const token = await localStorage.getItem("token");
-    const response = await fetch("http://localhost:3000/clients", {
+    const response = await fetch(`${ROTA}/clients`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -23,7 +26,7 @@ export async function fetchClients() {
 export async function fetchUsers() {
   try {
     const token = await localStorage.getItem("token");
-    const response = await fetch("http://localhost:3000/users", {
+    const response = await fetch(`${ROTA}/users`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -45,7 +48,7 @@ export async function fetchUsers() {
 export async function fetchServices() {
   try {
     const token = await localStorage.getItem("token");
-    const response = await fetch("http://localhost:3000/services", {
+    const response = await fetch(`${ROTA}/services`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -66,7 +69,7 @@ export async function fetchServices() {
 
 export async function addClient(token, clientData) {
   try {
-    const response = await fetch("http://localhost:3000/clients", {
+    const response = await fetch(`${ROTA}/clients`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -91,7 +94,7 @@ export async function addClient(token, clientData) {
 
 export async function addUsers(token, userData) {
   try {
-    const response = await fetch("http://localhost:3000/users", {
+    const response = await fetch(`${ROTA}/users`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -113,7 +116,7 @@ export async function addUsers(token, userData) {
 
 export async function addService(token, serviceData) {
   try {
-    const response = await fetch("http://localhost:3000/services", {
+    const response = await fetch(`${ROTA}/services`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -134,7 +137,7 @@ export async function addService(token, serviceData) {
 
 export async function deleteClient(clientId, token) {
   try {
-    const response = await fetch(`http://localhost:3000/clients/${clientId}`, {
+    const response = await fetch(`${ROTA}/clients/${clientId}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -157,16 +160,13 @@ export async function deleteClient(clientId, token) {
 
 export async function deleteService(serviceId, token) {
   try {
-    const response = await fetch(
-      `http://localhost:3000/services/${serviceId}`,
-      {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `${token}`,
-        },
-      }
-    );
+    const response = await fetch(`${ROTA}/services/${serviceId}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `${token}`,
+      },
+    });
 
     if (!response.ok) {
       // Se a resposta do servidor não for bem-sucedida, lance um erro
@@ -183,7 +183,7 @@ export async function deleteService(serviceId, token) {
 
 export async function deleteUser(userId, token) {
   try {
-    const response = await fetch(`http://localhost:3000/users/${userId}`, {
+    const response = await fetch(`${ROTA}/users/${userId}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -206,16 +206,13 @@ export async function deleteUser(userId, token) {
 
 export async function useGetId(userId, subroute, token) {
   try {
-    const response = await fetch(
-      `http://localhost:3000/${subroute}/${userId}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `${token}`,
-        },
-      }
-    );
+    const response = await fetch(`${ROTA}/${subroute}/${userId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `${token}`,
+      },
+    });
 
     if (!response.ok) {
       // Se a resposta do servidor não for bem-sucedida, lance um erro
@@ -233,17 +230,14 @@ export async function useGetId(userId, subroute, token) {
 
 export async function useUpdateData(userId, subroute, dataToUpdate, token) {
   try {
-    const response = await fetch(
-      `http://localhost:3000/${subroute}/${userId}`,
-      {
-        method: "PUT", // Use o método PUT para atualizar dados
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `${token}`,
-        },
-        body: JSON.stringify(dataToUpdate), // Envie os dados a serem atualizados no corpo da solicitação
-      }
-    );
+    const response = await fetch(`${ROTA}/${subroute}/${userId}`, {
+      method: "PUT", // Use o método PUT para atualizar dados
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `${token}`,
+      },
+      body: JSON.stringify(dataToUpdate), // Envie os dados a serem atualizados no corpo da solicitação
+    });
 
     if (!response.ok) {
       // Se a resposta do servidor não for bem-sucedida, lance um erro
@@ -261,7 +255,7 @@ export async function useUpdateData(userId, subroute, dataToUpdate, token) {
 
 export async function usePostData(token, subroute, dataPost) {
   try {
-    const response = await fetch(`http://localhost:3000/${subroute}`, {
+    const response = await fetch(`${ROTA}/${subroute}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -281,16 +275,13 @@ export async function usePostData(token, subroute, dataPost) {
 
 export async function useDeleteData(userId, subroute, token) {
   try {
-    const response = await fetch(
-      `http://localhost:3000/${subroute}/${userId}`,
-      {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `${token}`,
-        },
-      }
-    );
+    const response = await fetch(`${ROTA}/${subroute}/${userId}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `${token}`,
+      },
+    });
 
     if (!response.ok) {
       throw new Error(`Erro ao excluir(status ${response.status})`);
@@ -304,7 +295,7 @@ export async function useDeleteData(userId, subroute, token) {
 
 export async function useGetAll(subroute, token) {
   try {
-    const response = await fetch(`http://localhost:3000/${subroute}`, {
+    const response = await fetch(`${ROTA}/${subroute}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
