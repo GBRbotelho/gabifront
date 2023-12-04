@@ -1,6 +1,7 @@
-const ROTA = "https://gabiapi.vercel.app";
+const ROTA = import.meta.env.VITE_ROTA;
 
 export async function login(email, password) {
+  console.log(ROTA);
   const response = await fetch(`${ROTA}/users/login`, {
     method: "POST",
     headers: {

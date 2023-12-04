@@ -1,4 +1,4 @@
-const ROTA = "https://gabiapi.vercel.app";
+const ROTA = import.meta.env.VITE_ROTA;
 
 export async function fetchClients() {
   try {
