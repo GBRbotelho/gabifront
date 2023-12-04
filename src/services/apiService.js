@@ -1,5 +1,4 @@
-require("dotenv").config();
-const ROTA = process.env.ROTA || "http://localhost:3000/";
+const ROTA = "https://gabiapi.vercel.app";
 
 export async function fetchClients() {
   try {
