@@ -153,8 +153,8 @@ export default function ModalConsultation({
               <option value="" disabled>
                 Selecione um tratamento
               </option>
-              <option key="visita" value="Visita">
-                  Visita (Não vinculada a nenhum tratamento)
+              <option key="avulso" value="Avulso">
+                Avulso (Não vinculada a nenhum tratamento)
               </option>
               {treatment
                 .filter(
@@ -199,10 +199,12 @@ export default function ModalConsultation({
               placeholder="Selecione os produtos usados"
               value={selectedProductIds}
               onChange={handleChangeProducts}
-              options={products.filter((product)=>product.status === "Disponível").map((product) => ({
-                value: product._id,
-                label: product.name,
-              }))}
+              options={products
+                .filter((product) => product.status === "Disponível")
+                .map((product) => ({
+                  value: product._id,
+                  label: product.name,
+                }))}
               isDisabled={!isEditable}
             />
           </div>

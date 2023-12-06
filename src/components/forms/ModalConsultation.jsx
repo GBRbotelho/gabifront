@@ -75,18 +75,22 @@ export default function ModalConsultation({
               <option value="" disabled>
                 Selecione um tratamento
               </option>
-              <option key="visita" value="Visita">
-                  Visita (Não vinculada a nenhum tratamento)
-                </option>
-              {treatment.filter((treatmentItem)=>treatmentItem.status === "Em andamento").map((treatmentItem) => (
-                <option key={treatmentItem._id} value={treatmentItem._id}>
-                  {service
-                    .filter(
-                      (serviceItem) => serviceItem._id === treatmentItem.name
-                    )
-                    .map((item) => item.name)}
-                </option>
-              ))}
+              <option key="avulso" value="Avulso">
+                Avulso (Não vinculada a nenhum tratamento)
+              </option>
+              {treatment
+                .filter(
+                  (treatmentItem) => treatmentItem.status === "Em andamento"
+                )
+                .map((treatmentItem) => (
+                  <option key={treatmentItem._id} value={treatmentItem._id}>
+                    {service
+                      .filter(
+                        (serviceItem) => serviceItem._id === treatmentItem.name
+                      )
+                      .map((item) => item.name)}
+                  </option>
+                ))}
             </select>
           </div>
         </div>

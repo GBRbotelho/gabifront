@@ -488,13 +488,17 @@ export default function ClientViewerPage() {
               </div>
             </div>
             <div className="md:w-full flex justify-between mt-3">
-              {user && user.accountLevel >= 1 ? <button
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4 md:mt-0"
-                onClick={openModal}
-              >
-                Abrir Ficha Cadastral
-              </button>: <div />}
-              
+              {user && user.accountLevel >= 1 ? (
+                <button
+                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4 md:mt-0"
+                  onClick={openModal}
+                >
+                  Abrir Ficha Cadastral
+                </button>
+              ) : (
+                <div />
+              )}
+
               <button
                 className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-4 md:mt-0"
                 onClick={handleDelete}
@@ -686,17 +690,17 @@ export default function ClientViewerPage() {
                             {consultationItem.time}
                           </td>
                           <td className="px-4 py-3 border text-center">
-                            { consultationItem.service === "Visita" ? consultationItem.service :
-                              service.find(
-                                (serviceItem) =>
-                                  serviceItem._id ===
-                                  treatment.filter(
-                                    (treatmentItem) =>
-                                      treatmentItem._id ===
-                                      consultationItem.service
-                                  )[0].name
-                              ).name
-                            }
+                            {consultationItem.service === "Avulso"
+                              ? consultationItem.service
+                              : service.find(
+                                  (serviceItem) =>
+                                    serviceItem._id ===
+                                    treatment.filter(
+                                      (treatmentItem) =>
+                                        treatmentItem._id ===
+                                        consultationItem.service
+                                    )[0].name
+                                ).name}
                           </td>
                           {consultationItem.status === "Concluído" && (
                             <td className="px-4 py-3 border text-center">
