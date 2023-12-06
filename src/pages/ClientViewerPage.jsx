@@ -11,6 +11,7 @@ import ModalTreatment from "../components/forms/ModalTreatment";
 import ModalConsultation from "../components/forms/ModalConsultation";
 import OpenConsultation from "../components/forms/OpenConsultation";
 import OpenTreatment from "../components/forms/OpenTreatment";
+import { useAuth } from "../utils/AuthContext";
 
 export default function ClientViewerPage() {
   const [tempClient, setTempClient] = useState({});
@@ -29,6 +30,7 @@ export default function ClientViewerPage() {
   const { id } = useParams();
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const handleDelete = async () => {
     const response = await useDeleteData(id, "clients", token);
@@ -486,12 +488,13 @@ export default function ClientViewerPage() {
               </div>
             </div>
             <div className="md:w-full flex justify-between mt-3">
-              <button
+              {user && user.accountLevel >= 1 ? <button
                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4 md:mt-0"
                 onClick={openModal}
               >
                 Abrir Ficha Cadastral
-              </button>
+              </button>: <div />}
+              
               <button
                 className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-4 md:mt-0"
                 onClick={handleDelete}

@@ -1,9 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { useAuth } from "../../utils/AuthContext";
 
 export default function Sidebar() {
   const [isOrdersOpen, setIsOrdersOpen] = useState(false);
   const [isServicesOpen, setIsServicesOpen] = useState(false);
+  const {user} = useAuth();
+
+
 
   // Manipulador de clique para o overlay
   const handleSidebarOverlayClick = (e) => {
@@ -83,7 +87,7 @@ export default function Sidebar() {
               </li>
             </ul>
           </div>
-          <div className="mb-1 group">
+          {user && user.accountLevel >= 2 && <div className="mb-1 group">
             <Link
               to={"/dashboard/usuarios"}
               className="flex items-center py-2 px-4 text-emerald-300 hover:bg-emerald-950 hover:text-emerald-100 rounded-md group-[.active]:bg-emerald-800 group-[.active]:text-white group-[.selected]:bg-emerald-950 group-[.selected]:text-emerald-100"
@@ -91,7 +95,9 @@ export default function Sidebar() {
               <i className="ri-settings-2-line mr-3 text-lg"></i>
               <span className="text-sm">Usuarios</span>
             </Link>
-          </div>
+          </div>}
+          
+          
         </div>
       </div>
       <div

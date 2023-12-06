@@ -16,6 +16,7 @@ function DashboardLayout({ children }) {
         navigate("/confirmation");
       }
     }
+    console.log(user)
   }, [user, token]);
 
   return (
