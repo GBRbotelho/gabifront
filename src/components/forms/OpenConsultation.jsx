@@ -153,6 +153,9 @@ export default function ModalConsultation({
               <option value="" disabled>
                 Selecione um tratamento
               </option>
+              <option key="visita" value="Visita">
+                  Visita (Não vinculada a nenhum tratamento)
+              </option>
               {treatment
                 .filter(
                   (treatmentItem) =>
