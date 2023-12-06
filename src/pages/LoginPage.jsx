@@ -69,11 +69,11 @@ function LoginPage() {
             {loginError && (
               <div className="text-red-500 text-sm mt-2">{loginError}</div>
             )}
-            <div className="flex w-full justify-center">
+            {/* <div className="flex w-full justify-center">
               <a>
                 <span className="text-blue-400">Esqueci minha senha</span>
               </a>
-            </div>
+            </div> */}
             <div className="flex flex-col w-full justify-center sm:w-auto sm:flex-row p-4">
               <button
                 type="submit"
