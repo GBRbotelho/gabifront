@@ -686,7 +686,7 @@ export default function ClientViewerPage() {
                             {consultationItem.time}
                           </td>
                           <td className="px-4 py-3 border text-center">
-                            {
+                            { consultationItem.service === "Visita" ? consultationItem.service :
                               service.find(
                                 (serviceItem) =>
                                   serviceItem._id ===
