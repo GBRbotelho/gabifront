@@ -21,17 +21,59 @@ export default function ModalConsultation({
     });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    consultation.client = id;
-    const token = localStorage.getItem("token");
-    const response = await usePostData(token, "consultations", consultation);
+  const handleError = (errorMessage) => {
+    setError(errorMessage);
 
-    if (response.error) {
-      setError(response.error);
-    } else {
-      reloadConsultations();
-      closeModalConsultation();
+    setTimeout(() => {
+      setError(null);
+    }, 3000);
+  };
+
+  const handleSubmit = async (e) => {
+    try {
+      e.preventDefault();
+      const currentDate = new Date();
+      const consultationDate = new Date(consultation.date);
+      consultationDate.setDate(consultationDate.getDate() + 1);
+      currentDate.setHours(0, 0, 0, 0);
+      consultationDate.setHours(0, 0, 0, 0);
+      if (consultationDate < currentDate) {
+        throw {
+          error: "A data da consulta não pode ser menor que a data de hoje",
+        };
+      }
+      if (consultationDate.toDateString() === currentDate.toDateString()) {
+        const currentHour = new Date().getHours();
+        const currentMinutes = new Date().getMinutes();
+
+        const consultationHour = parseInt(consultation.time.split(":")[0], 10);
+        const consultationMinutes = parseInt(
+          consultation.time.split(":")[1],
+          10
+        );
+        if (
+          consultationHour < currentHour ||
+          (consultationHour === currentHour &&
+            consultationMinutes <= currentMinutes)
+        ) {
+          throw {
+            error:
+              "A hora da consulta não pode ser menor ou igual à hora atual",
+          };
+        }
+      }
+      consultation.client = id;
+      const token = localStorage.getItem("token");
+      const response = await usePostData(token, "consultations", consultation);
+
+      if (response.error) {
+        setError(response.error);
+      } else {
+        reloadConsultations();
+        closeModalConsultation();
+      }
+    } catch (err) {
+      handleError(err.error);
     }
   };
 
@@ -102,7 +144,7 @@ export default function ModalConsultation({
             </select>
           </div>
         </div>
-        {error && <p>{error}</p>}
+        {error && <p className="text-red-500">{error}</p>}
         <div className="flex justify-between mt-3">
           <button
             className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"

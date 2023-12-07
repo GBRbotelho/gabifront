@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useUpdateData, useGetAll } from "../../services/apiService";
 import Select from "react-select";
+import ModalEditConsultation from "./ModalEditConsultation";
 
 export default function ModalConsultation({
   closeSelectItem,
@@ -18,6 +19,7 @@ export default function ModalConsultation({
   const [products, setProducts] = useState([]);
   const [selectedProductIds, setSelectedProductIds] = useState([]);
   const [tempSelectedProductIds, setTempSelectedProductIds] = useState([]);
+  const [confirmConsultation, setConfirmConsultation] = useState(false);
 
   useEffect(() => {
     setTempConsultation(consultationItem);
@@ -81,22 +83,49 @@ export default function ModalConsultation({
     });
   };
 
+  const handleError = (errorMessage) => {
+    setError(errorMessage);
+
+    setTimeout(() => {
+      setError(null);
+    }, 3000);
+  };
+
+  const forceSave = async () => {
+    const token = localStorage.getItem("token");
+    const update = await useUpdateData(
+      consultationItem._id,
+      "consultations",
+      consultationItem,
+      token
+    );
+    setConsultationSelect(update);
+    setTempConsultation(update);
+    setTempSelectedProductIds(selectedProductIds);
+    setIsEditable(!isEditable);
+    reloadConsultations();
+  };
+
   const toggleSave = async () => {
     try {
-      const token = localStorage.getItem("token");
-      const update = await useUpdateData(
-        consultationItem._id,
-        "consultations",
-        consultationItem,
-        token
-      );
-      setConsultationSelect(update);
-      setTempConsultation(update);
-      setTempSelectedProductIds(selectedProductIds);
-      setIsEditable(!isEditable);
-      reloadConsultations();
+      if (consultationItem.status !== tempConsultation.status) {
+        setConfirmConsultation(true);
+      } else {
+        const token = localStorage.getItem("token");
+        const update = await useUpdateData(
+          consultationItem._id,
+          "consultations",
+          consultationItem,
+          token
+        );
+        setConsultationSelect(update);
+        setTempConsultation(update);
+        setTempSelectedProductIds(selectedProductIds);
+        setIsEditable(!isEditable);
+        reloadConsultations();
+      }
     } catch (err) {
-      setError(err.error);
+      handleError(err.error);
     }
   };
 
@@ -280,7 +309,7 @@ export default function ModalConsultation({
             </table>
           </div>
         </div>
-        {error && <p>{error}</p>}
+        {error && <p className="text-red-500">{error}</p>}
         <div className="flex justify-between mt-3">
           <button
             className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
@@ -288,33 +317,41 @@ export default function ModalConsultation({
           >
             Fechar
           </button>
-          <div className="">
-            {isEditable ? (
-              <>
+          {tempConsultation.status === "Agendado" && (
+            <div className="">
+              {isEditable ? (
+                <>
+                  <button
+                    className=" bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded mr-1"
+                    onClick={toggleCancel}
+                  >
+                    <i className="ri-close-fill"></i>Cancel
+                  </button>
+                  <button
+                    className=" bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                    onClick={toggleSave}
+                  >
+                    <i className="ri-save-line"></i>Save
+                  </button>
+                </>
+              ) : (
                 <button
-                  className=" bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded mr-1"
-                  onClick={toggleCancel}
+                  className=" bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded"
+                  onClick={toggleEdit}
                 >
-                  <i className="ri-close-fill"></i>Cancel
+                  <i className="ri-pencil-fill"> </i>Edit
                 </button>
-                <button
-                  className=" bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-                  onClick={toggleSave}
-                >
-                  <i className="ri-save-line"></i>Save
-                </button>
-              </>
-            ) : (
-              <button
-                className=" bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded"
-                onClick={toggleEdit}
-              >
-                <i className="ri-pencil-fill"> </i>Edit
-              </button>
-            )}
-          </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
+      {confirmConsultation && (
+        <ModalEditConsultation
+          setConfirmConsultation={setConfirmConsultation}
+          forceSave={forceSave}
+        />
+      )}
     </div>
   );
 }

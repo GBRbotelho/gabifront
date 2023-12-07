@@ -12,6 +12,7 @@ import ModalConsultation from "../components/forms/ModalConsultation";
 import OpenConsultation from "../components/forms/OpenConsultation";
 import OpenTreatment from "../components/forms/OpenTreatment";
 import { useAuth } from "../utils/AuthContext";
+import ModalFiltrosClientTratamentos from "../components/forms/filtros/ModalFiltrosClientTratamentos";
 
 export default function ClientViewerPage() {
   const [tempClient, setTempClient] = useState({});
@@ -31,6 +32,16 @@ export default function ClientViewerPage() {
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
   const { user } = useAuth();
+  const [concluidos, setConcluidos] = useState(false);
+  const [andamentos, setAndamentos] = useState(true);
+  const [modalFiltersTrataments, setModalFiltersTrataments] = useState(false);
+
+  const DataTreatments = treatment.filter((consultationItem) => {
+    return (
+      (concluidos && consultationItem.status === "Concluído") ||
+      (andamentos && consultationItem.status === "Em andamento")
+    );
+  });
 
   const handleDelete = async () => {
     const response = await useDeleteData(id, "clients", token);
@@ -511,7 +522,14 @@ export default function ClientViewerPage() {
             <h2 className="font-semibold text-xl text-gray-600 mt-6">
               Tratamentos
             </h2>
-            <div className="flex justify-end w-full overflow-y-auto">
+            <div className="flex justify-end w-full overflow-y-auto my-1">
+              <button
+                type="button"
+                className="text-black rounded bg-gray-200 w-28 h-9 hover:bg-gray-50 hover:text-gray-600"
+                onClick={() => setModalFiltersTrataments(true)}
+              >
+                <i className="ri-equalizer-line px-2"></i>Filtros
+              </button>
               <button
                 className=" text-gray-400 w-8 h-8 rounded flex items-center justify-center hover:bg-gray-50 hover:text-green-600"
                 onClick={openModalTreatment}
@@ -537,8 +555,8 @@ export default function ClientViewerPage() {
                   </tr>
                 </thead>
                 <tbody className="bg-white">
-                  {treatment.length > 0 ? (
-                    treatment.map((treatmentItem) => (
+                  {DataTreatments.length > 0 ? (
+                    DataTreatments.map((treatmentItem) => (
                       <tr key={treatmentItem._id} className="text-gray-700">
                         <td className="px-4 py-3 border text-center">
                           {service
@@ -670,10 +688,10 @@ export default function ClientViewerPage() {
                           const timeB = new Date(
                             `1970-01-01T${b.time}`
                           ).getTime();
-                          return timeA - timeB;
+                          return timeB - timeA;
                         }
 
-                        return dateA - dateB;
+                        return dateB - dateA;
                       })
                       .map((consultationItem) => (
                         <tr
@@ -731,12 +749,20 @@ export default function ClientViewerPage() {
                             <div className="flex items-center space-x-2">
                               <div>
                                 <button
-                                  className="w-8 h-8 text-yellow-500 transform hover:scale-110 transition-transform"
+                                  className={`w-8 h-8 text-${
+                                    consultationItem.status === "Agendado"
+                                      ? "yellow"
+                                      : "green"
+                                  }-500 transform hover:scale-110 transition-transform`}
                                   onClick={() =>
                                     openSelectItem(consultationItem)
                                   }
                                 >
-                                  <i className="ri-pencil-line text-3xl"></i>
+                                  {consultationItem.status === "Agendado" ? (
+                                    <i className="ri-pencil-line text-3xl"></i>
+                                  ) : (
+                                    <i className="ri-eye-line text-3xl"></i>
+                                  )}
                                 </button>
                               </div>
 
@@ -803,6 +829,15 @@ export default function ClientViewerPage() {
                 service={service}
                 setTreatmentSelect={setTreatmentSelect}
                 consultations={consultation}
+              />
+            )}
+            {modalFiltersTrataments && (
+              <ModalFiltrosClientTratamentos
+                concluidos={concluidos}
+                setConcluidos={setConcluidos}
+                andamentos={andamentos}
+                setAndamentos={setAndamentos}
+                setModalFiltersTrataments={setModalFiltersTrataments}
               />
             )}
           </div>
