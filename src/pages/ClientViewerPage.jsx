@@ -754,7 +754,7 @@ export default function ClientViewerPage() {
                             style={{ width: "50px" }}
                             key={`options_${consultationItem._id}`}
                           >
-                            <div className="flex items-center space-x-2">
+                            <div className="flex justify-center space-x-2">
                               <div>
                                 <button
                                   className={`w-8 h-8 text-${
@@ -773,17 +773,18 @@ export default function ClientViewerPage() {
                                   )}
                                 </button>
                               </div>
-
-                              <button
-                                className="w-8 h-8 text-red-500 transform hover:scale-110 transition-transform"
-                                onClick={() => {
-                                  toggleDeleteConsultation(
-                                    consultationItem._id
-                                  );
-                                }}
-                              >
-                                <i className="ri-delete-bin-5-line text-3xl"></i>
-                              </button>
+                              {consultationItem.status === "Agendado" && (
+                                <button
+                                  className="w-8 h-8 text-red-500 transform hover:scale-110 transition-transform"
+                                  onClick={() => {
+                                    toggleDeleteConsultation(
+                                      consultationItem._id
+                                    );
+                                  }}
+                                >
+                                  <i className="ri-delete-bin-5-line text-3xl"></i>
+                                </button>
+                              )}
                             </div>
                           </td>
                         </tr>
