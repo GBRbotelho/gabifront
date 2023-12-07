@@ -10,6 +10,7 @@ export default function ModalConsultation({
   consultationItem,
   setConsultationSelect,
   service,
+  consultations,
 }) {
   const [error, setError] = useState("");
   const [isEditable, setIsEditable] = useState(false);
@@ -157,11 +158,17 @@ export default function ModalConsultation({
                 Avulso (Não vinculada a nenhum tratamento)
               </option>
               {treatment
-                .filter(
-                  (treatmentItem) =>
-                    treatmentItem.status === "Em andamento" ||
+                .filter((treatmentItem) => {
+                  return (
+                    (treatmentItem.status === "Em andamento" &&
+                      consultations.filter(
+                        (consultationItem) =>
+                          consultationItem.service === treatmentItem._id &&
+                          consultationItem.status !== "Faltou"
+                      ).length < treatmentItem.totalSessions) ||
                     treatmentItem._id === consultationItem.service
-                )
+                  );
+                })
                 .map((treatmentItem) => (
                   <option key={treatmentItem._id} value={treatmentItem._id}>
                     {

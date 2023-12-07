@@ -780,6 +780,7 @@ export default function ClientViewerPage() {
                 reloadConsultations={reloadConsultations}
                 treatment={treatment}
                 service={service}
+                consultations={consultation}
               />
             )}
 
@@ -791,6 +792,7 @@ export default function ClientViewerPage() {
                 consultationItem={consultationSelect}
                 setConsultationSelect={setConsultationSelect}
                 service={service}
+                consultations={consultation}
               />
             )}
             {treatmentSelect && (
@@ -800,6 +802,7 @@ export default function ClientViewerPage() {
                 treatmentSelect={treatmentSelect}
                 service={service}
                 setTreatmentSelect={setTreatmentSelect}
+                consultations={consultation}
               />
             )}
           </div>

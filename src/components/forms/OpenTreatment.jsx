@@ -2,18 +2,18 @@ import React, { useState, useEffect } from "react";
 import { useUpdateData } from "../../services/apiService";
 
 export default function ModalTreatment({
-    closeTreatmentSelect,
-    treatmentSelect,
-    service,
-    reloadTreatments,
-    setTreatmentSelect
-
+  closeTreatmentSelect,
+  treatmentSelect,
+  service,
+  reloadTreatments,
+  setTreatmentSelect,
+  consultations,
 }) {
-const [error, setError] = useState(null);
-const [isEditable, setIsEditable] = useState(false);
-const [tempTreatment, setTempTreatment] = useState({});
+  const [error, setError] = useState(null);
+  const [isEditable, setIsEditable] = useState(false);
+  const [tempTreatment, setTempTreatment] = useState({});
 
-useEffect(() => {
+  useEffect(() => {
     setTempTreatment(treatmentSelect);
   }, []);
 
@@ -38,8 +38,30 @@ useEffect(() => {
     });
   };
 
+  const handleError = (errorMessage) => {
+    setError(errorMessage);
+
+    setTimeout(() => {
+      setError(null);
+    }, 3000);
+  };
+
   const toggleSave = async () => {
     try {
+      if (
+        treatmentSelect.totalSessions <
+        consultations.filter(
+          (consultationItem) =>
+            consultationItem.service === treatmentSelect._id &&
+            consultationItem.status !== "Faltou"
+        ).length
+      ) {
+        throw {
+          error:
+            "O nº de total sessões alterada é menor que o nº de sessões abertas(Concluidas ou Agendadas) para esse tratamento",
+        };
+      }
+
       const token = localStorage.getItem("token");
       const update = await useUpdateData(
         treatmentSelect._id,
@@ -52,7 +74,7 @@ useEffect(() => {
       setIsEditable(!isEditable);
       reloadTreatments();
     } catch (err) {
-      setError(err.error);
+      handleError(err.error);
     }
   };
 
@@ -129,7 +151,7 @@ useEffect(() => {
             />
           </div>
         </div>
-        {error && <p>{error}</p>}
+        {error && <p className="text-red-500">{error}</p>}
         <div className="flex justify-between mt-3">
           <button
             className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
