@@ -13,6 +13,7 @@ import OpenConsultation from "../components/forms/OpenConsultation";
 import OpenTreatment from "../components/forms/OpenTreatment";
 import { useAuth } from "../utils/AuthContext";
 import ModalFiltrosClientTratamentos from "../components/forms/filtros/ModalFiltrosClientTratamentos";
+import ModalFiltrosClientConsultas from "../components/forms/filtros/ModalFiltrosClientConsultas";
 
 export default function ClientViewerPage() {
   const [tempClient, setTempClient] = useState({});
@@ -35,11 +36,23 @@ export default function ClientViewerPage() {
   const [concluidos, setConcluidos] = useState(false);
   const [andamentos, setAndamentos] = useState(true);
   const [modalFiltersTrataments, setModalFiltersTrataments] = useState(false);
+  const [modalFiltersConsultas, setModalFiltersConsultas] = useState(false);
+  const [concluidosConsultas, setConcluidosConsultas] = useState(false);
+  const [agendados, setAgendados] = useState(true);
+  const [faltas, setFaltas] = useState(false);
 
   const DataTreatments = treatment.filter((consultationItem) => {
     return (
       (concluidos && consultationItem.status === "Concluído") ||
       (andamentos && consultationItem.status === "Em andamento")
+    );
+  });
+
+  const DataConsultations = consultation.filter((consultationItem) => {
+    return (
+      (concluidosConsultas && consultationItem.status === "Concluído") ||
+      (agendados && consultationItem.status === "Agendado") ||
+      (faltas && consultationItem.status === "Faltou")
     );
   });
 
@@ -662,7 +675,14 @@ export default function ClientViewerPage() {
             <h2 className="font-semibold text-xl text-gray-600 mt-6">
               Consultas
             </h2>
-            <div className="flex justify-end w-full overflow-y-auto">
+            <div className="flex justify-end w-full my-1 overflow-y-auto">
+              <button
+                type="button"
+                className="text-black rounded bg-gray-200 w-28 h-9 hover:bg-gray-50 hover:text-gray-600"
+                onClick={() => setModalFiltersConsultas(true)}
+              >
+                <i className="ri-equalizer-line px-2"></i>Filtros
+              </button>
               <button
                 className=" text-gray-400 w-8 h-8 rounded flex items-center justify-center hover:bg-gray-50 hover:text-green-600"
                 onClick={openModalConsultation}
@@ -682,113 +702,106 @@ export default function ClientViewerPage() {
                   </tr>
                 </thead>
                 <tbody className="bg-white">
-                  {consultation.length > 0 ? (
-                    consultation
-                      .sort((a, b) => {
-                        const dateA = new Date(a.date).getTime();
-                        const dateB = new Date(b.date).getTime();
+                  {DataConsultations.length > 0 ? (
+                    DataConsultations.sort((a, b) => {
+                      const dateA = new Date(a.date).getTime();
+                      const dateB = new Date(b.date).getTime();
 
-                        if (dateA === dateB) {
-                          // Se as datas são iguais, comparar pelos horários
-                          const timeA = new Date(
-                            `1970-01-01T${a.time}`
-                          ).getTime();
-                          const timeB = new Date(
-                            `1970-01-01T${b.time}`
-                          ).getTime();
-                          return timeB - timeA;
-                        }
+                      if (dateA === dateB) {
+                        // Se as datas são iguais, comparar pelos horários
+                        const timeA = new Date(
+                          `1970-01-01T${a.time}`
+                        ).getTime();
+                        const timeB = new Date(
+                          `1970-01-01T${b.time}`
+                        ).getTime();
+                        return timeA - timeB;
+                      }
 
-                        return dateB - dateA;
-                      })
-                      .map((consultationItem) => (
-                        <tr
-                          key={consultationItem._id}
-                          className="text-gray-700"
+                      return dateA - dateB;
+                    }).map((consultationItem) => (
+                      <tr key={consultationItem._id} className="text-gray-700">
+                        <td className="px-4 py-3 border text-center">
+                          {new Date(
+                            new Date(consultationItem.date).getTime() +
+                              24 * 60 * 60 * 1000
+                          ).toLocaleDateString("pt-BR")}
+                        </td>
+                        <td className="px-4 py-3 border text-center">
+                          {consultationItem.time}
+                        </td>
+                        <td className="px-4 py-3 border text-center">
+                          {consultationItem.service === "Avulso"
+                            ? consultationItem.service
+                            : service.find(
+                                (serviceItem) =>
+                                  serviceItem._id ===
+                                  treatment.filter(
+                                    (treatmentItem) =>
+                                      treatmentItem._id ===
+                                      consultationItem.service
+                                  )[0].name
+                              ).name}
+                        </td>
+                        {consultationItem.status === "Concluído" && (
+                          <td className="px-4 py-3 border text-center">
+                            <span className="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-sm">
+                              {consultationItem.status}
+                            </span>
+                          </td>
+                        )}
+                        {consultationItem.status === "Faltou" && (
+                          <td className="px-4 py-3 border text-center">
+                            <span className="px-2 py-1 font-semibold leading-tight text-red-700 bg-red-100 rounded-sm">
+                              {consultationItem.status}
+                            </span>
+                          </td>
+                        )}
+                        {consultationItem.status === "Agendado" && (
+                          <td className="px-4 py-3 border text-center">
+                            <span className="px-2 py-1 font-semibold leading-tight text-orange-700 bg-orange-100 rounded-sm">
+                              {consultationItem.status}
+                            </span>
+                          </td>
+                        )}
+                        <td
+                          className="px-2 py-3 border options-cell"
+                          style={{ width: "50px" }}
+                          key={`options_${consultationItem._id}`}
                         >
-                          <td className="px-4 py-3 border text-center">
-                            {new Date(
-                              new Date(consultationItem.date).getTime() +
-                                24 * 60 * 60 * 1000
-                            ).toLocaleDateString("pt-BR")}
-                          </td>
-                          <td className="px-4 py-3 border text-center">
-                            {consultationItem.time}
-                          </td>
-                          <td className="px-4 py-3 border text-center">
-                            {consultationItem.service === "Avulso"
-                              ? consultationItem.service
-                              : service.find(
-                                  (serviceItem) =>
-                                    serviceItem._id ===
-                                    treatment.filter(
-                                      (treatmentItem) =>
-                                        treatmentItem._id ===
-                                        consultationItem.service
-                                    )[0].name
-                                ).name}
-                          </td>
-                          {consultationItem.status === "Concluído" && (
-                            <td className="px-4 py-3 border text-center">
-                              <span className="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-sm">
-                                {consultationItem.status}
-                              </span>
-                            </td>
-                          )}
-                          {consultationItem.status === "Faltou" && (
-                            <td className="px-4 py-3 border text-center">
-                              <span className="px-2 py-1 font-semibold leading-tight text-red-700 bg-red-100 rounded-sm">
-                                {consultationItem.status}
-                              </span>
-                            </td>
-                          )}
-                          {consultationItem.status === "Agendado" && (
-                            <td className="px-4 py-3 border text-center">
-                              <span className="px-2 py-1 font-semibold leading-tight text-orange-700 bg-orange-100 rounded-sm">
-                                {consultationItem.status}
-                              </span>
-                            </td>
-                          )}
-                          <td
-                            className="px-2 py-3 border options-cell"
-                            style={{ width: "50px" }}
-                            key={`options_${consultationItem._id}`}
-                          >
-                            <div className="flex justify-center space-x-2">
-                              <div>
-                                <button
-                                  className={`w-8 h-8 text-${
-                                    consultationItem.status === "Agendado"
-                                      ? "yellow"
-                                      : "green"
-                                  }-500 transform hover:scale-110 transition-transform`}
-                                  onClick={() =>
-                                    openSelectItem(consultationItem)
-                                  }
-                                >
-                                  {consultationItem.status === "Agendado" ? (
-                                    <i className="ri-pencil-line text-3xl"></i>
-                                  ) : (
-                                    <i className="ri-eye-line text-3xl"></i>
-                                  )}
-                                </button>
-                              </div>
-                              {consultationItem.status === "Agendado" && (
-                                <button
-                                  className="w-8 h-8 text-red-500 transform hover:scale-110 transition-transform"
-                                  onClick={() => {
-                                    toggleDeleteConsultation(
-                                      consultationItem._id
-                                    );
-                                  }}
-                                >
-                                  <i className="ri-delete-bin-5-line text-3xl"></i>
-                                </button>
-                              )}
+                          <div className="flex justify-center space-x-2">
+                            <div>
+                              <button
+                                className={`w-8 h-8 text-${
+                                  consultationItem.status === "Agendado"
+                                    ? "yellow"
+                                    : "green"
+                                }-500 transform hover:scale-110 transition-transform`}
+                                onClick={() => openSelectItem(consultationItem)}
+                              >
+                                {consultationItem.status === "Agendado" ? (
+                                  <i className="ri-pencil-line text-3xl"></i>
+                                ) : (
+                                  <i className="ri-eye-line text-3xl"></i>
+                                )}
+                              </button>
                             </div>
-                          </td>
-                        </tr>
-                      ))
+                            {consultationItem.status === "Agendado" && (
+                              <button
+                                className="w-8 h-8 text-red-500 transform hover:scale-110 transition-transform"
+                                onClick={() => {
+                                  toggleDeleteConsultation(
+                                    consultationItem._id
+                                  );
+                                }}
+                              >
+                                <i className="ri-delete-bin-5-line text-3xl"></i>
+                              </button>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    ))
                   ) : (
                     <tr>
                       <td
@@ -847,6 +860,17 @@ export default function ClientViewerPage() {
                 andamentos={andamentos}
                 setAndamentos={setAndamentos}
                 setModalFiltersTrataments={setModalFiltersTrataments}
+              />
+            )}
+            {modalFiltersConsultas && (
+              <ModalFiltrosClientConsultas
+                concluidos={concluidosConsultas}
+                setConcluidos={setConcluidosConsultas}
+                agendados={agendados}
+                setAgendados={setAgendados}
+                setModalFiltersConsultas={setModalFiltersConsultas}
+                faltas={faltas}
+                setFaltas={setFaltas}
               />
             )}
           </div>
