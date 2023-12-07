@@ -36,7 +36,7 @@ function Navbar() {
       <ul className="flex items-center text-sm ml-4">
         <li className="mr-2">
           <a href="#" className="text-gray-400 hover:text-gray-600 font-medium">
-            Dashboard
+            DASHBOARD
           </a>
         </li>
         <li className="text-gray-600 mr-2 font-medium">/</li>

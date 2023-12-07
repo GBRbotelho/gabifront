@@ -68,13 +68,20 @@ function DashboardPage() {
         clients.find((clientItem) => clientItem._id === consultationItem.client)
           ?.name || "";
 
+      // Converta para minúsculas antes de comparar
+      const searchTermLower = searchTerm.toLowerCase();
+
+      // Converta clientName e status para minúsculas antes de comparar
+      const clientNameLower = clientName.toLowerCase();
+      const statusLower = consultationItem.status?.toLowerCase() || "";
+
       // Adicione verificações para evitar erros se as propriedades estiverem indefinidas
       return (
-        (formattedDate && formattedDate.includes(searchTerm)) ||
-        (consultationItem.time && consultationItem.time.includes(searchTerm)) ||
-        (clientName && clientName.includes(searchTerm)) ||
-        (consultationItem.status &&
-          consultationItem.status.includes(searchTerm))
+        (formattedDate && formattedDate.includes(searchTermLower)) ||
+        (consultationItem.time &&
+          consultationItem.time.includes(searchTermLower)) ||
+        (clientNameLower && clientNameLower.includes(searchTermLower)) ||
+        (statusLower && statusLower.includes(searchTermLower))
       );
     });
 
@@ -216,7 +223,9 @@ function DashboardPage() {
               ) : (
                 <tr>
                   <td className="px-4 py-3 text-gray-700 border" colSpan="5">
-                    Não foram encontrados consultas para esse periodo de tempo.
+                    Não foram encontrados consultas para{" "}
+                    {searchTerm ? `"${searchTerm}" nesse ` : `esse`} periodo de
+                    tempo.
                   </td>
                 </tr>
               )}
