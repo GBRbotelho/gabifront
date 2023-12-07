@@ -95,7 +95,22 @@ export default function ModalTreatment({
                 !isEditable ? "gray-100" : "white"
               }`}
               value={treatmentSelect.name || ""}
-              onChange={handleChange}
+              onChange={(e) => {
+                if (
+                  consultations.filter((consultationItem) => {
+                    return (
+                      consultationItem.service === treatmentSelect._id &&
+                      consultationItem.status === "Concluído"
+                    );
+                  }).length > 0
+                ) {
+                  handleError(
+                    "O tipo de tratamento não pode ser alterado após uma consulta ter sido concluída"
+                  );
+                } else {
+                  handleChange(e);
+                }
+              }}
               disabled={!isEditable}
             >
               <option value="" disabled>
@@ -168,10 +183,10 @@ export default function ModalTreatment({
         {error && <p className="text-red-500">{error}</p>}
         <div className="flex justify-between mt-3">
           <button
-            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
             onClick={closeTreatmentSelect}
           >
-            Fechar
+            Concluído
           </button>
           <div className="">
             {isEditable ? (
