@@ -20,10 +20,10 @@ function DashboardPage() {
   const [faltas, setFaltas] = useState(false);
   const [agendados, setAgendados] = useState(true);
 
-  const fiveDaysLater = new Date();
-  fiveDaysLater.setDate(fiveDaysLater.getDate() + 5);
+  const sixDaysLater = new Date();
+  sixDaysLater.setDate(sixDaysLater.getDate() + 6);
   const [finalDate, setFinalDate] = useState(
-    fiveDaysLater.toISOString().split("T")[0]
+    sixDaysLater.toISOString().split("T")[0]
   );
   const token = localStorage.getItem("token");
   const DateFilter = consultations
@@ -97,7 +97,6 @@ function DashboardPage() {
 
   function toggleFilters() {
     setFilters(!filters);
-    console.log(filters);
   }
 
   return (
