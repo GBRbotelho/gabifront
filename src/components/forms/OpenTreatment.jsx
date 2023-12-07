@@ -118,7 +118,14 @@ export default function ModalTreatment({
                 !isEditable ? "gray-100" : "white"
               }`}
               value={treatmentSelect.price || ""}
-              onChange={handleChange}
+              onChange={(e) => {
+                const { value } = e.target;
+                if (value < 0) {
+                  handleError("O preço não pode ser negativo");
+                } else {
+                  handleChange(e);
+                }
+              }}
               disabled={!isEditable}
             />
           </div>
@@ -132,7 +139,14 @@ export default function ModalTreatment({
                 !isEditable ? "gray-100" : "white"
               }`}
               value={treatmentSelect.totalSessions || ""}
-              onChange={handleChange}
+              onChange={(e) => {
+                const { value } = e.target;
+                if (value <= 0) {
+                  handleError("O numero de sessões não pode ser negativo");
+                } else {
+                  handleChange(e);
+                }
+              }}
               disabled={!isEditable}
             />
           </div>
@@ -142,7 +156,7 @@ export default function ModalTreatment({
               type="text"
               name="description"
               id="description"
-              className={`h-10 border mt-1 rounded px-4 w-full bg-${
+              className={`h-28 border mt-1 rounded px-4 w-full bg-${
                 !isEditable ? "gray-100" : "white"
               }`}
               value={treatmentSelect.description || ""}

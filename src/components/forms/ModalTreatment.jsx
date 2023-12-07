@@ -11,6 +11,14 @@ export default function ModalTreatment({
   const [error, setError] = useState("");
   const { id } = useParams();
 
+  const handleError = (errorMessage) => {
+    setError(errorMessage);
+
+    setTimeout(() => {
+      setError(null);
+    }, 2000);
+  };
+
   const handleChange = (event) => {
     const { name, value } = event.target;
     setTreatment({
@@ -68,7 +76,14 @@ export default function ModalTreatment({
               id="price"
               className="h-10 border mt-1 rounded px-4 w-full bg-white"
               value={treatment.price || ""}
-              onChange={handleChange}
+              onChange={(e) => {
+                const { name, value } = e.target;
+                if (value < 0) {
+                  handleError("O preço não pode ser negativo");
+                } else {
+                  handleChange(e);
+                }
+              }}
             />
           </div>
           <div className="md:col-span-2">
@@ -79,7 +94,14 @@ export default function ModalTreatment({
               id="totalSessions"
               className="h-10 border mt-1 rounded px-4 w-full bg-white"
               value={treatment.totalSessions || ""}
-              onChange={handleChange}
+              onChange={(e) => {
+                const { name, value } = e.target;
+                if (value <= 0) {
+                  handleError("O numero de sessões não pode ser negativo");
+                } else {
+                  handleChange(e);
+                }
+              }}
             />
           </div>
           <div className="md:col-span-4">
@@ -88,13 +110,13 @@ export default function ModalTreatment({
               type="text"
               name="description"
               id="description"
-              className="h-10 border mt-1 rounded px-4 w-full bg-white"
+              className="h-28 border mt-1 rounded px-4 w-full bg-white"
               value={treatment.description || ""}
               onChange={handleChange}
             />
           </div>
         </div>
-        {error && <p>{error}</p>}
+        {error && <p className="text-red-500">{error}</p>}
         <div className="flex justify-between mt-3">
           <button
             className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"

@@ -43,6 +43,14 @@ export default function ClientViewerPage() {
     );
   });
 
+  const handleError = (errorMessage, setErr) => {
+    setErr(errorMessage);
+
+    setTimeout(() => {
+      setErr(null);
+    }, 2000);
+  };
+
   const handleDelete = async () => {
     const response = await useDeleteData(id, "clients", token);
     navigate("/dashboard/clientes");
@@ -63,7 +71,7 @@ export default function ClientViewerPage() {
         (consultationItem) => consultationItem.service === consultationId
       ).length > 0
     ) {
-      setErrorTreatment("Existe consultas com esse tratamento");
+      handleError("Existe consultas com esse tratamento", setErrorTreatment);
     } else {
       const response = await useDeleteData(consultationId, "treatments", token);
       reloadTreatments();

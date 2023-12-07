@@ -250,7 +250,7 @@ export default function ModalConsultation({
               type="text"
               name="description"
               id="description"
-              className={`h-10 border mt-1 rounded px-4 w-full bg-${
+              className={`h-28 border mt-1 rounded px-4 w-full bg-${
                 !isEditable ? "gray-100" : "white"
               }`}
               value={consultationItem.description || ""}
