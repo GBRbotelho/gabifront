@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { fetchClients, deleteClient } from "../services/apiService";
 import { Link } from "react-router-dom";
+import { useForm } from "../utils/useForm";
 
 function ClientsPage() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -96,13 +97,13 @@ function ClientsPage() {
                       className="px-4 py-3 text-ms font-semibold border"
                       key={`cpf_${client.id}`}
                     >
-                      {client.cpf}
+                      {useForm(client.cpf, "cpf")}
                     </td>
                     <td
                       className="px-4 py-3 text-xs border"
                       key={`phone_${client.id}`}
                     >
-                      {client.phone}
+                      {useForm(client.phone, "telefone")}
                     </td>
                     <td
                       className="px-4 py-3 text-sm border"
