@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { fetchClients, deleteClient } from "../services/apiService";
+import {
+  fetchClients,
+  deleteClient,
+  useGetId,
+  useGetAll,
+  useDeleteData,
+} from "../services/apiService";
 import { Link } from "react-router-dom";
 import { useForm } from "../utils/useForm";
 
@@ -7,6 +13,8 @@ function ClientsPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [clients, setClients] = useState([]);
   const [filters, setFilters] = useState(false);
+  const [error, setError] = useState(null);
+  const token = localStorage.getItem("token");
 
   const FilteredData = clients;
 
@@ -23,15 +31,49 @@ function ClientsPage() {
     fetchClientsData();
   }, []);
 
+  const handleError = (errorMessage) => {
+    setError(errorMessage);
+
+    setTimeout(() => {
+      setError(null);
+    }, 2000);
+  };
+
+  const reloadClients = async () => {
+    const response = await useGetAll("clients", token);
+    setClients(response);
+  };
+
   const handleDeleteClient = async (clientId) => {
     try {
-      const token = await localStorage.getItem("token");
-      const response = await deleteClient(clientId, token);
-
-      const updatedClients = clients.filter(
-        (client) => client._id !== clientId
+      const consultations = await useGetId(
+        clientId,
+        "consultations/client",
+        token
       );
-      setClients(updatedClients);
+
+      if (
+        consultations.filter(
+          (consultationItem) => consultationItem.status === "Agendado"
+        ).length > 0
+      ) {
+        handleError(
+          "Não pode excluir este cliente, porque existe consultas pendentes"
+        );
+      } else {
+        await useDeleteData(clientId, "consultations/client", token);
+        await useDeleteData(clientId, "treatments/client", token);
+
+        const response = await useDeleteData(clientId, "clients", token);
+        reloadClients();
+      }
+
+      // const response = await deleteClient(clientId, token);
+
+      // const updatedClients = clients.filter(
+      //   (client) => client._id !== clientId
+      // );
+      // setClients(updatedClients);
     } catch (error) {
       console.error("Erro ao excluir cliente:", error);
     }
@@ -74,6 +116,7 @@ function ClientsPage() {
             </div>
           </ul>
         </div>
+        {error && <p className="text-red-500">{error}</p>}
 
         <div className="w-full overflow-x-auto">
           <table className="w-full">
