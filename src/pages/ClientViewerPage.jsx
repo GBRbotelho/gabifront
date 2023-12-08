@@ -14,6 +14,7 @@ import OpenTreatment from "../components/forms/OpenTreatment";
 import { useAuth } from "../utils/AuthContext";
 import ModalFiltrosClientTratamentos from "../components/forms/filtros/ModalFiltrosClientTratamentos";
 import ModalFiltrosClientConsultas from "../components/forms/filtros/ModalFiltrosClientConsultas";
+import { useForm } from "../utils/useForm";
 
 export default function ClientViewerPage() {
   const [tempClient, setTempClient] = useState({});
@@ -292,9 +293,10 @@ export default function ClientViewerPage() {
                       className={`h-10 border mt-1 rounded px-4 w-full bg-${
                         !isEditable ? "gray-100" : "white"
                       }`}
-                      value={client.name || ""}
+                      value={useForm(client.name, "letras") || ""}
                       onChange={handleChange}
                       disabled={!isEditable}
+                      maxLength={90}
                     />
                   </div>
 
@@ -307,9 +309,10 @@ export default function ClientViewerPage() {
                       className={`h-10 border mt-1 rounded px-4 w-full bg-${
                         !isEditable ? "gray-100" : "white"
                       }`}
-                      value={client.cpf || ""}
+                      value={useForm(client.cpf, "cpf") || ""}
                       onChange={handleChange}
                       disabled={!isEditable}
+                      maxLength={14}
                     />
                   </div>
 
@@ -323,9 +326,10 @@ export default function ClientViewerPage() {
                         className={`h-10 border mt-1 rounded px-4 w-full bg-${
                           !isEditable ? "gray-100" : "white"
                         }`}
-                        value={client.phone || ""}
+                        value={useForm(client.phone, "telefone") || ""}
                         onChange={handleChange}
                         disabled={!isEditable}
+                        maxLength={15}
                       />
                       <a
                         href={`https://wa.me/${client.phone}`}
@@ -350,7 +354,7 @@ export default function ClientViewerPage() {
 
                   <div className="md:col-span-2">
                     <label htmlFor="zipcode">Sexo</label>
-                    <input
+                    <select
                       type="text"
                       name="gender"
                       id="gender"
@@ -361,7 +365,12 @@ export default function ClientViewerPage() {
                       value={client.gender || ""}
                       onChange={handleChange}
                       disabled={!isEditable}
-                    />
+                    >
+                      <option disabled>Selecione uma opção</option>
+                      <option>Masculino</option>
+                      <option>Feminino</option>
+                      <option>Prefiro não informar</option>
+                    </select>
                   </div>
                   <div className="md:col-span-2">
                     <label htmlFor="email">Data de Nascimento</label>

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { addClient } from "../services/apiService"; // Importe a função addClient aqui
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { useForm } from "../utils/useForm";
 
 function ClientsAddPage() {
   const navigate = useNavigate();
@@ -60,8 +61,9 @@ function ClientsAddPage() {
                       id="name"
                       placeholder="Preencha este campo"
                       className="h-10 border mt-1 rounded px-4 w-full bg-white"
-                      value={clientData.name || ""}
+                      value={useForm(clientData.name, "letras") || ""}
                       onChange={handleChange}
+                      maxLength={90}
                     />
                   </div>
 
@@ -72,8 +74,9 @@ function ClientsAddPage() {
                       id="cpf"
                       placeholder="Preencha este campo"
                       className="h-10 border mt-1 rounded px-4 w-full bg-white"
-                      value={clientData.cpf || ""}
+                      value={useForm(clientData.cpf, "cpf") || ""}
                       onChange={handleChange}
+                      maxLength={14}
                     />
                   </div>
 
@@ -85,24 +88,32 @@ function ClientsAddPage() {
                         id="phone"
                         placeholder="Preencha este campo"
                         className="h-10 border mt-1 rounded px-4 w-full bg-white"
-                        value={clientData.phone || ""}
+                        value={useForm(clientData.phone, "telefone") || ""}
                         onChange={handleChange}
-
+                        maxLength={15}
                       />
                     </div>
                   </div>
 
                   <div className="md:col-span-2">
                     <label htmlFor="zipcode">Sexo</label>
-                    <input
+                    <select
                       type="text"
                       name="gender"
                       id="gender"
-                      className="h-10 border mt-1 rounded px-4 w-full bg-white"
+                      className={`h-10 border mt-1 rounded px-4 w-full bg-white
+                      `}
                       placeholder="Preencha este campo"
-                      value={clientData.gender || ""}
+                      value={clientData.gender || "Selecione uma opção"}
                       onChange={handleChange}
-                    />
+                    >
+                      <option disabled hidden>
+                        Selecione uma opção
+                      </option>
+                      <option>Masculino</option>
+                      <option>Feminino</option>
+                      <option>Prefiro não informar</option>
+                    </select>
                   </div>
                   <div className="md:col-span-2">
                     <label htmlFor="email">Data de Nascimento</label>
@@ -208,28 +219,28 @@ function ClientsAddPage() {
 
                   <div className="md:col-span-6 text-right">
                     <div className="inline-flex items-end gap-1">
-                          <Link
-                            to="/dashboard/clientes"
-                            className=" bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                          >
-                            <i className="ri-close-fill"></i>Fechar
-                          </Link>
-                          <button
-                            className=" bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-                            onClick={handleSubmit}
-                          >
-                            <i className="ri-save-line"></i>Salvar
-                          </button>
+                      <Link
+                        to="/dashboard/clientes"
+                        className=" bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                      >
+                        <i className="ri-close-fill"></i>Fechar
+                      </Link>
+                      <button
+                        className=" bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                        onClick={handleSubmit}
+                      >
+                        <i className="ri-save-line"></i>Salvar
+                      </button>
                     </div>
                   </div>
                 </div>
                 {error && <p>{error}</p>}
               </div>
-              </div>
-              </div>
-              </div>
-              </div>
-              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 
