@@ -80,8 +80,8 @@ function ClientsPage() {
             <thead>
               <tr className="text-md font-semibold tracking-wide text-left text-gray-900 bg-gray-100 uppercase border-b border-gray-600">
                 <th className="px-4 py-3">Nome</th>
-                <th className="px-4 py-3">CPF</th>
-                <th className="px-4 py-3">Phone</th>
+                <th className="px-4 py-3">Data de Nascimento</th>
+                <th className="px-4 py-3">Telefone</th>
                 <th className="px-4 py-3">Email</th>
                 <th className="px-4 py-3">Options</th>
               </tr>
@@ -93,20 +93,32 @@ function ClientsPage() {
                     <td className="px-4 py-3 border" key={`name_${client.id}`}>
                       {client.name}
                     </td>
-                    <td
-                      className="px-4 py-3 text-ms font-semibold border"
-                      key={`cpf_${client.id}`}
-                    >
-                      {useForm(client.cpf, "cpf")}
+                    <td className="px-4 py-3 border" key={`date_${client.id}`}>
+                      {new Date(
+                        new Date(client.date).getTime() + 24 * 60 * 60 * 1000
+                      ).toLocaleDateString("pt-BR")}
                     </td>
                     <td
-                      className="px-4 py-3 text-xs border"
+                      className="px-4 py-3 text-ms font-semibold border relative"
                       key={`phone_${client.id}`}
                     >
-                      {useForm(client.phone, "telefone")}
+                      <div className="flex">
+                        <p className="">{useForm(client.phone, "telefone")}</p>
+                        <a href={`https://wa.me/${client.phone}`}>
+                          <i
+                            className="ri-whatsapp-line absolute right-5 text-green-500 text-2xl scale(0.8)"
+                            onMouseOver={(e) =>
+                              (e.currentTarget.style.transform = "scale(1)")
+                            }
+                            onMouseOut={(e) =>
+                              (e.currentTarget.style.transform = "scale(0.8)")
+                            }
+                          ></i>
+                        </a>
+                      </div>
                     </td>
                     <td
-                      className="px-4 py-3 text-sm border"
+                      className="px-4 py-3 text-ms font-semibold border"
                       key={`email_${client.id}`}
                     >
                       {client.email}
