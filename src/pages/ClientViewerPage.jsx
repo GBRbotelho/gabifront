@@ -19,6 +19,7 @@ import { useForm } from "../utils/useForm";
 export default function ClientViewerPage() {
   const [tempClient, setTempClient] = useState({});
   const [errorTreatment, setErrorTreatment] = useState(null);
+  const [errorDelete, setErrorDelete] = useState(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isEditable, setIsEditable] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -66,8 +67,22 @@ export default function ClientViewerPage() {
   };
 
   const handleDelete = async () => {
-    const response = await useDeleteData(id, "clients", token);
-    navigate("/dashboard/clientes");
+    if (
+      consultation.filter(
+        (consultationItem) => consultationItem.status === "Agendado"
+      ).length > 0
+    ) {
+      handleError(
+        "Não pode excluir este cliente, porque existe consultas pendentes",
+        setErrorDelete
+      );
+    } else {
+      await useDeleteData(id, "consultations/client", token);
+      await useDeleteData(id, "treatments/client", token);
+
+      const response = await useDeleteData(id, "clients", token);
+      navigate("/dashboard/clientes");
+    }
   };
 
   const toggleDeleteConsultation = async (consultationId) => {
@@ -98,7 +113,9 @@ export default function ClientViewerPage() {
   };
 
   const reloadConsultations = async () => {
+    console.log("Passou");
     const response = await useGetId(id, "consultations/client", token);
+    console.log(response);
     setConsultation(response);
   };
 
@@ -547,6 +564,11 @@ export default function ClientViewerPage() {
                 Deletar Cliente
               </button>
             </div>
+            {errorDelete && (
+              <div className="w-full flex justify-end">
+                <p className="text-red-500">{errorDelete}</p>
+              </div>
+            )}
             {showModal && <RegistrationForm closeModal={closeModal} />}
             <div className="bg-gray-300 my-6 h-0.5"></div>
             <h2 className="font-semibold text-xl text-gray-600 mt-6">
