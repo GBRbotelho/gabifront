@@ -23,6 +23,20 @@ function ClientsPage() {
   const FilteredData = clients
     .sort((a, b) => a.name.localeCompare(b.name))
     .filter((clientItem) => {
+      const normalizedSearchTerm = searchTerm.toLowerCase();
+      console.log(normalizedSearchTerm);
+
+      // Verifica se o termo de pesquisa está presente em qualquer um dos campos
+      return (
+        clientItem.name.toLowerCase().includes(normalizedSearchTerm) ||
+        new Date(new Date(clientItem.date).getTime() + 24 * 60 * 60 * 1000)
+          .toLocaleDateString("pt-BR")
+          .includes(normalizedSearchTerm) ||
+        useForm(clientItem.phone, "telefone").includes(normalizedSearchTerm) ||
+        clientItem.email.toLowerCase().includes(normalizedSearchTerm)
+      );
+    })
+    .filter((clientItem) => {
       const consultationsClient = consultations.filter((consultationItem) => {
         return (
           consultationItem.client === clientItem._id &&
