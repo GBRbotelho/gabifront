@@ -8,21 +8,94 @@ import {
 } from "../services/apiService";
 import { Link } from "react-router-dom";
 import { useForm } from "../utils/useForm";
+import ModalFiltrosClients from "../components/forms/filtros/ModalFiltrosClients";
 
 function ClientsPage() {
+  const token = localStorage.getItem("token");
+  const [consultations, setConsultations] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [clients, setClients] = useState([]);
   const [filters, setFilters] = useState(false);
   const [error, setError] = useState(null);
-  const token = localStorage.getItem("token");
+  const [selectTime, setSelectTime] = useState("all");
+  const [selectMonth, setSelectMonth] = useState("all");
 
-  const FilteredData = clients;
+  const FilteredData = clients
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .filter((clientItem) => {
+      const consultationsClient = consultations.filter((consultationItem) => {
+        return (
+          consultationItem.client === clientItem._id &&
+          consultationItem.status === "Concluído"
+        );
+      });
+
+      if (selectTime === "all") {
+        return clientItem;
+      }
+      if (selectTime === "1month") {
+        const OneMonthBefore = new Date();
+        OneMonthBefore.setMonth(OneMonthBefore.getMonth() - 1);
+        if (
+          consultationsClient.filter((consultationItem) => {
+            console.log(new Date(consultationItem.date));
+            console.log(OneMonthBefore);
+            return new Date(consultationItem.date) < OneMonthBefore;
+          }).length > 0
+        ) {
+          return clientItem;
+        }
+      }
+
+      if (selectTime === "6months") {
+        const OneMonthBefore = new Date();
+        OneMonthBefore.setMonth(OneMonthBefore.getMonth() - 6);
+        if (
+          consultationsClient.filter((consultationItem) => {
+            console.log(new Date(consultationItem.date));
+            console.log(OneMonthBefore);
+            return new Date(consultationItem.date) < OneMonthBefore;
+          }).length > 0
+        ) {
+          return clientItem;
+        }
+      }
+
+      if (selectTime === "12months") {
+        const OneMonthBefore = new Date();
+        OneMonthBefore.setMonth(OneMonthBefore.getMonth() - 12);
+        if (
+          consultationsClient.filter((consultationItem) => {
+            console.log(new Date(consultationItem.date));
+            console.log(OneMonthBefore);
+            return new Date(consultationItem.date) < OneMonthBefore;
+          }).length > 0
+        ) {
+          return clientItem;
+        }
+      }
+    })
+    .filter((clientItem) => {
+      const birthdayMonth = new Date(clientItem.date).getMonth() + 1;
+
+      if (selectMonth === "all") {
+        return true; // Não filtra por mês
+      }
+
+      const selectedMonth = parseInt(selectMonth);
+
+      return birthdayMonth === selectedMonth;
+    });
 
   useEffect(() => {
     async function fetchClientsData() {
       try {
-        const data = await fetchClients(); // Passe o token na chamada
-        setClients(data);
+        const [clientsData, consultationsData] = await Promise.all([
+          await useGetAll("clients", token),
+          await useGetAll("consultations", token),
+        ]);
+        setClients(clientsData);
+        setConsultations(consultationsData);
       } catch (error) {
         console.error("Erro ao buscar clientes:", error);
       }
@@ -67,13 +140,6 @@ function ClientsPage() {
         const response = await useDeleteData(clientId, "clients", token);
         reloadClients();
       }
-
-      // const response = await deleteClient(clientId, token);
-
-      // const updatedClients = clients.filter(
-      //   (client) => client._id !== clientId
-      // );
-      // setClients(updatedClients);
     } catch (error) {
       console.error("Erro ao excluir cliente:", error);
     }
@@ -116,6 +182,15 @@ function ClientsPage() {
             </div>
           </ul>
         </div>
+        {filters && (
+          <ModalFiltrosClients
+            setModalFiltersClients={setFilters}
+            selectTime={selectTime}
+            setSelectTime={setSelectTime}
+            selectMonth={selectMonth}
+            setSelectMonth={setSelectMonth}
+          />
+        )}
         {error && <p className="text-red-500">{error}</p>}
 
         <div className="w-full overflow-x-auto">
@@ -149,12 +224,12 @@ function ClientsPage() {
                         <p className="">{useForm(client.phone, "telefone")}</p>
                         <a href={`https://wa.me/${client.phone}`}>
                           <i
-                            className="ri-whatsapp-line absolute right-5 text-green-500 text-2xl scale(0.8)"
+                            className="ri-whatsapp-line absolute right-5 text-green-500 text-2xl scale-75 transition-transform"
                             onMouseOver={(e) =>
                               (e.currentTarget.style.transform = "scale(1)")
                             }
                             onMouseOut={(e) =>
-                              (e.currentTarget.style.transform = "scale(0.8)")
+                              (e.currentTarget.style.transform = "scale(0.75)")
                             }
                           ></i>
                         </a>
