@@ -43,11 +43,40 @@ function Navbar() {
 
   const FilterConsultation = consultations.filter((consultationItem) => {
     const DateToday = new Date();
-    const DateConsultation = new Date(consultationItem.date);
 
-    return (
-      DateConsultation < DateToday && consultationItem.status === "Agendado"
+    // Extrai ano, mês e dia da consulta
+    const consultationDateParts = consultationItem.date.split("-");
+    const consultationYear = parseInt(consultationDateParts[0]);
+    const consultationMonth = parseInt(consultationDateParts[1]) - 1; // Mês é baseado em zero
+    const consultationDay = parseInt(consultationDateParts[2]);
+
+    // Extrai horas e minutos da consulta
+    const consultationTimeParts = consultationItem.time.split(":");
+    const consultationHour = parseInt(consultationTimeParts[0]);
+    const consultationMinute = parseInt(consultationTimeParts[1]);
+
+    const DateConsultation = new Date(
+      consultationYear,
+      consultationMonth,
+      consultationDay,
+      consultationHour,
+      consultationMinute
     );
+
+    // Verifica se a consulta é do mesmo dia
+    const isSameDay =
+      DateConsultation.toDateString() === DateToday.toDateString();
+
+    // Se for do mesmo dia, verifica se a hora da consulta já passou pelo menos 1 hora
+    if (
+      (isSameDay &&
+        DateConsultation.getTime() + 60 * 60 * 1000 <= DateToday.getTime()) ||
+      (!isSameDay && DateConsultation < DateToday)
+    ) {
+      return consultationItem.status === "Agendado";
+    }
+
+    return false;
   });
 
   return (
@@ -102,13 +131,14 @@ function Navbar() {
             </div>
             <div className="my-2">
               <ul
+                key="consultationList"
                 className="max-h-64 overflow-y-auto"
                 data-tab-for="notification"
                 data-page="notifications"
               >
                 {FilterConsultation.length > 0 &&
                   FilterConsultation.map((consultationItem) => (
-                    <li>
+                    <li key={consultationItem._id}>
                       <Link
                         to={`/dashboard/clientes/view/${consultationItem.client}`}
                         className="py-2 px-4 flex items-center hover:bg-gray-50 group"
