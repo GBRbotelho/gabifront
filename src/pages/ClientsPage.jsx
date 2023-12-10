@@ -9,6 +9,7 @@ import {
 import { Link } from "react-router-dom";
 import { useForm } from "../utils/useForm";
 import ModalFiltrosClients from "../components/forms/filtros/ModalFiltrosClients";
+import { useFlashMessage } from "../utils/FlashMessageContext";
 
 function ClientsPage() {
   const token = localStorage.getItem("token");
@@ -16,9 +17,9 @@ function ClientsPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [clients, setClients] = useState([]);
   const [filters, setFilters] = useState(false);
-  const [error, setError] = useState(null);
   const [selectTime, setSelectTime] = useState("all");
   const [selectMonth, setSelectMonth] = useState("all");
+  const showMessage = useFlashMessage();
 
   const FilteredData = clients
     .sort((a, b) => a.name.localeCompare(b.name))
@@ -118,14 +119,6 @@ function ClientsPage() {
     fetchClientsData();
   }, []);
 
-  const handleError = (errorMessage) => {
-    setError(errorMessage);
-
-    setTimeout(() => {
-      setError(null);
-    }, 2000);
-  };
-
   const reloadClients = async () => {
     const response = await useGetAll("clients", token);
     setClients(response);
@@ -144,8 +137,9 @@ function ClientsPage() {
           (consultationItem) => consultationItem.status === "Agendado"
         ).length > 0
       ) {
-        handleError(
-          "Não pode excluir este cliente, porque existe consultas pendentes"
+        showMessage(
+          "Não pode excluir este cliente, porque existe consultas pendentes!",
+          "error"
         );
       } else {
         await useDeleteData(clientId, "consultations/client", token);
@@ -205,7 +199,6 @@ function ClientsPage() {
             setSelectMonth={setSelectMonth}
           />
         )}
-        {error && <p className="text-red-500">{error}</p>}
 
         <div className="w-full overflow-x-auto">
           <table className="w-full">

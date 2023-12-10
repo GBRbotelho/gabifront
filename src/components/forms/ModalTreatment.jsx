@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import { usePostData } from "../../services/apiService";
+import { useFlashMessage } from "../../utils/FlashMessageContext";
 
 export default function ModalTreatment({
   closeModalTreatment,
@@ -10,14 +11,7 @@ export default function ModalTreatment({
   const [treatment, setTreatment] = useState({});
   const [error, setError] = useState("");
   const { id } = useParams();
-
-  const handleError = (errorMessage) => {
-    setError(errorMessage);
-
-    setTimeout(() => {
-      setError(null);
-    }, 2000);
-  };
+  const showMessage = useFlashMessage();
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -79,7 +73,7 @@ export default function ModalTreatment({
               onChange={(e) => {
                 const { name, value } = e.target;
                 if (value < 0) {
-                  handleError("O preço não pode ser negativo");
+                  showMessage("O preço não pode ser negativo", "error");
                 } else {
                   handleChange(e);
                 }
@@ -97,7 +91,10 @@ export default function ModalTreatment({
               onChange={(e) => {
                 const { name, value } = e.target;
                 if (value <= 0) {
-                  handleError("O numero de sessões não pode ser negativo");
+                  showMessage(
+                    "O numero de sessões não pode ser negativo",
+                    "error"
+                  );
                 } else {
                   handleChange(e);
                 }

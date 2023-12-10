@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { useUpdateData, useGetAll } from "../../services/apiService";
 import Select from "react-select";
 import ModalEditConsultation from "./ModalEditConsultation";
+import { useFlashMessage } from "../../utils/FlashMessageContext";
 
 export default function ModalConsultation({
   closeSelectItem,
@@ -20,6 +21,7 @@ export default function ModalConsultation({
   const [selectedProductIds, setSelectedProductIds] = useState([]);
   const [tempSelectedProductIds, setTempSelectedProductIds] = useState([]);
   const [confirmConsultation, setConfirmConsultation] = useState(false);
+  const showMessage = useFlashMessage();
 
   useEffect(() => {
     setTempConsultation(consultationItem);
@@ -83,14 +85,6 @@ export default function ModalConsultation({
     });
   };
 
-  const handleError = (errorMessage) => {
-    setError(errorMessage);
-
-    setTimeout(() => {
-      setError(null);
-    }, 3000);
-  };
-
   const forceSave = async () => {
     const token = localStorage.getItem("token");
     const update = await useUpdateData(
@@ -125,7 +119,7 @@ export default function ModalConsultation({
         reloadConsultations();
       }
     } catch (err) {
-      handleError(err.error);
+      showMessage(err.error, "error");
     }
   };
 
@@ -312,10 +306,10 @@ export default function ModalConsultation({
         {error && <p className="text-red-500">{error}</p>}
         <div className="flex justify-between mt-3">
           <button
-            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
             onClick={closeSelectItem}
           >
-            Fechar
+            Concluído
           </button>
           {tempConsultation.status === "Agendado" && (
             <div className="">

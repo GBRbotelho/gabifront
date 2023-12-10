@@ -15,8 +15,10 @@ import { useAuth } from "../utils/AuthContext";
 import ModalFiltrosClientTratamentos from "../components/forms/filtros/ModalFiltrosClientTratamentos";
 import ModalFiltrosClientConsultas from "../components/forms/filtros/ModalFiltrosClientConsultas";
 import { useForm } from "../utils/useForm";
+import { useFlashMessage } from "../utils/FlashMessageContext";
 
 export default function ClientViewerPage() {
+  const showMessage = useFlashMessage();
   const [tempClient, setTempClient] = useState({});
   const [errorTreatment, setErrorTreatment] = useState(null);
   const [errorDelete, setErrorDelete] = useState(null);
@@ -58,29 +60,22 @@ export default function ClientViewerPage() {
     );
   });
 
-  const handleError = (errorMessage, setErr) => {
-    setErr(errorMessage);
-
-    setTimeout(() => {
-      setErr(null);
-    }, 2000);
-  };
-
   const handleDelete = async () => {
     if (
       consultation.filter(
         (consultationItem) => consultationItem.status === "Agendado"
       ).length > 0
     ) {
-      handleError(
-        "Não pode excluir este cliente, porque existe consultas pendentes",
-        setErrorDelete
+      showMessage(
+        "Não pode excluir este cliente, porque existe consultas pendentes!",
+        "error"
       );
     } else {
       await useDeleteData(id, "consultations/client", token);
       await useDeleteData(id, "treatments/client", token);
 
       const response = await useDeleteData(id, "clients", token);
+      showMessage("Operação bem-sucedida!", "success");
       navigate("/dashboard/clientes");
     }
   };
@@ -91,7 +86,8 @@ export default function ClientViewerPage() {
       "consultations",
       token
     );
-    reloadConsultations();
+    await reloadConsultations();
+    showMessage("Operação bem-sucedida!", "success");
   };
 
   const toggleDeleteTreatment = async (consultationId) => {
@@ -100,10 +96,11 @@ export default function ClientViewerPage() {
         (consultationItem) => consultationItem.service === consultationId
       ).length > 0
     ) {
-      handleError("Existe consultas com esse tratamento", setErrorTreatment);
+      showMessage("Existe consultas com esse tratamento", "error");
     } else {
       const response = await useDeleteData(consultationId, "treatments", token);
-      reloadTreatments();
+      await reloadTreatments();
+      showMessage("Operação bem-sucedida!", "success");
     }
   };
 
@@ -113,9 +110,7 @@ export default function ClientViewerPage() {
   };
 
   const reloadConsultations = async () => {
-    console.log("Passou");
     const response = await useGetId(id, "consultations/client", token);
-    console.log(response);
     setConsultation(response);
   };
 

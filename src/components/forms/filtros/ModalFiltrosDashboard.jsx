@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useFlashMessage } from "../../../utils/FlashMessageContext";
 
 function ModalFiltrosDashboard({
   toggleFilters,
@@ -13,15 +14,7 @@ function ModalFiltrosDashboard({
   faltas,
   setFaltas,
 }) {
-  const [error, setError] = useState(null);
-
-  const handleError = (errorMessage) => {
-    setError(errorMessage);
-
-    setTimeout(() => {
-      setError(null);
-    }, 2000);
-  };
+  const showMessage = useFlashMessage();
 
   return (
     <div
@@ -54,8 +47,9 @@ function ModalFiltrosDashboard({
                   if (new Date(newDate) >= new Date(initialDate)) {
                     setFinalDate(newDate);
                   } else {
-                    handleError(
-                      "A data final não pode ser maior que a data inicial"
+                    showMessage(
+                      "A data final não pode ser maior que a data inicial",
+                      "error"
                     );
                   }
                 }}
@@ -103,7 +97,7 @@ function ModalFiltrosDashboard({
             </label>
           </div>
         </div>
-        {error && <p className="text-red-500">{error}</p>}
+
         <div className="flex justify-end mt-3">
           <button
             className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"

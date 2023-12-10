@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useUpdateData } from "../../services/apiService";
+import { useFlashMessage } from "../../utils/FlashMessageContext";
 
 export default function ModalTreatment({
   closeTreatmentSelect,
@@ -12,6 +13,7 @@ export default function ModalTreatment({
   const [error, setError] = useState(null);
   const [isEditable, setIsEditable] = useState(false);
   const [tempTreatment, setTempTreatment] = useState({});
+  const showMessage = useFlashMessage();
 
   useEffect(() => {
     setTempTreatment(treatmentSelect);
@@ -36,14 +38,6 @@ export default function ModalTreatment({
       ...treatmentSelect,
       [name]: value,
     });
-  };
-
-  const handleError = (errorMessage) => {
-    setError(errorMessage);
-
-    setTimeout(() => {
-      setError(null);
-    }, 3000);
   };
 
   const toggleSave = async () => {
@@ -74,7 +68,7 @@ export default function ModalTreatment({
       setIsEditable(!isEditable);
       reloadTreatments();
     } catch (err) {
-      handleError(err.error);
+      showMessage(err.error, "error");
     }
   };
 
@@ -104,8 +98,9 @@ export default function ModalTreatment({
                     );
                   }).length > 0
                 ) {
-                  handleError(
-                    "O tipo de tratamento não pode ser alterado após uma consulta ter sido concluída"
+                  showMessage(
+                    "O tipo de tratamento não pode ser alterado após uma consulta ter sido concluída",
+                    "error"
                   );
                 } else {
                   handleChange(e);
@@ -136,7 +131,7 @@ export default function ModalTreatment({
               onChange={(e) => {
                 const { value } = e.target;
                 if (value < 0) {
-                  handleError("O preço não pode ser negativo");
+                  showMessage("O preço não pode ser negativo", "error");
                 } else {
                   handleChange(e);
                 }
@@ -157,7 +152,10 @@ export default function ModalTreatment({
               onChange={(e) => {
                 const { value } = e.target;
                 if (value <= 0) {
-                  handleError("O numero de sessões não pode ser negativo");
+                  showMessage(
+                    "O numero de sessões não pode ser negativo",
+                    "error"
+                  );
                 } else {
                   handleChange(e);
                 }

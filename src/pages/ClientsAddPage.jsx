@@ -3,11 +3,13 @@ import { addClient } from "../services/apiService"; // Importe a função addCli
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useForm } from "../utils/useForm";
+import { useFlashMessage } from "../utils/FlashMessageContext";
 
 function ClientsAddPage() {
   const navigate = useNavigate();
   const [error, setError] = useState("");
   const [clientData, setClientData] = useState({});
+  const showMessage = useFlashMessage();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -32,6 +34,7 @@ function ClientsAddPage() {
       if (response.error) {
         setError(response.error);
       } else {
+        showMessage("Operação bem-sucedida!", "success");
         navigate("/dashboard/clientes");
       }
     } catch (error) {

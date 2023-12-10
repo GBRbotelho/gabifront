@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import { usePostData } from "../../services/apiService";
+import { useFlashMessage } from "../../utils/FlashMessageContext";
 
 export default function ModalConsultation({
   closeModalConsultation,
@@ -12,6 +13,7 @@ export default function ModalConsultation({
   const [consultation, setConsultation] = useState({});
   const [error, setError] = useState("");
   const { id } = useParams();
+  const showMessage = useFlashMessage();
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -19,14 +21,6 @@ export default function ModalConsultation({
       ...consultation,
       [name]: value,
     });
-  };
-
-  const handleError = (errorMessage) => {
-    setError(errorMessage);
-
-    setTimeout(() => {
-      setError(null);
-    }, 3000);
   };
 
   const handleSubmit = async (e) => {
@@ -73,7 +67,7 @@ export default function ModalConsultation({
         closeModalConsultation();
       }
     } catch (err) {
-      handleError(err.error);
+      showMessage(err.error, "error");
     }
   };
 

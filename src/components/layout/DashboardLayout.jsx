@@ -3,6 +3,7 @@ import { useAuth } from "../../utils/AuthContext"; // Importe o useAuth
 import Sidebar from "../menus/Sidebar";
 import MainLayout from "./MainLayout";
 import { useNavigate } from "react-router-dom";
+import { FlashMessageProvider } from "../../utils/FlashMessageContext";
 
 function DashboardLayout({ children }) {
   const navigate = useNavigate();
@@ -20,8 +21,10 @@ function DashboardLayout({ children }) {
 
   return (
     <>
-      <Sidebar />
-      <MainLayout>{children}</MainLayout>
+      <FlashMessageProvider>
+        <Sidebar />
+        <MainLayout>{children}</MainLayout>
+      </FlashMessageProvider>
     </>
   );
 }
