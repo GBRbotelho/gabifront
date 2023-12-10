@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import { usePostData } from "../../services/apiService";
 import { useFlashMessage } from "../../utils/FlashMessageContext";
+import { useLoading } from "../../utils/LoadingContext";
 
 export default function ModalConsultation({
   closeModalConsultation,
@@ -14,6 +15,7 @@ export default function ModalConsultation({
   const [error, setError] = useState("");
   const { id } = useParams();
   const showMessage = useFlashMessage();
+  const { showLoading, hideLoading } = useLoading();
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -25,6 +27,7 @@ export default function ModalConsultation({
 
   const handleSubmit = async (e) => {
     try {
+      showLoading();
       e.preventDefault();
       const currentDate = new Date();
       const consultationDate = new Date(consultation.date);
@@ -61,12 +64,15 @@ export default function ModalConsultation({
       const response = await usePostData(token, "consultations", consultation);
 
       if (response.error) {
+        hideLoading();
         setError(response.error);
       } else {
+        hideLoading();
         reloadConsultations();
         closeModalConsultation();
       }
     } catch (err) {
+      hideLoading();
       showMessage(err.error, "error");
     }
   };

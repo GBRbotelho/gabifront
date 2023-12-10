@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { login } from "../services/authService";
 import { useAuth } from "../utils/AuthContext"; // Importe o hook useAuth
+import LoadingSpinner from "../utils/LoadingSpinner";
+import { useLoading } from "../utils/LoadingContext";
 
 function LoginPage() {
   const [email, setEmail] = useState("");
@@ -9,6 +11,7 @@ function LoginPage() {
   const [loginError, setLoginError] = useState("");
   const navigate = useNavigate();
   const { token, loginWithToken } = useAuth(); // Use o hook useAuth para obter o token
+  const { showLoading, hideLoading } = useLoading();
 
   useEffect(() => {
     // Se o usuário já estiver autenticado, redirecione para o dashboard
@@ -19,18 +22,22 @@ function LoginPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    showLoading();
 
     const response = await login(email, password).catch((error) => {
       setLoginError("Falha na requisição com o servidor");
       console.log(error);
+      hideLoading();
     });
 
     if (response.token) {
       // Salvar o token no localStorage
       localStorage.setItem("token", response.token);
       loginWithToken(response.token);
+      hideLoading();
       navigate("/dashboard/");
     } else {
+      hideLoading();
       setLoginError(response.error);
     }
   };
@@ -101,6 +108,7 @@ function LoginPage() {
       <section className="hidden md:flex items-center justify-center bg-custom w-1/2 p-0">
         <img src="/ImageLogin.png" alt="cartoon" width={800} height={100} />
       </section>
+      <LoadingSpinner />
     </main>
   );
 }

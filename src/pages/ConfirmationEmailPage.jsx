@@ -2,12 +2,15 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../utils/AuthContext";
 import { usePostData } from "../services/apiService";
+import { useLoading } from "../utils/LoadingContext";
+import LoadingSpinner from "../utils/LoadingSpinner";
 
 export default function ConfirmationEmailPage() {
   const navigate = useNavigate();
   const { token, user, setUser } = useAuth();
   const [code, setCode] = useState({ code: "" });
   const [error, setError] = useState(null);
+  const { showLoading, hideLoading } = useLoading();
 
   useEffect(() => {
     if (token === "NO") {
@@ -28,15 +31,19 @@ export default function ConfirmationEmailPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    showLoading();
+
     const response = await usePostData(
       token,
       `users/confirm/${user._id}`,
       code
     );
     if (response.message === "Invalid confirmation code") {
+      hideLoading();
       setError("Codigo invalido!");
     } else if (response.message === "Email confirmed successfully") {
       setUser((prevUser) => ({ ...prevUser, isEmailVerified: "SIM" }));
+      hideLoading();
     }
   };
 
@@ -86,6 +93,7 @@ export default function ConfirmationEmailPage() {
           </div>
         </div>
       </div>
+      <LoadingSpinner />
     </div>
   );
 }

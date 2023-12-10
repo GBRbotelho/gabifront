@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useGetId, useUpdateData } from "../../services/apiService";
 import { useParams } from "react-router-dom";
+import { useLoading } from "../../utils/LoadingContext";
 
 function RegistrationForm({ closeModal }) {
   const [isEditable, setIsEditable] = useState(false);
   const [registrationForm, setRegistrationForm] = useState({});
   const [tempRegistrationForm, setTempRegistrationForm] = useState({});
   const { id } = useParams();
+  const { showLoading, hideLoading } = useLoading();
 
   const toggleEdit = () => {
     setIsEditable(!isEditable);
@@ -22,6 +24,7 @@ function RegistrationForm({ closeModal }) {
   };
 
   const toggleSave = async () => {
+    showLoading();
     const token = localStorage.getItem("token");
     const update = await useUpdateData(
       id,
@@ -33,6 +36,7 @@ function RegistrationForm({ closeModal }) {
     setRegistrationForm(update);
     setTempRegistrationForm(update);
     setIsEditable(!isEditable);
+    hideLoading();
   };
 
   const handleChange = (event) => {
@@ -46,12 +50,15 @@ function RegistrationForm({ closeModal }) {
   useEffect(() => {
     async function fetchGetDataClient() {
       try {
+        showLoading();
         const token = localStorage.getItem("token");
         const data = await useGetId(id, "registrationform", token); // Passe o token na chamada
 
         setRegistrationForm(data);
         setTempRegistrationForm(data);
+        hideLoading();
       } catch (error) {
+        hideLoading();
         console.error("Erro ao buscar clientes:", error);
       }
     }

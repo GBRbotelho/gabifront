@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useUpdateData } from "../../services/apiService";
+import { useLoading } from "../../utils/LoadingContext";
 
 export default function ModalAddService({
   reloadServices,
@@ -9,6 +10,7 @@ export default function ModalAddService({
   const [error, setError] = useState(null);
   const [tempViewService, setTempViewService] = useState({});
   const [isEditable, setIsEditable] = useState(false);
+  const { showLoading, hideLoading } = useLoading();
 
   useEffect(() => {
     setTempViewService(viewService);
@@ -36,6 +38,7 @@ export default function ModalAddService({
   };
 
   const handleSubmit = async () => {
+    showLoading();
     try {
       const token = localStorage.getItem("token");
       const update = await useUpdateData(
@@ -48,7 +51,9 @@ export default function ModalAddService({
       setTempViewService(update);
       setIsEditable(!isEditable);
       reloadServices();
+      hideLoading();
     } catch (err) {
+      hideLoading();
       setError(err.error);
     }
   };

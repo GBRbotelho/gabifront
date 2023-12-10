@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useUpdateData } from "../../services/apiService";
 import { useFlashMessage } from "../../utils/FlashMessageContext";
+import { useLoading } from "../../utils/LoadingContext";
 
 export default function ModalTreatment({
   closeTreatmentSelect,
@@ -14,6 +15,7 @@ export default function ModalTreatment({
   const [isEditable, setIsEditable] = useState(false);
   const [tempTreatment, setTempTreatment] = useState({});
   const showMessage = useFlashMessage();
+  const { showLoading, hideLoading } = useLoading();
 
   useEffect(() => {
     setTempTreatment(treatmentSelect);
@@ -41,6 +43,7 @@ export default function ModalTreatment({
   };
 
   const toggleSave = async () => {
+    showLoading();
     try {
       if (
         treatmentSelect.totalSessions <
@@ -67,7 +70,9 @@ export default function ModalTreatment({
       setTempTreatment(update);
       setIsEditable(!isEditable);
       reloadTreatments();
+      hideLoading();
     } catch (err) {
+      hideLoading();
       showMessage(err.error, "error");
     }
   };

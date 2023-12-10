@@ -7,6 +7,7 @@ import {
 } from "../services/apiService";
 import ModalAddService from "../components/forms/ModalAddService";
 import ModalViewService from "../components/forms/ModalViewService";
+import { useLoading } from "../utils/LoadingContext";
 
 function ServicesPage() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -14,13 +15,17 @@ function ServicesPage() {
   const [services, setServices] = useState([]);
   const [viewService, setViewService] = useState(null);
   const [error, setError] = useState(null);
+  const { showLoading, hideLoading } = useLoading();
 
   useEffect(() => {
     async function fetchServicesData() {
       try {
+        showLoading();
         const data = await fetchServices(); // Passe o token na chamada
         setServices(data);
+        hideLoading();
       } catch (error) {
+        hideLoading();
         console.error("Erro ao buscar serviços:", error);
       }
     }
@@ -30,17 +35,21 @@ function ServicesPage() {
 
   const reloadServices = async () => {
     try {
+      showLoading();
       const token = await localStorage.getItem("token");
       const data = await useGetAll("services", token); // Passe o token na chamada
       setServices(data);
+      hideLoading();
     } catch (error) {
+      hideLoading();
       console.error("Erro ao buscar serviços:", error);
     }
   };
 
   const handleDeleteService = async (serviceId) => {
     try {
-      const token = await localStorage.getItem("token");
+      showLoading();
+      const token = localStorage.getItem("token");
       const treatments = await useGetAll("treatments", token);
       if (
         treatments.filter((treatment) => treatment.name === serviceId)
@@ -48,6 +57,7 @@ function ServicesPage() {
       ) {
         await deleteService(serviceId, token);
         reloadServices();
+        hideLoading();
       } else if (
         treatments.filter((treatment) => treatment.name === serviceId)
           .length !== 0
@@ -55,8 +65,10 @@ function ServicesPage() {
         setError(
           "Esse serviço esta vinculado a algum tratamento, e não pode ser excluido!"
         );
+        hideLoading();
       }
     } catch (error) {
+      hideLoading();
       console.error("Erro ao excluir Serviço:", error);
     }
   };

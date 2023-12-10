@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useGetAll, useDeleteData } from "../services/apiService";
 import ModalAddProduct from "../components/forms/ModalAddProduct";
 import ModalViewProduct from "../components/forms/ModalViewProduct";
+import { useLoading } from "../utils/LoadingContext";
 
 function ProductsPage() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -11,19 +12,23 @@ function ProductsPage() {
   const [viewProduct, setViewProduct] = useState(null);
   const [error, setError] = useState(null);
   const token = localStorage.getItem("token");
+  const { showLoading, hideLoading } = useLoading();
 
   const reloadProducts = async () => {
     try {
+      showLoading();
       const data = await useGetAll("products", token); // Passe o token na chamada
       setProducts(data);
+      hideLoading();
     } catch (error) {
+      hideLoading();
       console.error("Erro ao buscar produtos:", error);
     }
   };
 
   const handleDelete = async (productItem) => {
+    showLoading();
     const consultations = await useGetAll("consultations", token);
-    console.log(consultations);
     const isUsedInConsultation = consultations.some((consultation) =>
       consultation.products.some(
         (productId) => productId.toString() === productItem._id
@@ -33,10 +38,12 @@ function ProductsPage() {
     if (!isUsedInConsultation) {
       await useDeleteData(productItem._id, "products", token);
       await reloadProducts();
+      hideLoading();
     } else if (isUsedInConsultation) {
       setError(
         "O produto está sendo usado em alguma consulta. Não pode ser excluído."
       );
+      hideLoading();
     }
   };
 
@@ -47,11 +54,14 @@ function ProductsPage() {
 
   useEffect(() => {
     async function fetchProductsData() {
+      showLoading();
       try {
         const token = await localStorage.getItem("token");
         const data = await useGetAll("products", token); // Passe o token na chamada
         setProducts(data);
+        hideLoading();
       } catch (error) {
+        hideLoading();
         console.error("Erro ao buscar produtos:", error);
       }
     }

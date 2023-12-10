@@ -4,6 +4,7 @@ import { useUpdateData, useGetAll } from "../../services/apiService";
 import Select from "react-select";
 import ModalEditConsultation from "./ModalEditConsultation";
 import { useFlashMessage } from "../../utils/FlashMessageContext";
+import { useLoading } from "../../utils/LoadingContext";
 
 export default function ModalConsultation({
   closeSelectItem,
@@ -22,12 +23,14 @@ export default function ModalConsultation({
   const [tempSelectedProductIds, setTempSelectedProductIds] = useState([]);
   const [confirmConsultation, setConfirmConsultation] = useState(false);
   const showMessage = useFlashMessage();
+  const { showLoading, hideLoading } = useLoading();
 
   useEffect(() => {
     setTempConsultation(consultationItem);
 
     const fetchProducts = async () => {
-      const token = await localStorage.getItem("token");
+      showLoading();
+      const token = localStorage.getItem("token");
       const data = await useGetAll("products", token);
       setProducts(data);
 
@@ -44,6 +47,7 @@ export default function ModalConsultation({
           label: data.find((product) => product._id === productId).name,
         }))
       );
+      hideLoading();
     };
 
     fetchProducts();
@@ -86,6 +90,7 @@ export default function ModalConsultation({
   };
 
   const forceSave = async () => {
+    showLoading();
     const token = localStorage.getItem("token");
     const update = await useUpdateData(
       consultationItem._id,
@@ -98,12 +103,15 @@ export default function ModalConsultation({
     setTempSelectedProductIds(selectedProductIds);
     setIsEditable(!isEditable);
     reloadConsultations();
+    hideLoading();
   };
 
   const toggleSave = async () => {
+    showLoading();
     try {
       if (consultationItem.status !== tempConsultation.status) {
         setConfirmConsultation(true);
+        hideLoading();
       } else {
         const token = localStorage.getItem("token");
         const update = await useUpdateData(
@@ -117,8 +125,10 @@ export default function ModalConsultation({
         setTempSelectedProductIds(selectedProductIds);
         setIsEditable(!isEditable);
         reloadConsultations();
+        hideLoading();
       }
     } catch (err) {
+      hideLoading();
       showMessage(err.error, "error");
     }
   };

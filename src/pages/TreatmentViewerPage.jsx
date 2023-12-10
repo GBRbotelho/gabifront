@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useGetId, useGetAll } from "../services/apiService";
+import { useLoading } from "../utils/LoadingContext";
 
 export default function TreatmentViewerPage() {
   const [client, setClient] = useState({});
@@ -13,9 +14,11 @@ export default function TreatmentViewerPage() {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
   const { clientid, treatmentid } = useParams();
+  const { showLoading, hideLoading } = useLoading();
 
   useEffect(() => {
     async function fetchTreatmentsData() {
+      showLoading();
       try {
         const [
           clientData,
@@ -35,6 +38,7 @@ export default function TreatmentViewerPage() {
         setServices(servicesData);
         setConsultations(consultationsData);
         setProducts(productsData);
+        hideLoading();
       } catch (error) {
         console.error("Erro ao buscar dados:", error);
       }

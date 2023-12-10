@@ -2,10 +2,12 @@ import React, { useState } from "react";
 import { addUsers } from "../services/apiService";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { useLoading } from "../utils/LoadingContext";
 
 function UsersAddPage() {
   const navigate = useNavigate();
   const [error, setError] = useState("");
+  const { showLoading, hideLoading } = useLoading();
   const [usersData, setUsersData] = useState({
     firstName: "",
     lastName: "",
@@ -22,27 +24,36 @@ function UsersAddPage() {
   };
 
   const handleSubmit = async (e) => {
+    showLoading();
     e.preventDefault();
     console.log(usersData);
     try {
       const token = await localStorage.getItem("token");
       const response = await addUsers(token, usersData).catch((error) => {
         if (error.error) {
+          hideLoading();
           setError(error.error);
         } else {
+          hideLoading();
           navigate("/dashboard/usuarios");
         }
       });
 
       if (response.error) {
+        hideLoading();
         setError(response.error);
       } else {
+        hideLoading();
         navigate("/dashboard/usuarios");
       }
     } catch (error) {
       if (error.error) {
+        hideLoading();
         setError(error.error);
-      } else console.log(error);
+      } else {
+        hideLoading();
+        console.log(error);
+      }
     }
   };
 

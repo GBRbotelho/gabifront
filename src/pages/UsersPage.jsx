@@ -2,16 +2,20 @@
 import React, { useState, useEffect } from "react";
 import { fetchUsers, deleteUser } from "../services/apiService";
 import { Link } from "react-router-dom";
+import { useLoading } from "../utils/LoadingContext";
 
 function UsersPage() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [users, setUsers] = useState([]);
+  const { showLoading, hideLoading } = useLoading();
 
   useEffect(() => {
     async function fetchUsersData() {
+      showLoading();
       try {
         const data = await fetchUsers(); // Passe o token na chamada
         setUsers(data);
+        hideLoading();
       } catch (error) {
         console.error("Erro ao buscar usuarios:", error);
       }
@@ -21,13 +25,16 @@ function UsersPage() {
   }, []);
 
   const handleDeleteUsers = async (userId) => {
+    showLoading();
     try {
       const token = await localStorage.getItem("token");
       const response = await deleteUser(userId, token);
 
       const updatedUsers = users.filter((user) => user._id !== userId);
       setUsers(updatedUsers);
+      hideLoading();
     } catch (error) {
+      hideLoading();
       console.error("Erro ao excluir Usuario:", error);
     }
   };
@@ -49,7 +56,7 @@ function UsersPage() {
               <i className="ri-search-line"></i>
             </button>
             <div
-              className={`dropdown-menu shadow-md shadow-black/5 z-30  max-w-xs w-full bg-white rounded-md border border-gray-100 ${
+              className={`absolute right-3 dropdown-menu shadow-md shadow-black/5 z-30  max-w-xs w-full bg-white rounded-md border border-gray-100 ${
                 isSearchOpen ? "block" : "hidden"
               }`}
             >

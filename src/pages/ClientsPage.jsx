@@ -10,6 +10,7 @@ import { Link } from "react-router-dom";
 import { useForm } from "../utils/useForm";
 import ModalFiltrosClients from "../components/forms/filtros/ModalFiltrosClients";
 import { useFlashMessage } from "../utils/FlashMessageContext";
+import { useLoading } from "../utils/LoadingContext";
 
 function ClientsPage() {
   const token = localStorage.getItem("token");
@@ -20,6 +21,7 @@ function ClientsPage() {
   const [selectTime, setSelectTime] = useState("all");
   const [selectMonth, setSelectMonth] = useState("all");
   const showMessage = useFlashMessage();
+  const { showLoading, hideLoading } = useLoading();
 
   const FilteredData = clients
     .sort((a, b) => a.name.localeCompare(b.name))
@@ -105,13 +107,16 @@ function ClientsPage() {
   useEffect(() => {
     async function fetchClientsData() {
       try {
+        showLoading();
         const [clientsData, consultationsData] = await Promise.all([
           await useGetAll("clients", token),
           await useGetAll("consultations", token),
         ]);
         setClients(clientsData);
         setConsultations(consultationsData);
+        hideLoading();
       } catch (error) {
+        hideLoading();
         console.error("Erro ao buscar clientes:", error);
       }
     }
@@ -120,12 +125,15 @@ function ClientsPage() {
   }, []);
 
   const reloadClients = async () => {
+    showLoading();
     const response = await useGetAll("clients", token);
     setClients(response);
+    hideLoading();
   };
 
   const handleDeleteClient = async (clientId) => {
     try {
+      showLoading();
       const consultations = await useGetId(
         clientId,
         "consultations/client",
@@ -137,6 +145,7 @@ function ClientsPage() {
           (consultationItem) => consultationItem.status === "Agendado"
         ).length > 0
       ) {
+        hideLoading();
         showMessage(
           "Não pode excluir este cliente, porque existe consultas pendentes!",
           "error"
@@ -149,6 +158,7 @@ function ClientsPage() {
         reloadClients();
       }
     } catch (error) {
+      hideLoading();
       console.error("Erro ao excluir cliente:", error);
     }
   };

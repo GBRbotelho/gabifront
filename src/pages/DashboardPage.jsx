@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useGetAll } from "../services/apiService";
 import { Link } from "react-router-dom";
 import ModalFiltrosDashboard from "../components/forms/filtros/ModalFiltrosDashboard";
+import { useLoading } from "../utils/LoadingContext";
 
 function DashboardPage() {
   const [filters, setFilters] = useState(false);
@@ -19,6 +20,7 @@ function DashboardPage() {
   const [concluidos, setConcluidos] = useState(false);
   const [faltas, setFaltas] = useState(false);
   const [agendados, setAgendados] = useState(true);
+  const { showLoading, hideLoading } = useLoading();
 
   const sixDaysLater = new Date();
   sixDaysLater.setDate(sixDaysLater.getDate() + 6);
@@ -88,12 +90,14 @@ function DashboardPage() {
   useEffect(() => {
     async function fetchTreatmentsData() {
       try {
+        showLoading();
         const [clientData, consultationData] = await Promise.all([
           useGetAll("clients", token),
           useGetAll("consultations", token),
         ]);
         setConsultations(consultationData);
         setClients(clientData);
+        hideLoading();
       } catch (error) {
         console.error("Erro ao buscar dados:", error);
       }

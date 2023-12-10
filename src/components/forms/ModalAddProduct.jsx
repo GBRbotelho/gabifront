@@ -1,39 +1,42 @@
 import React, { useState } from "react";
 import { usePostData } from "../../services/apiService";
+import { useLoading } from "../../utils/LoadingContext";
 
 export default function ModalAddProduct({
-    reloadProducts,
-    setAddProductActive
-
+  reloadProducts,
+  setAddProductActive,
 }) {
-    const [error, setError] = useState(null)
-    const [product, setProduct] = useState({})
+  const [error, setError] = useState(null);
+  const [product, setProduct] = useState({});
+  const { showLoading, hideLoading } = useLoading();
 
-    const handleChange = (event) => {
-        const { name, value } = event.target;
-        setProduct({
-          ...product,
-          [name]: value,
-        });
-      };
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setProduct({
+      ...product,
+      [name]: value,
+    });
+  };
 
-    const handleCancel = () => {
-        setAddProductActive(false)
+  const handleCancel = () => {
+    setAddProductActive(false);
+  };
+
+  const handleSubmit = async (e) => {
+    showLoading();
+    e.preventDefault();
+    const token = localStorage.getItem("token");
+    const response = await usePostData(token, "products", product);
+
+    if (response.error) {
+      hideLoading();
+      setError(response.error);
+    } else {
+      await reloadProducts();
+      hideLoading();
+      setAddProductActive(false);
     }
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        const token = localStorage.getItem("token");
-        const response = await usePostData(token, "products", product);
-    
-        if (response.error) {
-          setError(response.error);
-        } else {
-          await reloadProducts();
-          setAddProductActive(false);
-        }
-      };
-
+  };
 
   return (
     <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center">

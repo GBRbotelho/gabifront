@@ -4,12 +4,14 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useForm } from "../utils/useForm";
 import { useFlashMessage } from "../utils/FlashMessageContext";
+import { useLoading } from "../utils/LoadingContext";
 
 function ClientsAddPage() {
   const navigate = useNavigate();
   const [error, setError] = useState("");
   const [clientData, setClientData] = useState({});
   const showMessage = useFlashMessage();
+  const { showLoading, hideLoading } = useLoading();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -21,12 +23,16 @@ function ClientsAddPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    showLoading();
+
     try {
       const token = await localStorage.getItem("token");
       const response = await addClient(token, clientData).catch((error) => {
         if (error.error) {
-          setError(error.error);
+          hideLoading();
+          showMessage(error.error, "error");
         } else {
+          hideLoading();
           navigate("/dashboard/clientes");
         }
       });
@@ -35,12 +41,17 @@ function ClientsAddPage() {
         setError(response.error);
       } else {
         showMessage("Operação bem-sucedida!", "success");
+        hideLoading();
         navigate("/dashboard/clientes");
       }
     } catch (error) {
       if (error.error) {
-        setError(error.error);
-      } else console.log(error);
+        hideLoading();
+        showMessage(error.error, "error");
+      } else {
+        hideLoading();
+        console.log(error);
+      }
     }
   };
 

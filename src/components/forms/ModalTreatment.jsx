@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import { usePostData } from "../../services/apiService";
 import { useFlashMessage } from "../../utils/FlashMessageContext";
+import { useLoading } from "../../utils/LoadingContext";
 
 export default function ModalTreatment({
   closeModalTreatment,
@@ -12,6 +13,7 @@ export default function ModalTreatment({
   const [error, setError] = useState("");
   const { id } = useParams();
   const showMessage = useFlashMessage();
+  const { showLoading, hideLoading } = useLoading();
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -22,14 +24,17 @@ export default function ModalTreatment({
   };
 
   const handleSubmit = async (e) => {
+    showLoading();
     e.preventDefault();
     treatment.clientId = id;
     const token = localStorage.getItem("token");
     const response = await usePostData(token, "treatments", treatment);
 
     if (response.error) {
+      hideLoading();
       setError(response.error);
     } else {
+      hideLoading();
       reloadTreatments();
       closeModalTreatment();
     }

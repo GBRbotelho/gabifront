@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { usePostData } from "../../services/apiService";
+import { useLoading } from "../../utils/LoadingContext";
 
 export default function ModalAddService({
   reloadServices,
@@ -7,6 +8,7 @@ export default function ModalAddService({
 }) {
   const [error, setError] = useState(null);
   const [service, setService] = useState({});
+  const { showLoading, hideLoading } = useLoading();
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -21,14 +23,17 @@ export default function ModalAddService({
   };
 
   const handleSubmit = async (e) => {
+    showLoading();
     e.preventDefault();
     const token = localStorage.getItem("token");
     const response = await usePostData(token, "services", service);
 
     if (response.error) {
+      hideLoading();
       setError(response.error);
     } else {
       await reloadServices();
+      hideLoading();
       setAddServiceActive(false);
     }
   };

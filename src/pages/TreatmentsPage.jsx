@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useGetAll, useDeleteData } from "../services/apiService";
 import { Link } from "react-router-dom";
+import { useLoading } from "../utils/LoadingContext";
 
 function TreatmentsPage() {
   const token = localStorage.getItem("token");
@@ -10,10 +11,12 @@ function TreatmentsPage() {
   const [clients, setClients] = useState([]);
   const [services, setServices] = useState([]);
   const [error, setError] = useState(null);
+  const { showLoading, hideLoading } = useLoading();
 
   useEffect(() => {
     async function fetchTreatmentsData() {
       try {
+        showLoading();
         const [clientData, treatmentsData, servicesData] = await Promise.all([
           useGetAll("clients", token),
           useGetAll("treatments", token),
@@ -22,7 +25,9 @@ function TreatmentsPage() {
         setTreatments(treatmentsData);
         setClients(clientData);
         setServices(servicesData);
+        hideLoading();
       } catch (error) {
+        hideLoading();
         console.error("Erro ao buscar dados:", error);
       }
     }
@@ -31,6 +36,7 @@ function TreatmentsPage() {
   }, []);
 
   const toggleDeleteTreatment = async (consultationId) => {
+    showLoading();
     const consultations = await useGetAll("consultations", token);
     if (
       consultations.filter(
@@ -38,19 +44,24 @@ function TreatmentsPage() {
       ).length > 0
     ) {
       setError("Existe consultas com esse tratamento");
+      hideLoading();
     } else {
       await useDeleteData(consultationId, "treatments", token);
       reloadTreatments();
+      hideLoading();
     }
   };
 
   const reloadTreatments = async () => {
+    showLoading();
     try {
       const token = await localStorage.getItem("token");
       const data = await useGetAll("treatments", token); // Passe o token na chamada
       setTreatments(data);
+      hideLoading();
     } catch (error) {
       console.error("Erro ao buscar tratamentos:", error);
+      hideLoading();
     }
   };
 

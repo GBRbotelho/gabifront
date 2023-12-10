@@ -1,60 +1,62 @@
 import React, { useState, useEffect } from "react";
 import { useUpdateData } from "../../services/apiService";
+import { useLoading } from "../../utils/LoadingContext";
 
 export default function ModalAddProduct({
-    reloadProducts,
-    setViewProduct,
-    viewProduct,
-
+  reloadProducts,
+  setViewProduct,
+  viewProduct,
 }) {
-    const [error, setError] = useState(null);
-    const [tempViewProduct, setTempViewProduct] = useState({});
-    const [isEditable, setIsEditable] = useState(false)
+  const [error, setError] = useState(null);
+  const [tempViewProduct, setTempViewProduct] = useState({});
+  const [isEditable, setIsEditable] = useState(false);
+  const { showLoading, hideLoading } = useLoading();
 
-    useEffect(() => {
-        setTempViewProduct(viewProduct);
-      }, []);
-    
+  useEffect(() => {
+    setTempViewProduct(viewProduct);
+  }, []);
 
-    const handleChange = (event) => {
-        const { name, value } = event.target;
-        setViewProduct({
-          ...viewProduct,
-          [name]: value,
-        });
-      };
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setViewProduct({
+      ...viewProduct,
+      [name]: value,
+    });
+  };
 
-    const handleClose = () =>{
-        setViewProduct(null)
+  const handleClose = () => {
+    setViewProduct(null);
+  };
+
+  const handleCancel = () => {
+    setViewProduct(tempViewProduct);
+    setIsEditable(false);
+  };
+
+  const handleEdit = () => {
+    setIsEditable(true);
+  };
+
+  const handleSubmit = async () => {
+    showLoading();
+    try {
+      const token = localStorage.getItem("token");
+      const update = await useUpdateData(
+        viewProduct._id,
+        "products",
+        viewProduct,
+        token
+      );
+      setViewProduct(update);
+      setTempViewProduct(update);
+      setIsEditable(!isEditable);
+      reloadProducts();
+      hideLoading();
+    } catch (err) {
+      setError(err.error);
+      hideLoading();
     }
-
-    const handleCancel = () => {
-        setViewProduct(tempViewProduct)
-        setIsEditable(false)
-    }
-
-    const handleEdit = () => {
-        setIsEditable(true)
-    }
-
-    const handleSubmit = async () => {
-        try {
-          const token = localStorage.getItem("token");
-          const update = await useUpdateData(
-            viewProduct._id,
-            "products",
-            viewProduct,
-            token
-          );
-          setViewProduct(update);
-          setTempViewProduct(update);
-          setIsEditable(!isEditable);
-          reloadProducts();
-        } catch (err) {
-          setError(err.error);
-        }
-      };
-
+  };
 
   return (
     <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center">
@@ -119,12 +121,8 @@ export default function ModalAddProduct({
               onChange={handleChange}
               disabled={!isEditable}
             >
-                <option value="Disponível">
-                    Disponível
-                </option>
-                <option value="Esgotado">
-                    Esgotado
-                </option>
+              <option value="Disponível">Disponível</option>
+              <option value="Esgotado">Esgotado</option>
             </select>
           </div>
           <div className="md:col-span-4">
@@ -145,7 +143,7 @@ export default function ModalAddProduct({
         <div className="flex justify-between mt-3">
           <button
             className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-              onClick={handleClose}
+            onClick={handleClose}
           >
             Fechar
           </button>
