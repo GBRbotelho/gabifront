@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../../utils/AuthContext";
 import { useGetAll } from "../../services/apiService";
 import ModalProfile from "../forms/ModalProfile";
+import PhotoProfile from "../../assets/profiles/11.svg";
 
 function Navbar() {
   const location = useLocation();
@@ -186,7 +187,7 @@ function Navbar() {
             }}
           >
             <img
-              src="https://placehold.co/32x32"
+              src={PhotoProfile}
               alt=""
               className="w-8 h-8 rounded block object-cover align-middle"
             />

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useAuth } from "../../utils/AuthContext";
 import { useForm } from "../../utils/useForm";
+import PhotoProfile from "../../assets/profiles/11.svg";
 
 export default function ModalProfile({ setProfileOpen }) {
   const [isEditable, setIsEditable] = useState(false);
@@ -22,7 +23,7 @@ export default function ModalProfile({ setProfileOpen }) {
           <div className=" overflow-y-auto flex flex-col items-center max-h-max">
             <div>
               <img
-                src="https://placehold.co/250x250"
+                src={PhotoProfile}
                 alt=""
                 className="rounded block object-cover align-middle"
               />
@@ -70,7 +71,7 @@ export default function ModalProfile({ setProfileOpen }) {
                   maxLength={90}
                 />
               </div>
-              <div className="md:col-span-6">
+              {/* <div className="md:col-span-6">
                 <label htmlFor="full_name">Senha</label>
                 <input
                   type="text"
@@ -83,19 +84,19 @@ export default function ModalProfile({ setProfileOpen }) {
                   disabled={!isEditable}
                   maxLength={90}
                 />
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
         <div className="mt-5 flex flex-col gap-3">
-          <button
+          {/* <button
             className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded"
             onClick={() => {
               setProfileOpen(false);
             }}
           >
             Mudar Senha
-          </button>
+          </button> */}
           <button
             className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
             onClick={() => {

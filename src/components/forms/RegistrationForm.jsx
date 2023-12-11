@@ -356,7 +356,7 @@ function RegistrationForm({ closeModal }) {
             <div className="">
               <div className="">
                 {isEditable ? (
-                  <>
+                  <div className="flex gap-4">
                     <button
                       className=" bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
                       onClick={toggleCancel}
@@ -369,7 +369,7 @@ function RegistrationForm({ closeModal }) {
                     >
                       <i className="ri-save-line"></i>Save
                     </button>
-                  </>
+                  </div>
                 ) : (
                   <button
                     className=" bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded"
