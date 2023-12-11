@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../../utils/AuthContext";
 import { useGetAll } from "../../services/apiService";
+import ModalProfile from "../forms/ModalProfile";
 
 function Navbar() {
   const location = useLocation();
@@ -9,6 +10,7 @@ function Navbar() {
   const [activeProfile, setActiveProfile] = useState(false);
   const [activeNotify, setActiveNotify] = useState(false);
   const [consultations, setConsultations] = useState([]);
+  const [profileOpen, setProfileOpen] = useState(false);
   const [clients, setClients] = useState([]);
   const { logout, user } = useAuth();
   const token = localStorage.getItem("token");
@@ -198,6 +200,7 @@ function Navbar() {
               <a
                 href="#"
                 className="flex items-center text-[13px] py-1.5 px-4 text-gray-600 hover:text-emerald-500 hover:bg-gray-50"
+                onClick={() => setProfileOpen(true)}
               >
                 Perfil
               </a>
@@ -216,6 +219,7 @@ function Navbar() {
           </ul>
         </li>
       </ul>
+      {profileOpen && <ModalProfile setProfileOpen={setProfileOpen} />}
     </div>
   );
 }

@@ -18,6 +18,7 @@ function LoginPage() {
     if (token && token !== "NO") {
       navigate("/dashboard/");
     }
+    hideLoading();
   }, [token, navigate]);
 
   const handleSubmit = async (e) => {
