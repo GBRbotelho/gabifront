@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { usePostData } from "../../services/apiService";
 import { useLoading } from "../../utils/LoadingContext";
+import { useFlashMessage } from "../../utils/FlashMessageContext";
 
 export default function ModalAddProduct({
   reloadProducts,
@@ -9,6 +10,7 @@ export default function ModalAddProduct({
   const [error, setError] = useState(null);
   const [product, setProduct] = useState({});
   const { showLoading, hideLoading } = useLoading();
+  const showMessage = useFlashMessage();
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -34,6 +36,7 @@ export default function ModalAddProduct({
     } else {
       await reloadProducts();
       hideLoading();
+      showMessage("Produto adicionado!", "success");
       setAddProductActive(false);
     }
   };
