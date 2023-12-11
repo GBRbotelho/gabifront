@@ -47,8 +47,8 @@ function LoginPage() {
     <main className="flex h-screen w-full">
       <section className="flex h-screen w-full md:w-1/2 items-center justify-center rounded-md px-12 xl:px-20">
         <div className="flex flex-col items-start justify-center gap-10 max-w-[700px] w-full">
-          <span className="whitespace-nowrap text-6xl font-bold text-emerald-300">
-            ByteWave
+          <span className=" text-6xl font-bold text-emerald-300">
+            Gabriela Tintori
           </span>
           <span className="font-light text-gray-500">Faça seu login!</span>
           <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-full">
