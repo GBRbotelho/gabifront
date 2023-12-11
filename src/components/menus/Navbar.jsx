@@ -112,10 +112,15 @@ function Navbar() {
         <li className="dropdown">
           <button
             type="button"
-            className="dropdown-toggle text-gray-400 w-8 h-8 rounded flex items-center justify-center hover:bg-gray-50 hover:text-emerald-600"
+            className="relative dropdown-toggle text-gray-400 w-8 h-8 rounded flex items-center justify-center hover:bg-gray-50 hover:text-emerald-600"
             onClick={() => setActiveNotify(!activeNotify)}
           >
             <i className="ri-notification-3-line"></i>
+            {FilterConsultation.length > 0 && (
+              <span className="absolute bottom-0 left-5 bg-green-500 text-white rounded-full px-2 py-2 h-2 w-1 flex items-center justify-center text-xs">
+                {FilterConsultation.length}
+              </span>
+            )}
           </button>
           <div
             className={`fixed right-5 dropdown-menu shadow-md shadow-black/5 z-30 ${
@@ -139,7 +144,7 @@ function Navbar() {
                 data-tab-for="notification"
                 data-page="notifications"
               >
-                {FilterConsultation.length > 0 &&
+                {FilterConsultation.length > 0 ? (
                   FilterConsultation.map((consultationItem) => (
                     <li key={consultationItem._id}>
                       <Link
@@ -171,7 +176,14 @@ function Navbar() {
                         </div>
                       </Link>
                     </li>
-                  ))}
+                  ))
+                ) : (
+                  <div className="ml-2">
+                    <div className="text-[13px] text-gray-600 font-medium truncate group-hover:text-green-500">
+                      Não tem consultas pendentes!
+                    </div>
+                  </div>
+                )}
               </ul>
             </div>
           </div>
