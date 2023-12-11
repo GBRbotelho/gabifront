@@ -134,7 +134,7 @@ function UsersPage() {
                     <td
                       className="px-2 py-3 border options-cell"
                       style={{ width: "50px" }}
-                      key={`options_${user.id}`}
+                      key={`options_${user._id}`}
                     >
                       <div className="flex items-center space-x-2">
                         <button
@@ -146,7 +146,10 @@ function UsersPage() {
                         >
                           <i className="ri-eye-line text-3xl"></i>
                         </button>
-                        <button className="w-8 h-8 text-red-500 transform hover:scale-110 transition-transform">
+                        <button
+                          className="w-8 h-8 text-red-500 transform hover:scale-110 transition-transform"
+                          onClick={() => handleDeleteUsers(user._id)}
+                        >
                           <i className="ri-delete-bin-5-line text-3xl"></i>
                         </button>
                       </div>
