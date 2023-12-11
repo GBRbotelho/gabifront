@@ -15,7 +15,7 @@ const LoadingSpinner = () => {
 
   return (
     loading && (
-      <div className="fixed top-0 left-0 w-full h-full flex items-center bg-white/80 justify-center">
+      <div className="fixed top-0 left-0 w-full h-full flex items-center bg-white/80 justify-center" style={{ zIndex: 5000 }}>
         <ClipLoader
           css={override}
           color={"#36D7B7"}

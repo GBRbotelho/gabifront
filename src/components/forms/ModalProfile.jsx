@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAuth } from "../../utils/AuthContext";
 import { useForm } from "../../utils/useForm";
-import PhotoProfile from "../../assets/profiles/11.svg";
 import ModalPhoto from "./ModalPhoto";
+import { useUpdateData } from "../../services/apiService";
+import { useLoading } from "../../utils/LoadingContext";
 
 //Import Images
 import Photo1 from "../../assets/profiles/1.svg";
@@ -60,11 +61,32 @@ const avatarImages = [
 //Fim IMporte Images
 
 export default function ModalProfile({ setProfileOpen }) {
+  const {showLoading, hideLoading} = useLoading();
   const [isEditable, setIsEditable] = useState(false);
-  const { user } = useAuth();
+  const { user, reloadUser } = useAuth();
   const [modal, setModal] = useState(false);
+  const [selectImage, setSelectImage] = useState(null)
+
+  useEffect(()=>{
+    setSelectImage(user.photo - 1);
+  },[user])
 
   const userPhoto = avatarImages[parseInt(user && user.photo, 10) - 1];
+
+  const updatePhoto = async () => {
+    try {
+      showLoading();
+      const token = localStorage.getItem("token");
+      const updatedUser = { ...user, photo: selectImage + 1 }; // +1 para ajustar a base 0 do array
+      await useUpdateData(updatedUser._id, "users", updatedUser, token);
+      await reloadUser();
+      hideLoading();
+      // Você precisará implementar a lógica para atualizar o estado localmente ou recarregar a página
+    } catch (error) {
+      console.error("Erro ao atualizar a foto do perfil:", error);
+      // Adicione lógica de tratamento de erro conforme necessário
+    }
+  };
 
   return (
     <div
@@ -182,7 +204,7 @@ export default function ModalProfile({ setProfileOpen }) {
           setProfileOpen(false);
         }}
       ></div>
-      {modal && <ModalPhoto setModal={setModal} />}
+      {modal && <ModalPhoto setModal={setModal} selectImage={selectImage} setSelectImage={setSelectImage} updatePhoto={updatePhoto} />}
     </div>
   );
 }

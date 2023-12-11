@@ -267,7 +267,6 @@ function Navbar() {
           >
             <li>
               <a
-                href="#"
                 className="flex items-center text-[13px] py-1.5 px-4 text-gray-600 hover:text-emerald-500 hover:bg-gray-50"
                 onClick={() => setProfileOpen(true)}
               >
@@ -276,7 +275,6 @@ function Navbar() {
             </li>
             <li>
               <a
-                href="#"
                 className="flex items-center text-[13px] py-1.5 px-4 text-gray-600 hover:text-emerald-500 hover:bg-gray-50"
                 onClick={() => {
                   logout();

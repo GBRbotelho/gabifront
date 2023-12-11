@@ -1,4 +1,6 @@
 import React, { useEffect } from "react";
+import { useLoading } from "../../utils/LoadingContext";
+
 import Photo1 from "../../assets/profiles/1.svg";
 import Photo2 from "../../assets/profiles/2.svg";
 import Photo3 from "../../assets/profiles/3.svg";
@@ -52,7 +54,10 @@ const avatarImages = [
   // Adicione outras fotos conforme necessário
 ];
 
-export default function ModalPhoto({ setModal }) {
+
+export default function ModalPhoto({ setModal, selectImage, setSelectImage, updatePhoto }) {
+  const {showLoading, hideLoading} = useLoading();
+
   return (
     <div
       className="fixed top-0 left-0 w-full h-full flex items-center bg-black/50 justify-center"
@@ -65,17 +70,21 @@ export default function ModalPhoto({ setModal }) {
         <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-4">
           {avatarImages.map((photo, index) => (
             <div
-              key={index}
-              className="cursor-pointer scale-90 transition-transform hover:scale-125"
-            >
-              <img src={photo} alt={`Avatar ${index + 1}`} />
-            </div>
+            key={index}
+            className={`cursor-pointer transition-transform ${
+              index === selectImage ? "scale-125" : "scale-90"
+            } hover:scale-125`}
+            onClick={() => setSelectImage(index)}
+          >
+            <img src={photo} alt={`Avatar ${index + 1}`} />
+          </div>
           ))}
         </div>
         <div>
           <button
             className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-            onClick={() => {
+            onClick={async () => {
+              await updatePhoto();
               setModal(false);
             }}
           >

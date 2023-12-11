@@ -47,9 +47,15 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("token");
   };
 
+  const reloadUser = async () => {
+    const token = localStorage.getItem("token")
+    const userData = await useGetUserData(token);
+    setUser(userData);
+  }
+
   return (
     <AuthContext.Provider
-      value={{ token, user, setUser, isLoading, loginWithToken, logout }}
+      value={{ token, user, setUser, reloadUser, isLoading, loginWithToken, logout }}
     >
       {children}
     </AuthContext.Provider>
