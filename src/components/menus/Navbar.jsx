@@ -265,7 +265,7 @@ function Navbar() {
               !activeProfile && "hidden"
             }`}
           >
-            <li>
+            <li className="cursor-pointer">
               <a
                 className="flex items-center text-[13px] py-1.5 px-4 text-gray-600 hover:text-emerald-500 hover:bg-gray-50"
                 onClick={() => setProfileOpen(true)}
@@ -273,7 +273,7 @@ function Navbar() {
                 Perfil
               </a>
             </li>
-            <li>
+            <li className="cursor-pointer">
               <a
                 className="flex items-center text-[13px] py-1.5 px-4 text-gray-600 hover:text-emerald-500 hover:bg-gray-50"
                 onClick={() => {
