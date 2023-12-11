@@ -70,6 +70,7 @@ export default function ModalConsultation({
         hideLoading();
         reloadConsultations();
         closeModalConsultation();
+        showMessage("Consulta adicionada!", "success");
       }
     } catch (err) {
       hideLoading();

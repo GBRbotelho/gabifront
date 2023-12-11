@@ -4,6 +4,7 @@ import { useGetAll, useDeleteData } from "../services/apiService";
 import ModalAddProduct from "../components/forms/ModalAddProduct";
 import ModalViewProduct from "../components/forms/ModalViewProduct";
 import { useLoading } from "../utils/LoadingContext";
+import { useFlashMessage } from "../utils/FlashMessageContext";
 
 function ProductsPage() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -13,6 +14,7 @@ function ProductsPage() {
   const [error, setError] = useState(null);
   const token = localStorage.getItem("token");
   const { showLoading, hideLoading } = useLoading();
+  const showMessage = useFlashMessage();
 
   const reloadProducts = async () => {
     try {
@@ -39,9 +41,11 @@ function ProductsPage() {
       await useDeleteData(productItem._id, "products", token);
       await reloadProducts();
       hideLoading();
+      showMessage("Produto excluído!", "success");
     } else if (isUsedInConsultation) {
-      setError(
-        "O produto está sendo usado em alguma consulta. Não pode ser excluído."
+      showMessage(
+        "O produto está sendo usado em alguma consulta. Não pode ser excluído.",
+        "error"
       );
       hideLoading();
     }

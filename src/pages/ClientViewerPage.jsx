@@ -94,7 +94,7 @@ export default function ClientViewerPage() {
     );
     await reloadConsultations();
     hideLoading();
-    showMessage("Operação bem-sucedida!", "success");
+    showMessage("Consulta excluída", "success");
   };
 
   const toggleDeleteTreatment = async (consultationId) => {
@@ -110,7 +110,7 @@ export default function ClientViewerPage() {
       const response = await useDeleteData(consultationId, "treatments", token);
       await reloadTreatments();
       hideLoading();
-      showMessage("Operação bem-sucedida!", "success");
+      showMessage("Tratamento excluído!", "success");
     }
   };
 
@@ -197,6 +197,7 @@ export default function ClientViewerPage() {
     });
     setIsEditable(!isEditable);
     hideLoading();
+    showMessage("Operação bem-sucedida!", "success");
   };
 
   const handleChange = (event) => {

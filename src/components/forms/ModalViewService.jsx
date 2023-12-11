@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useUpdateData } from "../../services/apiService";
 import { useLoading } from "../../utils/LoadingContext";
+import { useFlashMessage } from "../../utils/FlashMessageContext";
 
 export default function ModalAddService({
   reloadServices,
@@ -11,6 +12,7 @@ export default function ModalAddService({
   const [tempViewService, setTempViewService] = useState({});
   const [isEditable, setIsEditable] = useState(false);
   const { showLoading, hideLoading } = useLoading();
+  const showMessage = useFlashMessage();
 
   useEffect(() => {
     setTempViewService(viewService);
@@ -52,9 +54,10 @@ export default function ModalAddService({
       setIsEditable(!isEditable);
       reloadServices();
       hideLoading();
+      showMessage("Serviço atualizado!", "success");
     } catch (err) {
       hideLoading();
-      setError(err.error);
+      showMessage(err.error, "error");
     }
   };
 

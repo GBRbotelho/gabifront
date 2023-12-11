@@ -8,6 +8,7 @@ import {
 import ModalAddService from "../components/forms/ModalAddService";
 import ModalViewService from "../components/forms/ModalViewService";
 import { useLoading } from "../utils/LoadingContext";
+import { useFlashMessage } from "../utils/FlashMessageContext";
 
 function ServicesPage() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -16,6 +17,7 @@ function ServicesPage() {
   const [viewService, setViewService] = useState(null);
   const [error, setError] = useState(null);
   const { showLoading, hideLoading } = useLoading();
+  const showMessage = useFlashMessage();
 
   useEffect(() => {
     async function fetchServicesData() {
@@ -58,12 +60,14 @@ function ServicesPage() {
         await deleteService(serviceId, token);
         reloadServices();
         hideLoading();
+        showMessage("Serviço excluido!", "success");
       } else if (
         treatments.filter((treatment) => treatment.name === serviceId)
           .length !== 0
       ) {
-        setError(
-          "Esse serviço esta vinculado a algum tratamento, e não pode ser excluido!"
+        showMessage(
+          "Esse serviço esta vinculado a algum tratamento, e não pode ser excluido!",
+          "error"
         );
         hideLoading();
       }

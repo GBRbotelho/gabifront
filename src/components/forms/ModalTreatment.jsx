@@ -37,6 +37,7 @@ export default function ModalTreatment({
       hideLoading();
       reloadTreatments();
       closeModalTreatment();
+      showMessage("Tratamento adicionado!", "success");
     }
   };
 

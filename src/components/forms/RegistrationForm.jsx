@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useGetId, useUpdateData } from "../../services/apiService";
 import { useParams } from "react-router-dom";
 import { useLoading } from "../../utils/LoadingContext";
+import { useFlashMessage } from "../../utils/FlashMessageContext";
 
 function RegistrationForm({ closeModal }) {
   const [isEditable, setIsEditable] = useState(false);
@@ -9,6 +10,7 @@ function RegistrationForm({ closeModal }) {
   const [tempRegistrationForm, setTempRegistrationForm] = useState({});
   const { id } = useParams();
   const { showLoading, hideLoading } = useLoading();
+  const showMessage = useFlashMessage();
 
   const toggleEdit = () => {
     setIsEditable(!isEditable);
@@ -37,6 +39,7 @@ function RegistrationForm({ closeModal }) {
     setTempRegistrationForm(update);
     setIsEditable(!isEditable);
     hideLoading();
+    showMessage("Operação bem-sucedida!", "success");
   };
 
   const handleChange = (event) => {

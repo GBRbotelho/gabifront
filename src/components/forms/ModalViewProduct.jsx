@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useUpdateData } from "../../services/apiService";
 import { useLoading } from "../../utils/LoadingContext";
+import { useFlashMessage } from "../../utils/FlashMessageContext";
 
 export default function ModalAddProduct({
   reloadProducts,
@@ -11,6 +12,7 @@ export default function ModalAddProduct({
   const [tempViewProduct, setTempViewProduct] = useState({});
   const [isEditable, setIsEditable] = useState(false);
   const { showLoading, hideLoading } = useLoading();
+  const showMessage = useFlashMessage();
 
   useEffect(() => {
     setTempViewProduct(viewProduct);
@@ -52,8 +54,9 @@ export default function ModalAddProduct({
       setIsEditable(!isEditable);
       reloadProducts();
       hideLoading();
+      showMessage("Produto atualizado!", "success");
     } catch (err) {
-      setError(err.error);
+      showMessage(err.error, "error");
       hideLoading();
     }
   };

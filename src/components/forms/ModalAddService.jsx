@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { usePostData } from "../../services/apiService";
 import { useLoading } from "../../utils/LoadingContext";
+import { useFlashMessage } from "../../utils/FlashMessageContext";
 
 export default function ModalAddService({
   reloadServices,
@@ -9,6 +10,7 @@ export default function ModalAddService({
   const [error, setError] = useState(null);
   const [service, setService] = useState({});
   const { showLoading, hideLoading } = useLoading();
+  const showMessage = useFlashMessage();
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -34,6 +36,7 @@ export default function ModalAddService({
     } else {
       await reloadServices();
       hideLoading();
+      showMessage("Serviço adicionado!", "success");
       setAddServiceActive(false);
     }
   };
