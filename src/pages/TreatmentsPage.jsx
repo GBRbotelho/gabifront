@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useGetAll, useDeleteData } from "../services/apiService";
 import { Link } from "react-router-dom";
 import { useLoading } from "../utils/LoadingContext";
+import ModalFiltrosTratamentos from "../components/forms/filtros/ModalFiltrosTratamentos";
 
 function TreatmentsPage() {
   const token = localStorage.getItem("token");
@@ -12,6 +13,38 @@ function TreatmentsPage() {
   const [services, setServices] = useState([]);
   const [error, setError] = useState(null);
   const { showLoading, hideLoading } = useLoading();
+  const [filters, setFilters] = useState(false);
+  const [andamentos, setAndamentos] = useState(true);
+  const [concluidos, setConcluidos] = useState(false);
+  const [selectService, setSelectService] = useState("all");
+  const [selectTime, setSelectTime] = useState("all");
+
+  const filteredTreatment = treatments
+    .filter((treatmentItem) => {
+      return (
+        (concluidos && treatmentItem.status === "Concluído") ||
+        (andamentos && treatmentItem.status === "Em andamento")
+      );
+    })
+    .filter((treatmentItem) => {
+      if (selectService === "all") {
+        return true;
+      } else {
+        return (
+          treatmentItem.name ===
+          services.find((serviceItem) => serviceItem._id === selectService)._id
+        );
+      }
+    })
+    .filter((treatmentItem) => {
+      if (selectTime === "all") {
+        return true;
+      } else if (selectTime === "1session") {
+        return (
+          treatmentItem.totalSessions - treatmentItem.sessionsCompleted === 1
+        );
+      }
+    });
 
   useEffect(() => {
     async function fetchTreatmentsData() {
@@ -76,27 +109,11 @@ function TreatmentsPage() {
           <li className="mr-1 dropdown">
             <button
               type="button"
-              className="dropdown-toggle text-gray-400 w-8 h-8 rounded flex items-center justify-center hover:bg-gray-50 hover:text-gray-600"
-              onClick={handleSearchClick}
+              className="text-black rounded bg-gray-200 w-28 h-9 hover:bg-gray-50 hover:text-gray-600"
+              onClick={() => setFilters(true)}
             >
-              <i className="ri-search-line"></i>
+              <i className="ri-equalizer-line px-2"></i>Filtros
             </button>
-            <div
-              className={`dropdown-menu shadow-md shadow-black/5 z-30  max-w-xs w-full bg-white rounded-md border border-gray-100 ${
-                isSearchOpen ? "block" : "hidden"
-              }`}
-            >
-              <form action="" className="p-4 border-b border-b-gray-100">
-                <div className="relative w-full">
-                  <input
-                    type="text"
-                    className="py-2 pr-4 pl-10 bg-gray-50 w-full outline-none border border-gray-100 rounded-md text-sm focus:border-blue-500"
-                    placeholder="Search..."
-                  />
-                  <i className="ri-search-line absolute top-1/2 left-4 -translate-y-1/2 text-gray-400"></i>
-                </div>
-              </form>
-            </div>
           </li>
         </ul>
       </div>
@@ -114,8 +131,8 @@ function TreatmentsPage() {
             </tr>
           </thead>
           <tbody className="bg-white">
-            {treatments.length > 0 ? (
-              treatments.map((treatment, index) => (
+            {filteredTreatment.length > 0 ? (
+              filteredTreatment.map((treatment, index) => (
                 <tr key={index} className="text-gray-700">
                   <td
                     className="px-4 py-3 border text-center"
@@ -198,6 +215,20 @@ function TreatmentsPage() {
         </table>
         {error && <p className="text-red-500">{error}</p>}
       </div>
+      {filters && (
+        <ModalFiltrosTratamentos
+          setFilters={setFilters}
+          andamentos={andamentos}
+          setAndamentos={setAndamentos}
+          concluidos={concluidos}
+          setConcluidos={setConcluidos}
+          services={services}
+          selectService={selectService}
+          setSelectService={setSelectService}
+          selectTime={selectTime}
+          setSelectTime={setSelectTime}
+        />
+      )}
     </section>
   );
 }
