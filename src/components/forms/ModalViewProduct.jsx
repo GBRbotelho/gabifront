@@ -125,7 +125,7 @@ export default function ModalAddProduct({
               disabled={!isEditable}
             >
               <option value="Disponível">Disponível</option>
-              <option value="Esgotado">Esgotado</option>
+              <option value="Esgotado">Indisponivel</option>
             </select>
           </div>
           <div className="md:col-span-4">

@@ -76,9 +76,24 @@ export default function ModalAddProduct({
               id="validade"
               className="h-10 border mt-1 rounded px-4 w-full bg-white"
               value={product.validade || ""}
-              onChange={handleChange}
+              onChange={(e) => {
+                const DateToday = new Date();
+                DateToday.setHours(0, 0, 0, 0); // Define horas, minutos, segundos e milissegundos como zero
+                const DateValidade = new Date(e.target.value);
+                DateValidade.setDate(DateValidade.getDate() + 1);
+
+                if (DateValidade <= DateToday) {
+                  showMessage(
+                    "A validade não pode ser menor ou igual à data de hoje!",
+                    "error"
+                  );
+                } else {
+                  handleChange(e);
+                }
+              }}
             />
           </div>
+
           <div className="md:col-span-4">
             <label htmlFor="description">Descrição</label>
             <textarea

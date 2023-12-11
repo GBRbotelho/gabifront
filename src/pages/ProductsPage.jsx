@@ -152,7 +152,7 @@ function ProductsPage() {
                       </span>
                     </td>
                   )}
-                  {product.status === "Esgotado" && (
+                  {product.status === "Indisponivel" && (
                     <td className="px-4 py-3 border text-center">
                       <span className="px-2 py-1 font-semibold leading-tight text-red-700 bg-red-100 rounded-sm">
                         {product.status}

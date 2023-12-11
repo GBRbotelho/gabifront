@@ -3,7 +3,6 @@
 import React from "react";
 
 const FlashMessage = ({ message, type, onClose }) => {
-  console.log("Passou aqui");
   return (
     <div
       className={`fixed flex gap-5 items-center top-20 left-1/2 transform -translate-x-1/2 -translate-y-1/2 p-4 rounded ${
@@ -18,7 +17,7 @@ const FlashMessage = ({ message, type, onClose }) => {
         className="text-white rounded hover:scale-125 transition-transform"
         onClick={onClose}
       >
-        <i class="ri-close-line text-gray-300 hover:text-white"></i>
+        <i className="ri-close-line text-gray-300 hover:text-white"></i>
       </button>
     </div>
   );
