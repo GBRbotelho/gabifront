@@ -125,7 +125,7 @@ export default function ModalAddProduct({
               disabled={!isEditable}
             >
               <option value="Disponível">Disponível</option>
-              <option value="Esgotado">Indisponivel</option>
+              <option value="Indisponivel">Indisponivel</option>
             </select>
           </div>
           <div className="md:col-span-4">
@@ -150,31 +150,33 @@ export default function ModalAddProduct({
           >
             Fechar
           </button>
-          <div className="">
-            {isEditable ? (
-              <>
+          {viewProduct.status === "Disponível" && (
+            <div className="">
+              {isEditable ? (
+                <>
+                  <button
+                    className=" bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded mr-1"
+                    onClick={handleCancel}
+                  >
+                    <i className="ri-close-fill"></i>Cancel
+                  </button>
+                  <button
+                    className=" bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                    onClick={handleSubmit}
+                  >
+                    <i className="ri-save-line"></i>Save
+                  </button>
+                </>
+              ) : (
                 <button
-                  className=" bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded mr-1"
-                  onClick={handleCancel}
+                  className=" bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded"
+                  onClick={handleEdit}
                 >
-                  <i className="ri-close-fill"></i>Cancel
+                  <i className="ri-pencil-fill"> </i>Edit
                 </button>
-                <button
-                  className=" bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-                  onClick={handleSubmit}
-                >
-                  <i className="ri-save-line"></i>Save
-                </button>
-              </>
-            ) : (
-              <button
-                className=" bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded"
-                onClick={handleEdit}
-              >
-                <i className="ri-pencil-fill"> </i>Edit
-              </button>
-            )}
-          </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>

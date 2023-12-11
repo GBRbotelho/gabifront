@@ -117,7 +117,7 @@ function Navbar() {
           >
             <i className="ri-notification-3-line"></i>
             {FilterConsultation.length > 0 && (
-              <span className="absolute bottom-0 left-5 bg-green-500 text-white rounded-full px-2 py-2 h-2 w-1 flex items-center justify-center text-xs">
+              <span className="absolute bottom-0 left-5 bg-red-500 text-white rounded-full px-2 py-2 h-2 w-1 flex items-center justify-center text-xs">
                 {FilterConsultation.length}
               </span>
             )}
