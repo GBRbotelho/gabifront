@@ -29,36 +29,36 @@ export default function ModalConsultation({
     try {
       showLoading();
       e.preventDefault();
-      const currentDate = new Date();
-      const consultationDate = new Date(consultation.date);
-      consultationDate.setDate(consultationDate.getDate() + 1);
-      currentDate.setHours(0, 0, 0, 0);
-      consultationDate.setHours(0, 0, 0, 0);
-      if (consultationDate < currentDate) {
-        throw {
-          error: "A data da consulta não pode ser menor que a data de hoje",
-        };
-      }
-      if (consultationDate.toDateString() === currentDate.toDateString()) {
-        const currentHour = new Date().getHours();
-        const currentMinutes = new Date().getMinutes();
+      // const currentDate = new Date();
+      // const consultationDate = new Date(consultation.date);
+      // consultationDate.setDate(consultationDate.getDate() + 1);
+      // currentDate.setHours(0, 0, 0, 0);
+      // consultationDate.setHours(0, 0, 0, 0);
+      // if (consultationDate < currentDate) {
+      //   throw {
+      //     error: "A data da consulta não pode ser menor que a data de hoje",
+      //   };
+      // }
+      // if (consultationDate.toDateString() === currentDate.toDateString()) {
+      //   const currentHour = new Date().getHours();
+      //   const currentMinutes = new Date().getMinutes();
 
-        const consultationHour = parseInt(consultation.time.split(":")[0], 10);
-        const consultationMinutes = parseInt(
-          consultation.time.split(":")[1],
-          10
-        );
-        if (
-          consultationHour < currentHour ||
-          (consultationHour === currentHour &&
-            consultationMinutes <= currentMinutes)
-        ) {
-          throw {
-            error:
-              "A hora da consulta não pode ser menor ou igual à hora atual",
-          };
-        }
-      }
+      //   const consultationHour = parseInt(consultation.time.split(":")[0], 10);
+      //   const consultationMinutes = parseInt(
+      //     consultation.time.split(":")[1],
+      //     10
+      //   );
+      //   if (
+      //     consultationHour < currentHour ||
+      //     (consultationHour === currentHour &&
+      //       consultationMinutes <= currentMinutes)
+      //   ) {
+      //     throw {
+      //       error:
+      //         "A hora da consulta não pode ser menor ou igual à hora atual",
+      //     };
+      //   }
+      // }
       consultation.client = id;
       const token = localStorage.getItem("token");
       const response = await usePostData(token, "consultations", consultation);
