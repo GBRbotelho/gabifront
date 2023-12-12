@@ -1,5 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useLoading } from "../../utils/LoadingContext";
+import LoadingSpinner from "../../utils/LoadingSpinner"
 
 import Photo1 from "../../assets/profiles/1.svg";
 import Photo2 from "../../assets/profiles/2.svg";
@@ -56,7 +57,27 @@ const avatarImages = [
 
 
 export default function ModalPhoto({ setModal, selectImage, setSelectImage, updatePhoto }) {
-  const {showLoading, hideLoading} = useLoading();
+  const { showLoading, hideLoading } = useLoading();
+  const [loadedImageIndexes, setLoadedImageIndexes] = useState(new Set());
+  const totalImages = avatarImages.length;
+
+  const handleImageLoad = (index) => {
+    setLoadedImageIndexes((prevLoadedIndexes) => {
+      const newIndexes = new Set(prevLoadedIndexes);
+      newIndexes.add(index);
+      return newIndexes;
+    });
+  };
+
+  useEffect(() => {
+    showLoading();
+    console.log(loadedImageIndexes.size);
+
+    if (loadedImageIndexes.size === totalImages) {
+      hideLoading();
+    }
+  }, [loadedImageIndexes, totalImages]);
+
 
   return (
     <div
@@ -68,19 +89,23 @@ export default function ModalPhoto({ setModal, selectImage, setSelectImage, upda
           <h2 className="text-2xl font-semibold">Avatares:</h2>
         </div>
         <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-4">
-          {avatarImages.map((photo, index) => (
+        {avatarImages.map((photo, index) => (
             <div
-            key={index}
-            className={`cursor-pointer transition-transform ${
-              index === selectImage ? "scale-125" : "scale-90"
-            } hover:scale-125`}
-            onClick={() => setSelectImage(index)}
-          >
-            <img src={photo} alt={`Avatar ${index + 1}`} />
-          </div>
+              key={index}
+              className={`cursor-pointer transition-transform ${
+                index === selectImage ? "scale-125" : "scale-90"
+              } hover:scale-125`}
+              onClick={() => setSelectImage(index)}
+            >
+              <img
+                src={photo}
+                alt={`Avatar ${index + 1}`}
+                onLoad={() => handleImageLoad(index)}
+              />
+            </div>
           ))}
         </div>
-        <div>
+        <div className="flex w-full justify-between">
           <button
             className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
             onClick={async () => {
@@ -89,6 +114,14 @@ export default function ModalPhoto({ setModal, selectImage, setSelectImage, upda
             }}
           >
             Salvar
+          </button>
+          <button
+            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+            onClick={async () => {
+              setModal(false);
+            }}
+          >
+            Fechar
           </button>
         </div>
       </div>
