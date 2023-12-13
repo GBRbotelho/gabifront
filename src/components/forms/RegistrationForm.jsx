@@ -620,7 +620,7 @@ function RegistrationForm({ closeModal }) {
               <div className="md:col-span-2">
                 <label htmlFor="sessionsNumber">Numero de sessões</label>
                 <input
-                  type="text"
+                  type="number"
                   name="sessionsNumber"
                   id="sessionsNumber"
                   className={`h-10 border mt-1 rounded px-4 w-full bg-${
