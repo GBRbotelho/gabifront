@@ -215,7 +215,7 @@ function RegistrationForm({ closeModal }) {
             <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-4">
               <div className="md:col-span-2">
                 <label htmlFor="intensity">Intensidade</label>
-                <input
+                <select
                   type="text"
                   name="intensity"
                   id="intensity"
@@ -225,7 +225,12 @@ function RegistrationForm({ closeModal }) {
                   value={registrationForm.intensity || ""}
                   onChange={handleChange}
                   disabled={!isEditable}
-                />
+                >
+                  <option value="" hidden></option>
+                  <option value="Alta">Alta</option>
+                  <option value="Moderada">Moderada</option>
+                  <option value="Baixa">Baixa</option>
+                </select>
               </div>
 
               <div className="md:col-span-2">
@@ -274,7 +279,7 @@ function RegistrationForm({ closeModal }) {
               </div>
               <div className="md:col-span-2">
                 <label htmlFor="condition">Estado</label>
-                <input
+                <select
                   type="text"
                   name="condition"
                   id="condition"
@@ -284,7 +289,11 @@ function RegistrationForm({ closeModal }) {
                   value={registrationForm.condition || ""}
                   onChange={handleChange}
                   disabled={!isEditable}
-                />
+                >
+                  <option value="" hidden></option>
+                  <option value="Contínua">Contínua</option>
+                  <option value="Intermitente">Intermitente</option>
+                </select>
               </div>
 
               <div className="md:col-span-2">
