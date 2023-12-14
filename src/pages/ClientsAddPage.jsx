@@ -39,7 +39,7 @@ function ClientsAddPage() {
 
       if (response.error) {
         hideLoading();
-        setError(response.error);
+        showMessage("Informações faltando!", "error");
       } else {
         showMessage("Operação bem-sucedida!", "success");
         hideLoading();
