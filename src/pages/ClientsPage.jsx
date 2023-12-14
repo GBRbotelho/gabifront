@@ -88,7 +88,7 @@ function ClientsPage() {
         }
       }
 
-      if (selectTime === "6months") {
+      if (selectTime === "9months") {
         const NineMonthBefore = new Date();
         NineMonthBefore.setMonth(NineMonthBefore.getMonth() - 9);
         if (
