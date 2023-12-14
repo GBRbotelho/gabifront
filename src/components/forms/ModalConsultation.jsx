@@ -128,8 +128,7 @@ export default function ModalConsultation({
                     treatmentItem.status === "Em andamento" &&
                     consultations.filter(
                       (consultationItem) =>
-                        consultationItem.service === treatmentItem._id &&
-                        consultationItem.status !== "Faltou"
+                        consultationItem.service === treatmentItem._id
                     ).length < treatmentItem.totalSessions
                   );
                 })
