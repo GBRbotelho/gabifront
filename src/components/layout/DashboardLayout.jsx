@@ -38,8 +38,6 @@ function DashboardLayout({ children }) {
           const ValidateDate = new Date(productItem.validade);
           ValidateDate.setDate(ValidateDate.getDate() + 1);
 
-          console.log(DateToday);
-          console.log(ValidateDate);
           if (
             ValidateDate < DateToday &&
             productItem.status !== "Indisponivel"

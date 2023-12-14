@@ -27,7 +27,6 @@ function ClientsPage() {
     .sort((a, b) => a.name.localeCompare(b.name))
     .filter((clientItem) => {
       const normalizedSearchTerm = searchTerm.toLowerCase();
-      console.log(normalizedSearchTerm);
 
       // Verifica se o termo de pesquisa está presente em qualquer um dos campos
       return (
@@ -41,53 +40,71 @@ function ClientsPage() {
       );
     })
     .filter((clientItem) => {
-      const consultationsClient = consultations.filter((consultationItem) => {
-        return (
-          consultationItem.client === clientItem._id &&
-          consultationItem.status === "Concluído"
-        );
-      });
+      const consultationsClient = consultations
+        .filter((consultationItem) => {
+          return (
+            consultationItem.client === clientItem._id &&
+            consultationItem.status === "Concluído"
+          );
+        })
+        .sort((a, b) => new Date(b.date) - new Date(a.date)); // Ordena as consultas por data decrescente
 
       if (selectTime === "all") {
         return clientItem;
       }
+
       if (selectTime === "1month") {
         const OneMonthBefore = new Date();
         OneMonthBefore.setMonth(OneMonthBefore.getMonth() - 1);
+
+        // Verifica se a última consulta concluída está fora do limite de tempo
         if (
-          consultationsClient.filter((consultationItem) => {
-            console.log(new Date(consultationItem.date));
-            console.log(OneMonthBefore);
-            return new Date(consultationItem.date) < OneMonthBefore;
-          }).length > 0
+          consultationsClient.length === 0 ||
+          new Date(consultationsClient[0].date) < OneMonthBefore
+        ) {
+          return clientItem;
+        }
+      }
+
+      if (selectTime === "3months") {
+        const ThreeMonthBefore = new Date();
+        ThreeMonthBefore.setMonth(ThreeMonthBefore.getMonth() - 3);
+        if (
+          consultationsClient.length === 0 ||
+          new Date(consultationsClient[0].date) < ThreeMonthBefore
         ) {
           return clientItem;
         }
       }
 
       if (selectTime === "6months") {
-        const OneMonthBefore = new Date();
-        OneMonthBefore.setMonth(OneMonthBefore.getMonth() - 6);
+        const SixMonthBefore = new Date();
+        SixMonthBefore.setMonth(SixMonthBefore.getMonth() - 6);
         if (
-          consultationsClient.filter((consultationItem) => {
-            console.log(new Date(consultationItem.date));
-            console.log(OneMonthBefore);
-            return new Date(consultationItem.date) < OneMonthBefore;
-          }).length > 0
+          consultationsClient.length === 0 ||
+          new Date(consultationsClient[0].date) < SixMonthBefore
+        ) {
+          return clientItem;
+        }
+      }
+
+      if (selectTime === "6months") {
+        const NineMonthBefore = new Date();
+        NineMonthBefore.setMonth(NineMonthBefore.getMonth() - 9);
+        if (
+          consultationsClient.length === 0 ||
+          new Date(consultationsClient[0].date) < NineMonthBefore
         ) {
           return clientItem;
         }
       }
 
       if (selectTime === "12months") {
-        const OneMonthBefore = new Date();
-        OneMonthBefore.setMonth(OneMonthBefore.getMonth() - 12);
+        const TwelveMonthBefore = new Date();
+        TwelveMonthBefore.setMonth(TwelveMonthBefore.getMonth() - 12);
         if (
-          consultationsClient.filter((consultationItem) => {
-            console.log(new Date(consultationItem.date));
-            console.log(OneMonthBefore);
-            return new Date(consultationItem.date) < OneMonthBefore;
-          }).length > 0
+          consultationsClient.length === 0 ||
+          new Date(consultationsClient[0].date) < TwelveMonthBefore
         ) {
           return clientItem;
         }

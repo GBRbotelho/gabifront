@@ -42,8 +42,14 @@ function ModalFiltrosClientTratamentos({
             >
               <option value="all">Todos</option>
               <option value="1month">Não concluem uma consulta a 1 Mês</option>
+              <option value="3months">
+                Não concluem uma consulta a 3 Meses
+              </option>
               <option value="6months">
                 Não concluem uma consulta a 6 Meses
+              </option>
+              <option value="9months">
+                Não concluem uma consulta a 9 Meses
               </option>
               <option value="12months">
                 Não concluem uma consulta a 12 Meses
