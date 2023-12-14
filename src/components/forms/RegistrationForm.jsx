@@ -409,8 +409,9 @@ function RegistrationForm({ closeModal }) {
                   disabled={!isEditable}
                 >
                   <option value="" hidden></option>
-                  <option value="Sim">Pernas</option>
-                  <option value="Não">Braços</option>
+                  <option value="Braços">Braços</option>
+                  <option value="Pernas">Pernas</option>
+                  <option value="Braços e Pernas">Braços e Pernas</option>
                 </select>
               </div>
               <div className="md:col-span-2">
