@@ -26,7 +26,7 @@ function ClientsAddPage() {
     showLoading();
 
     try {
-      const token = await localStorage.getItem("token");
+      const token = localStorage.getItem("token");
       const response = await addClient(token, clientData).catch((error) => {
         if (error.error) {
           hideLoading();
@@ -38,6 +38,7 @@ function ClientsAddPage() {
       });
 
       if (response.error) {
+        hideLoading();
         setError(response.error);
       } else {
         showMessage("Operação bem-sucedida!", "success");
