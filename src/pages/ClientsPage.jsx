@@ -36,7 +36,8 @@ function ClientsPage() {
           .toLocaleDateString("pt-BR")
           .includes(normalizedSearchTerm) ||
         useForm(clientItem.phone, "telefone").includes(normalizedSearchTerm) ||
-        clientItem.email.toLowerCase().includes(normalizedSearchTerm)
+        (clientItem.email &&
+          clientItem.email.toLowerCase().includes(normalizedSearchTerm))
       );
     })
     .filter((clientItem) => {
