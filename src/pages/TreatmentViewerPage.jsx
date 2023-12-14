@@ -193,14 +193,14 @@ export default function TreatmentViewerPage() {
                         <div key={consultation._id}>
                           <div className="bg-gray-300 my-6 h-0.5"></div>
                           <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-2">
-                            <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 col-span-1 md:grid-cols-3 ">
+                            <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 col-span-1 md:grid-cols-4 ">
                               <div className="md:col-span-1">
                                 <label htmlFor="date">Data</label>
                                 <input
                                   type="date"
                                   name="date"
                                   id="date"
-                                  className="h-10 border mt-1 rounded px-4 w-full bg-white text-center"
+                                  className="h-10 border mt-1 pl-0 pr-0 rounded px-4 w-full bg-white text-center"
                                   disabled={isEditable}
                                   value={
                                     consultation.date
@@ -223,6 +223,21 @@ export default function TreatmentViewerPage() {
                                 />
                               </div>
                               <div className="md:col-span-1">
+                                <label htmlFor="price">Preço</label>
+                                <input
+                                  type="text"
+                                  name="price"
+                                  id="price"
+                                  className="h-10 border mt-1 rounded px-4 w-full bg-white text-center"
+                                  disabled={isEditable}
+                                  value={`R$ ${
+                                    consultation.price
+                                      ? consultation.price.toFixed(2)
+                                      : "--"
+                                  }`}
+                                />
+                              </div>
+                              <div className="md:col-span-1">
                                 <label htmlFor="status">Status</label>
                                 <input
                                   type="text"
@@ -234,7 +249,7 @@ export default function TreatmentViewerPage() {
                                 />
                               </div>
 
-                              <div className="md:col-span-3">
+                              <div className="md:col-span-4">
                                 <label htmlFor="description">
                                   Descrição da Consulta
                                 </label>
@@ -242,7 +257,7 @@ export default function TreatmentViewerPage() {
                                   type="text"
                                   name="description"
                                   id="description"
-                                  className="h-20 border mt-1 rounded px-4 w-full bg-white"
+                                  className="h-24 border mt-1 rounded px-4 w-full bg-white"
                                   disabled={isEditable}
                                   value={consultation.description || ""}
                                 />
