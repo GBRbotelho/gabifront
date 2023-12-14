@@ -257,8 +257,20 @@ export default function ClientViewerPage() {
         const completedConsultations = consultation.filter(
           (consultationItem) =>
             consultationItem.service === treatmentItem._id &&
-            consultationItem.status === "Concluído"
+            consultationItem.status !== "Agendado"
         );
+        console.log(completedConsultations);
+        console.log(treatmentItem.sessionsCompleted);
+        if (completedConsultations.length !== treatmentItem.sessionsCompleted) {
+          treatmentItem.sessionsCompleted = completedConsultations.length;
+          await useUpdateData(
+            treatmentItem._id,
+            "treatments",
+            treatmentItem,
+            token
+          );
+          await reloadTreatments();
+        }
 
         if (
           completedConsultations.length === treatmentItem.totalSessions &&
@@ -280,16 +292,6 @@ export default function ClientViewerPage() {
           treatmentItem.status === "Concluído"
         ) {
           treatmentItem.status = "Em andamento";
-          await useUpdateData(
-            treatmentItem._id,
-            "treatments",
-            treatmentItem,
-            token
-          );
-          reloadTreatments();
-        }
-        if (completedConsultations.length !== treatmentItem.sessionsCompleted) {
-          treatmentItem.sessionsCompleted = completedConsultations.length;
           await useUpdateData(
             treatmentItem._id,
             "treatments",
@@ -637,7 +639,7 @@ export default function ClientViewerPage() {
                           R$ {treatmentItem.price}
                         </td>
                         <td className="px-4 py-3 border text-center w-min">
-                          {
+                          {/* {
                             consultation
                               .filter(
                                 (consultationItem) =>
@@ -647,7 +649,8 @@ export default function ClientViewerPage() {
                                 (consultationItem) =>
                                   consultationItem.status === "Concluído"
                               ).length
-                          }
+                          } */}
+                          {treatmentItem.sessionsCompleted}
                         </td>
                         <td className="px-4 py-3 border text-center">
                           {treatmentItem.totalSessions}
