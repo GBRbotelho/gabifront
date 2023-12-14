@@ -173,6 +173,37 @@ export default function ModalConsultation({
             />
           </div>
           <div className="md:col-span-2">
+            <label htmlFor="price">Preço</label>
+            <input
+              type="number"
+              name="price"
+              id="price"
+              className={`h-10 border mt-1 rounded px-4 w-full bg-${
+                !isEditable ? "gray-100" : "white"
+              }`}
+              value={consultationItem.price || ""}
+              onChange={handleChange}
+              disabled={!isEditable}
+            />
+          </div>
+          <div className="md:col-span-2">
+            <label htmlFor="status">Status da Consulta</label>
+            <select
+              name="status"
+              id="status"
+              className={`h-10 border mt-1 rounded px-4 w-full bg-${
+                !isEditable ? "gray-100" : "white"
+              }`}
+              value={consultationItem.status || ""}
+              onChange={handleChange}
+              disabled={!isEditable}
+            >
+              <option value="Agendado">Agendado</option>
+              <option value="Concluído">Concluído</option>
+              <option value="Faltou">Faltou</option>
+            </select>
+          </div>
+          <div className="md:col-span-4">
             <label htmlFor="service">Tratamento</label>
             <select
               name="service"
@@ -189,6 +220,9 @@ export default function ModalConsultation({
               </option>
               <option key="avulso" value="Avulso">
                 Avulso (Não vinculada a nenhum tratamento)
+              </option>
+              <option key="avaliação" value="Avaliação">
+                Avaliação (Não vinculada a nenhum tratamento)
               </option>
               {treatment
                 .filter((treatmentItem) => {
@@ -212,23 +246,7 @@ export default function ModalConsultation({
                 ))}
             </select>
           </div>
-          <div className="md:col-span-2">
-            <label htmlFor="status">Status da Consulta</label>
-            <select
-              name="status"
-              id="status"
-              className={`h-10 border mt-1 rounded px-4 w-full bg-${
-                !isEditable ? "gray-100" : "white"
-              }`}
-              value={consultationItem.status || ""}
-              onChange={handleChange}
-              disabled={!isEditable}
-            >
-              <option value="Agendado">Agendado</option>
-              <option value="Concluído">Concluído</option>
-              <option value="Faltou">Faltou</option>
-            </select>
-          </div>
+
           <div className="md:col-span-4">
             <label htmlFor="products">Produtos usados na consulta</label>
             <Select

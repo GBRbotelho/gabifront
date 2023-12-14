@@ -746,6 +746,7 @@ export default function ClientViewerPage() {
                     <th className="px-4 py-3 text-center">Data</th>
                     <th className="px-4 py-3 text-center">Hora</th>
                     <th className="px-4 py-3 text-center">Tratamento</th>
+                    <th className="px-4 py-3 text-center">Preço</th>
                     <th className="px-4 py-3 text-center">Status</th>
                     <th className="px-4 py-3 text-center">Opções</th>
                   </tr>
@@ -780,7 +781,8 @@ export default function ClientViewerPage() {
                           {consultationItem.time}
                         </td>
                         <td className="px-4 py-3 border text-center">
-                          {consultationItem.service === "Avulso"
+                          {consultationItem.service === "Avulso" ||
+                          consultationItem.service === "Avaliação"
                             ? consultationItem.service
                             : service.find(
                                 (serviceItem) =>
@@ -791,6 +793,12 @@ export default function ClientViewerPage() {
                                       consultationItem.service
                                   )[0].name
                               ).name}
+                        </td>
+                        <td className="px-4 py-3 border text-center">
+                          R${" "}
+                          {consultationItem.price
+                            ? consultationItem.price.toFixed(2)
+                            : "--"}
                         </td>
                         {consultationItem.status === "Concluído" && (
                           <td className="px-4 py-3 border text-center">

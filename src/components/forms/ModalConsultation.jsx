@@ -108,6 +108,17 @@ export default function ModalConsultation({
             />
           </div>
           <div className="md:col-span-2">
+            <label htmlFor="price">Preço</label>
+            <input
+              type="number"
+              name="price"
+              id="price"
+              className="h-10 border mt-1 rounded px-4 w-full bg-white"
+              value={consultation.price || ""}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="md:col-span-4">
             <label htmlFor="service">Tratamento</label>
             <select
               name="service"
@@ -118,6 +129,9 @@ export default function ModalConsultation({
             >
               <option value="" disabled>
                 Selecione um tratamento
+              </option>
+              <option key="avaliação" value="Avaliação">
+                Avaliação (Não vinculada a nenhum tratamento)
               </option>
               <option key="avulso" value="Avulso">
                 Avulso (Não vinculada a nenhum tratamento)
