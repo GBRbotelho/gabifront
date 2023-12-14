@@ -863,7 +863,7 @@ export default function ClientViewerPage() {
                     <tr>
                       <td
                         className="px-4 py-3 text-gray-700 border"
-                        colSpan="5"
+                        colSpan="6"
                       >
                         Não foram encontrados consultas para esse cliente.
                       </td>

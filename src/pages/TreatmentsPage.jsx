@@ -206,7 +206,7 @@ function TreatmentsPage() {
               ))
             ) : (
               <tr>
-                <td className="px-4 py-3 text-gray-700 border" colSpan="5">
+                <td className="px-4 py-3 text-gray-700 border" colSpan="6">
                   Não foram encontrados tratamentos cadastrados.
                 </td>
               </tr>
