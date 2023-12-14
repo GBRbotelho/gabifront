@@ -94,7 +94,12 @@ function ClientsPage() {
       }
     })
     .filter((clientItem) => {
-      const birthdayMonth = new Date(clientItem.date).getMonth() + 1;
+      const birthdayDate = new Date(clientItem.date);
+
+      // Adicionando um dia à data de nascimento
+      birthdayDate.setDate(birthdayDate.getDate() + 1);
+
+      const birthdayMonth = birthdayDate.getMonth() + 1;
 
       if (selectMonth === "all") {
         return true; // Não filtra por mês
