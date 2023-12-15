@@ -1,8 +1,9 @@
 const ROTA = import.meta.env.VITE_ROTA;
+import { verifyToken } from "./authService";
 
 export async function fetchClients() {
   try {
-    const token = await localStorage.getItem("token");
+    const token = localStorage.getItem("token");
     const response = await fetch(`${ROTA}/clients`, {
       method: "GET",
       headers: {
@@ -13,6 +14,12 @@ export async function fetchClients() {
 
     if (!response.ok) {
       throw new Error("Erro ao buscar clientes");
+    }
+
+    if (response.status === 450) {
+      const data = await response.json();
+      localStorage.removeItem("token");
+      verifyToken();
     }
 
     const data = await response.json();
@@ -37,6 +44,12 @@ export async function fetchUsers() {
       throw new Error("Erro ao buscar usuarios");
     }
 
+    if (response.status === 450) {
+      const data = await response.json();
+      localStorage.removeItem("token");
+      verifyToken();
+    }
+
     const data = await response.json();
     return data;
   } catch (error) {
@@ -57,6 +70,12 @@ export async function fetchServices() {
 
     if (!response.ok) {
       throw new Error("Erro ao buscar serviços");
+    }
+
+    if (response.status === 450) {
+      const data = await response.json();
+      localStorage.removeItem("token");
+      verifyToken();
     }
 
     const data = await response.json();
@@ -83,6 +102,12 @@ export async function addClient(token, clientData) {
       return data;
     }
 
+    if (response.status === 450) {
+      const data = await response.json();
+      localStorage.removeItem("token");
+      verifyToken();
+    }
+
     return data;
   } catch (error) {
     if (error === "Email already exists") {
@@ -107,6 +132,12 @@ export async function addUsers(token, userData) {
       return data;
     }
 
+    if (response.status === 450) {
+      const data = await response.json();
+      localStorage.removeItem("token");
+      verifyToken();
+    }
+
     return data;
   } catch (error) {
     return error;
@@ -124,7 +155,12 @@ export async function addService(token, serviceData) {
       body: JSON.stringify(serviceData),
     });
     const data = await response.json();
-    console.log(data);
+
+    if (response.status === 450) {
+      const data = await response.json();
+      localStorage.removeItem("token");
+      verifyToken();
+    }
 
     return data;
   } catch (error) {
@@ -147,6 +183,12 @@ export async function deleteClient(clientId, token) {
     if (!response.ok) {
       // Se a resposta do servidor não for bem-sucedida, lance um erro
       throw new Error(`Erro ao excluir cliente (status ${response.status})`);
+    }
+
+    if (response.status === 450) {
+      const data = await response.json();
+      localStorage.removeItem("token");
+      verifyToken();
     }
 
     // Se a exclusão for bem-sucedida, não é necessário retornar dados
@@ -172,6 +214,12 @@ export async function deleteService(serviceId, token) {
       throw new Error(`Erro ao excluir Serviço (status ${response.status})`);
     }
 
+    if (response.status === 450) {
+      const data = await response.json();
+      localStorage.removeItem("token");
+      verifyToken();
+    }
+
     // Se a exclusão for bem-sucedida, não é necessário retornar dados
   } catch (error) {
     // Trate qualquer erro aqui
@@ -195,6 +243,12 @@ export async function deleteUser(userId, token) {
       throw new Error(`Erro ao excluir Usuario (status ${response.status})`);
     }
 
+    if (response.status === 450) {
+      const data = await response.json();
+      localStorage.removeItem("token");
+      verifyToken();
+    }
+
     // Se a exclusão for bem-sucedida, não é necessário retornar dados
   } catch (error) {
     // Trate qualquer erro aqui
@@ -216,6 +270,12 @@ export async function useGetId(userId, subroute, token) {
     if (!response.ok) {
       // Se a resposta do servidor não for bem-sucedida, lance um erro
       throw new Error(`Erro: (status ${response.status})`);
+    }
+
+    if (response.status === 450) {
+      const data = await response.json();
+      localStorage.removeItem("token");
+      verifyToken();
     }
 
     const data = await response.json();
@@ -243,6 +303,12 @@ export async function useUpdateData(userId, subroute, dataToUpdate, token) {
       throw new Error(`Erro: (status ${response.status})`);
     }
 
+    if (response.status === 450) {
+      const data = await response.json();
+      localStorage.removeItem("token");
+      verifyToken();
+    }
+
     const updatedData = await response.json();
     return updatedData;
   } catch (error) {
@@ -262,6 +328,13 @@ export async function usePostData(token, subroute, dataPost) {
       },
       body: JSON.stringify(dataPost),
     });
+
+    if (response.status === 450) {
+      const data = await response.json();
+      localStorage.removeItem("token");
+      verifyToken();
+    }
+
     const data = await response.json();
 
     return data;
@@ -285,6 +358,12 @@ export async function useDeleteData(userId, subroute, token) {
     if (!response.ok) {
       throw new Error(`Erro ao excluir(status ${response.status})`);
     }
+
+    if (response.status === 450) {
+      const data = await response.json();
+      localStorage.removeItem("token");
+      verifyToken();
+    }
   } catch (error) {
     // Trate qualquer erro aqui
     console.error("Erro ao excluir:", error);
@@ -305,6 +384,12 @@ export async function useGetAll(subroute, token) {
     if (!response.ok) {
       // Se a resposta do servidor não for bem-sucedida, lance um erro
       throw new Error(`Erro: (status ${response.status})`);
+    }
+
+    if (response.status === 450) {
+      const data = await response.json();
+      localStorage.removeItem("token");
+      verifyToken();
     }
 
     const data = await response.json();
