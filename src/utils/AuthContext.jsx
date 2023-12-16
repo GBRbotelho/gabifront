@@ -42,20 +42,28 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
+    localStorage.removeItem("token");
     setToken(null);
     setUser(null);
-    localStorage.removeItem("token");
   };
 
   const reloadUser = async () => {
-    const token = localStorage.getItem("token")
+    const token = localStorage.getItem("token");
     const userData = await useGetUserData(token);
     setUser(userData);
-  }
+  };
 
   return (
     <AuthContext.Provider
-      value={{ token, user, setUser, reloadUser, isLoading, loginWithToken, logout }}
+      value={{
+        token,
+        user,
+        setUser,
+        reloadUser,
+        isLoading,
+        loginWithToken,
+        logout,
+      }}
     >
       {children}
     </AuthContext.Provider>

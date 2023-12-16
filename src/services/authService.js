@@ -15,7 +15,9 @@ export async function login(email, password) {
 
 // Função para fazer logout
 export function logout() {
-  // Lógica de logout, como limpar os tokens de autenticação
+  console.log("Passou por aqui");
+  localStorage.removeItem("token");
+  window.location.href = "/";
 }
 
 export async function verifyToken() {
@@ -46,8 +48,6 @@ export async function verifyToken() {
         return data;
       }
     }
-
-    return console.log("Quebro");
   } else {
     return null;
   }
