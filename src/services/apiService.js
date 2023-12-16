@@ -1,5 +1,5 @@
 const ROTA = import.meta.env.VITE_ROTA;
-import { verifyToken } from "./authService";
+import { logout } from "./authService";
 
 export async function fetchClients() {
   try {
@@ -19,7 +19,7 @@ export async function fetchClients() {
     if (response.status === 450) {
       const data = await response.json();
       localStorage.removeItem("token");
-      verifyToken();
+      logout();
     }
 
     const data = await response.json();
@@ -47,7 +47,7 @@ export async function fetchUsers() {
     if (response.status === 450) {
       const data = await response.json();
       localStorage.removeItem("token");
-      verifyToken();
+      logout();
     }
 
     const data = await response.json();
@@ -75,7 +75,7 @@ export async function fetchServices() {
     if (response.status === 450) {
       const data = await response.json();
       localStorage.removeItem("token");
-      verifyToken();
+      logout();
     }
 
     const data = await response.json();
@@ -105,7 +105,7 @@ export async function addClient(token, clientData) {
     if (response.status === 450) {
       const data = await response.json();
       localStorage.removeItem("token");
-      verifyToken();
+      logout();
     }
 
     return data;
@@ -135,7 +135,7 @@ export async function addUsers(token, userData) {
     if (response.status === 450) {
       const data = await response.json();
       localStorage.removeItem("token");
-      verifyToken();
+      logout();
     }
 
     return data;
@@ -159,7 +159,7 @@ export async function addService(token, serviceData) {
     if (response.status === 450) {
       const data = await response.json();
       localStorage.removeItem("token");
-      verifyToken();
+      logout();
     }
 
     return data;
@@ -188,7 +188,7 @@ export async function deleteClient(clientId, token) {
     if (response.status === 450) {
       const data = await response.json();
       localStorage.removeItem("token");
-      verifyToken();
+      logout();
     }
 
     // Se a exclusão for bem-sucedida, não é necessário retornar dados
@@ -217,7 +217,7 @@ export async function deleteService(serviceId, token) {
     if (response.status === 450) {
       const data = await response.json();
       localStorage.removeItem("token");
-      verifyToken();
+      logout();
     }
 
     // Se a exclusão for bem-sucedida, não é necessário retornar dados
@@ -246,7 +246,7 @@ export async function deleteUser(userId, token) {
     if (response.status === 450) {
       const data = await response.json();
       localStorage.removeItem("token");
-      verifyToken();
+      logout();
     }
 
     // Se a exclusão for bem-sucedida, não é necessário retornar dados
@@ -275,7 +275,7 @@ export async function useGetId(userId, subroute, token) {
     if (response.status === 450) {
       const data = await response.json();
       localStorage.removeItem("token");
-      verifyToken();
+      logout();
     }
 
     const data = await response.json();
@@ -310,7 +310,7 @@ export async function useUpdateData(userId, subroute, dataToUpdate, token) {
 
     if (response.status === 450) {
       localStorage.removeItem("token");
-      verifyToken();
+      logout();
     }
 
     const updatedData = await response.json();
@@ -336,7 +336,7 @@ export async function usePostData(token, subroute, dataPost) {
     if (response.status === 450) {
       const data = await response.json();
       localStorage.removeItem("token");
-      verifyToken();
+      logout();
     }
 
     const data = await response.json();
@@ -366,7 +366,7 @@ export async function useDeleteData(userId, subroute, token) {
     if (response.status === 450) {
       const data = await response.json();
       localStorage.removeItem("token");
-      verifyToken();
+      logout();
     }
   } catch (error) {
     // Trate qualquer erro aqui
@@ -393,7 +393,7 @@ export async function useGetAll(subroute, token) {
     if (response.status === 450) {
       const data = await response.json();
       localStorage.removeItem("token");
-      verifyToken();
+      logout();
     }
 
     const data = await response.json();
