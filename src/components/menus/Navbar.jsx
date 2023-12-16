@@ -257,7 +257,7 @@ function Navbar() {
             <img
               src={userPhoto}
               alt=""
-              className="w-8 h-8 rounded block object-cover align-middle"
+              className="w-8 h-8 rounded-full block object-cover align-middle"
             />
           </button>
           <ul

@@ -4,6 +4,7 @@ import { useForm } from "../../utils/useForm";
 import ModalPhoto from "./ModalPhoto";
 import { useUpdateData } from "../../services/apiService";
 import { useLoading } from "../../utils/LoadingContext";
+import { useFlashMessage } from "../../utils/FlashMessageContext";
 
 //Import Images
 import Photo1 from "../../assets/profiles/1.svg";
@@ -61,15 +62,22 @@ const avatarImages = [
 //Fim IMporte Images
 
 export default function ModalProfile({ setProfileOpen }) {
-  const {showLoading, hideLoading} = useLoading();
+  const { showLoading, hideLoading } = useLoading();
   const [isEditable, setIsEditable] = useState(false);
   const { user, reloadUser } = useAuth();
   const [modal, setModal] = useState(false);
-  const [selectImage, setSelectImage] = useState(null)
+  const [selectImage, setSelectImage] = useState(null);
+  const showMessage = useFlashMessage();
+  const [isUpdatePassword, setIsUpdatePassword] = useState(false);
+  const [dataPassword, setDataPassword] = useState({
+    currentPassword: "",
+    newPassword: "",
+    repitNewPassword: "",
+  });
 
-  useEffect(()=>{
+  useEffect(() => {
     setSelectImage(user.photo - 1);
-  },[user])
+  }, [user]);
 
   const userPhoto = avatarImages[parseInt(user && user.photo, 10) - 1];
 
@@ -85,6 +93,46 @@ export default function ModalProfile({ setProfileOpen }) {
     } catch (error) {
       console.error("Erro ao atualizar a foto do perfil:", error);
       // Adicione lógica de tratamento de erro conforme necessário
+    }
+  };
+
+  const handleChangePassword = (event) => {
+    const { name, value } = event.target;
+    setDataPassword({
+      ...dataPassword,
+      [name]: value,
+    });
+  };
+
+  const toggleSavePassword = async () => {
+    showLoading();
+    const token = localStorage.getItem("token");
+
+    if (dataPassword.newPassword !== dataPassword.repitNewPassword) {
+      hideLoading();
+      showMessage(
+        "Os Campos 'Nova senha' e 'Repita a nova senha' estão diferentes!",
+        "error"
+      );
+    } else {
+      const update = await useUpdateData(
+        user._id,
+        "users/update-password",
+        dataPassword,
+        token
+      );
+
+      if (update.error) {
+        hideLoading();
+        showMessage(update.error, "error");
+      } else {
+        setIsUpdatePassword(false);
+        dataPassword.currentPassword = "";
+        dataPassword.newPassword = "";
+        dataPassword.repitNewPassword = "";
+        hideLoading();
+        showMessage("Senha trocada!", "success");
+      }
     }
   };
 
@@ -119,82 +167,147 @@ export default function ModalProfile({ setProfileOpen }) {
             </div>
 
             <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 mt-10 md:grid-cols-6">
-              <div className="md:col-span-6">
-                <label htmlFor="full_name">Nome</label>
-                <input
-                  type="text"
-                  name="name"
-                  id="name"
-                  className={`h-10 border mt-1 rounded px-4 w-full bg-${
-                    !isEditable ? "gray-100" : "white"
-                  }`}
-                  value={useForm(user.firstName, "letras") || ""}
-                  disabled={!isEditable}
-                  maxLength={90}
-                />
-              </div>
-              <div className="md:col-span-6">
-                <label htmlFor="full_name">Sobrenome</label>
-                <input
-                  type="text"
-                  name="name"
-                  id="name"
-                  className={`h-10 border mt-1 rounded px-4 w-full bg-${
-                    !isEditable ? "gray-100" : "white"
-                  }`}
-                  value={useForm(user.lastName, "letras") || ""}
-                  disabled={!isEditable}
-                  maxLength={90}
-                />
-              </div>
-              <div className="md:col-span-6">
-                <label htmlFor="full_name">Email</label>
-                <input
-                  type="text"
-                  name="name"
-                  id="name"
-                  className={`h-10 border mt-1 rounded px-4 w-full bg-${
-                    !isEditable ? "gray-100" : "white"
-                  }`}
-                  value={user.email || ""}
-                  disabled={!isEditable}
-                  maxLength={90}
-                />
-              </div>
-              {/* <div className="md:col-span-6">
-                <label htmlFor="full_name">Senha</label>
-                <input
-                  type="text"
-                  name="name"
-                  id="name"
-                  className={`h-10 border mt-1 rounded px-4 w-full bg-${
-                    !isEditable ? "gray-100" : "white"
-                  }`}
-                  value={"*****************"}
-                  disabled={!isEditable}
-                  maxLength={90}
-                />
-              </div> */}
+              {isUpdatePassword ? (
+                <>
+                  <div className="md:col-span-6">
+                    <label htmlFor="currentPassword">Senha atual</label>
+                    <input
+                      type="text"
+                      name="currentPassword"
+                      id="currentPassword"
+                      className="h-10 border mt-1 rounded px-4 w-full bg-white"
+                      value={dataPassword.currentPassword || ""}
+                      onChange={handleChangePassword}
+                    />
+                  </div>
+                  <div className="md:col-span-6">
+                    <label htmlFor="newPassword">Nova senha</label>
+                    <input
+                      type="text"
+                      name="newPassword"
+                      id="newPassword"
+                      className="h-10 border mt-1 rounded px-4 w-full bg-white"
+                      value={dataPassword.newPassword || ""}
+                      onChange={handleChangePassword}
+                    />
+                  </div>
+                  <div className="md:col-span-6">
+                    <label htmlFor="repitNewPassword">Repita a senha</label>
+                    <input
+                      type="text"
+                      name="repitNewPassword"
+                      id="repitNewPassword"
+                      className="h-10 border mt-1 rounded px-4 w-full bg-white"
+                      value={dataPassword.repitNewPassword || ""}
+                      onChange={handleChangePassword}
+                    />
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="md:col-span-6">
+                    <label htmlFor="full_name">Nome</label>
+                    <input
+                      type="text"
+                      name="name"
+                      id="name"
+                      className={`h-10 border mt-1 rounded px-4 w-full bg-${
+                        !isEditable ? "gray-100" : "white"
+                      }`}
+                      value={useForm(user.firstName, "letras") || ""}
+                      disabled={!isEditable}
+                      maxLength={90}
+                    />
+                  </div>
+                  <div className="md:col-span-6">
+                    <label htmlFor="full_name">Sobrenome</label>
+                    <input
+                      type="text"
+                      name="name"
+                      id="name"
+                      className={`h-10 border mt-1 rounded px-4 w-full bg-${
+                        !isEditable ? "gray-100" : "white"
+                      }`}
+                      value={useForm(user.lastName, "letras") || ""}
+                      disabled={!isEditable}
+                      maxLength={90}
+                    />
+                  </div>
+                  <div className="md:col-span-6">
+                    <label htmlFor="full_name">Email</label>
+                    <input
+                      type="text"
+                      name="name"
+                      id="name"
+                      className={`h-10 border mt-1 rounded px-4 w-full bg-${
+                        !isEditable ? "gray-100" : "white"
+                      }`}
+                      value={user.email || ""}
+                      disabled={!isEditable}
+                      maxLength={90}
+                    />
+                  </div>
+                  <div className="md:col-span-6">
+                    <label htmlFor="full_name">Senha</label>
+                    <input
+                      type="text"
+                      name="name"
+                      id="name"
+                      className={`h-10 border mt-1 rounded px-4 w-full bg-${
+                        !isEditable ? "gray-100" : "white"
+                      }`}
+                      value={"*****************"}
+                      disabled={!isEditable}
+                      maxLength={90}
+                    />
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>
+
         <div className="mt-5 flex flex-col gap-3">
-          {/* <button
-            className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded"
-            onClick={() => {
-              setProfileOpen(false);
-            }}
-          >
-            Mudar Senha
-          </button> */}
-          <button
-            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-            onClick={() => {
-              setProfileOpen(false);
-            }}
-          >
-            Concluído
-          </button>
+          {!isUpdatePassword ? (
+            <>
+              <button
+                className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded"
+                onClick={() => {
+                  setIsUpdatePassword(true);
+                }}
+              >
+                Trocar senha
+              </button>
+              <button
+                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                onClick={() => {
+                  setProfileOpen(false);
+                }}
+              >
+                Concluído
+              </button>
+            </>
+          ) : (
+            <div className="gap-2 flex">
+              <button
+                className="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded"
+                onClick={() => {
+                  dataPassword.currentPassword = "";
+                  dataPassword.newPassword = "";
+                  dataPassword.repitNewPassword = "";
+                  setIsUpdatePassword(false);
+                }}
+              >
+                Cancelar
+              </button>
+              <button
+                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                onClick={toggleSavePassword}
+              >
+                Salvar
+              </button>
+            </div>
+          )}
         </div>
       </div>
       <div
@@ -204,7 +317,14 @@ export default function ModalProfile({ setProfileOpen }) {
           setProfileOpen(false);
         }}
       ></div>
-      {modal && <ModalPhoto setModal={setModal} selectImage={selectImage} setSelectImage={setSelectImage} updatePhoto={updatePhoto} />}
+      {modal && (
+        <ModalPhoto
+          setModal={setModal}
+          selectImage={selectImage}
+          setSelectImage={setSelectImage}
+          updatePhoto={updatePhoto}
+        />
+      )}
     </div>
   );
 }
