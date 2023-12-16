@@ -1,10 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  useGetId,
-  useUpdateData,
-  useDeleteData,
-  useGetAll,
-} from "../services/apiService";
+import { useUpdateData, useDeleteData } from "../services/apiService";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import RegistrationForm from "../components/forms/RegistrationForm";
 import ModalTreatment from "../components/forms/ModalTreatment";
@@ -17,21 +12,28 @@ import ModalFiltrosClientConsultas from "../components/forms/filtros/ModalFiltro
 import { useForm } from "../utils/useForm";
 import { useFlashMessage } from "../utils/FlashMessageContext";
 import { useLoading } from "../utils/LoadingContext";
+import { useData } from "../utils/DataContext";
 
 export default function ClientViewerPage() {
+  const {
+    clients,
+    setClients,
+    consultations,
+    setConsultations,
+    services,
+    setServices,
+    treatments,
+    setTreatments,
+    reload,
+  } = useData();
   const showMessage = useFlashMessage();
-  const [tempClient, setTempClient] = useState({});
+
   const [errorTreatment, setErrorTreatment] = useState(null);
   const [errorDelete, setErrorDelete] = useState(null);
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isEditable, setIsEditable] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [modalTreatment, setModalTreatment] = useState(false);
   const [modalConsultation, setModalConsultation] = useState(false);
-  const [client, setClient] = useState({});
-  const [treatment, setTreatment] = useState([]);
-  const [consultation, setConsultation] = useState([]);
-  const [service, setService] = useState([]);
   const [consultationSelect, setConsultationSelect] = useState(null);
   const [treatmentSelect, setTreatmentSelect] = useState(null);
   const { id } = useParams();
@@ -46,6 +48,39 @@ export default function ClientViewerPage() {
   const [agendados, setAgendados] = useState(true);
   const [faltas, setFaltas] = useState(false);
   const { showLoading, hideLoading } = useLoading();
+  const [client, setClient] = useState(
+    clients.find((clientItem) => {
+      return clientItem._id === id;
+    })
+  );
+  const treatment = treatments.filter((treatmentItem) => {
+    return treatmentItem.clientId === id;
+  });
+  const consultation = consultations.filter((consultationItem) => {
+    return consultationItem.client === id;
+  });
+
+  const [tempClient, setTempClient] = useState(
+    clients.find((clientItem) => {
+      return clientItem._id === id;
+    })
+  );
+
+  useEffect(() => {
+    const reloadClients = async () => {
+      await reload(setClients, "clients");
+      setClient(
+        clients.find((clientItem) => {
+          return clientItem._id === id;
+        })
+      );
+    };
+
+    reload(setTreatments, "treatments");
+    reload(setConsultations, "consultations");
+    reload(setServices, "services");
+    reloadClients();
+  }, []);
 
   const DataTreatments = treatment.filter((consultationItem) => {
     return (
@@ -116,15 +151,13 @@ export default function ClientViewerPage() {
 
   const reloadTreatments = async () => {
     showLoading();
-    const response = await useGetId(id, "treatments/client", token);
-    setTreatment(response);
+    await reload(setTreatments, "treatments");
     hideLoading();
   };
 
   const reloadConsultations = async () => {
     showLoading();
-    const response = await useGetId(id, "consultations/client", token);
-    setConsultation(response);
+    await reload(setConsultations, "consultations");
     hideLoading();
   };
 
@@ -187,6 +220,7 @@ export default function ClientViewerPage() {
     const formattedDate = update.date
       ? new Date(update.date).toISOString().split("T")[0]
       : "";
+    reload(setClients, "clients");
     setClient({
       ...update,
       date: formattedDate,
@@ -209,49 +243,6 @@ export default function ClientViewerPage() {
   };
 
   useEffect(() => {
-    async function fetchData() {
-      showLoading();
-      try {
-        const token = localStorage.getItem("token");
-
-        // Faz as duas chamadas de API simultaneamente
-        const [clientData, treatmentsData, consultationsData, servicesData] =
-          await Promise.all([
-            useGetId(id, "clients", token),
-            useGetId(id, "treatments/client", token),
-            useGetId(id, "consultations/client", token),
-            useGetAll("services", token),
-          ]);
-
-        const formattedClientDate = clientData.date
-          ? new Date(clientData.date).toISOString().split("T")[0]
-          : "";
-
-        setClient({
-          ...clientData,
-          date: formattedClientDate,
-        });
-        setTempClient({
-          ...clientData,
-          date: formattedClientDate,
-        });
-
-        setTreatment(treatmentsData);
-
-        setConsultation(consultationsData);
-
-        setService(servicesData);
-
-        hideLoading();
-      } catch (error) {
-        console.error("Erro ao buscar clientes e tratamentos:", error);
-      }
-    }
-
-    fetchData();
-  }, []);
-
-  useEffect(() => {
     const updateTreatments = async () => {
       for (const treatmentItem of treatment) {
         const completedConsultations = consultation.filter(
@@ -259,8 +250,6 @@ export default function ClientViewerPage() {
             consultationItem.service === treatmentItem._id &&
             consultationItem.status !== "Agendado"
         );
-        console.log(completedConsultations);
-        console.log(treatmentItem.sessionsCompleted);
         if (completedConsultations.length !== treatmentItem.sessionsCompleted) {
           treatmentItem.sessionsCompleted = completedConsultations.length;
           await useUpdateData(
@@ -327,7 +316,7 @@ export default function ClientViewerPage() {
                       className={`h-10 border mt-1 rounded px-4 w-full bg-${
                         !isEditable ? "gray-100" : "white"
                       }`}
-                      value={useForm(client.name, "letras") || ""}
+                      value={(client && client.name) || ""}
                       onChange={handleChange}
                       disabled={!isEditable}
                       maxLength={90}
@@ -343,7 +332,7 @@ export default function ClientViewerPage() {
                       className={`h-10 border mt-1 rounded px-4 w-full bg-${
                         !isEditable ? "gray-100" : "white"
                       }`}
-                      value={useForm(client.cpf, "cpf") || ""}
+                      value={(client && useForm(client.cpf, "cpf")) || ""}
                       onChange={handleChange}
                       disabled={!isEditable}
                       maxLength={14}
@@ -360,13 +349,15 @@ export default function ClientViewerPage() {
                         className={`h-10 border mt-1 rounded px-4 w-full bg-${
                           !isEditable ? "gray-100" : "white"
                         }`}
-                        value={useForm(client.phone, "telefone") || ""}
+                        value={
+                          (client && useForm(client.phone, "telefone")) || ""
+                        }
                         onChange={handleChange}
                         disabled={!isEditable}
                         maxLength={15}
                       />
                       <a
-                        href={`https://wa.me/${client.phone}`}
+                        href={client && `https://wa.me/${client.phone}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className={`ml-2 text-2xl text-green-500 ${
@@ -396,7 +387,7 @@ export default function ClientViewerPage() {
                         !isEditable ? "gray-100" : "white"
                       }`}
                       placeholder="Preencha este campo"
-                      value={client.gender || ""}
+                      value={(client && client.gender) || ""}
                       onChange={handleChange}
                       disabled={!isEditable}
                     >
@@ -415,7 +406,11 @@ export default function ClientViewerPage() {
                       className={`h-10 border mt-1 rounded px-4 w-full bg-${
                         !isEditable ? "gray-100" : "white"
                       }`}
-                      value={client.date || ""}
+                      value={
+                        (client &&
+                          new Date(client.date).toISOString().split("T")[0]) ||
+                        ""
+                      }
                       onChange={handleChange}
                       placeholder="email@domain.com"
                       disabled={!isEditable}
@@ -431,7 +426,7 @@ export default function ClientViewerPage() {
                       className={`h-10 border mt-1 rounded px-4 w-full bg-${
                         !isEditable ? "gray-100" : "white"
                       }`}
-                      value={client.email || ""}
+                      value={(client && client.email) || ""}
                       onChange={handleChange}
                       placeholder="email@domain.com"
                       disabled={!isEditable}
@@ -446,7 +441,7 @@ export default function ClientViewerPage() {
                       className={`h-10 border mt-1 rounded px-4 w-full bg-${
                         !isEditable ? "gray-100" : "white"
                       }`}
-                      value={client.street || ""}
+                      value={(client && client.street) || ""}
                       onChange={handleChange}
                       placeholder="Preencha este campo"
                       disabled={!isEditable}
@@ -462,7 +457,7 @@ export default function ClientViewerPage() {
                       className={`h-10 border mt-1 rounded px-4 w-full bg-${
                         !isEditable ? "gray-100" : "white"
                       }`}
-                      value={client.district || ""}
+                      value={(client && client.district) || ""}
                       onChange={handleChange}
                       placeholder="Preencha este campo"
                       disabled={!isEditable}
@@ -479,7 +474,7 @@ export default function ClientViewerPage() {
                         !isEditable ? "gray-100" : "white"
                       }`}
                       placeholder="Preencha este campo"
-                      value={client.number || ""}
+                      value={(client && client.number) || ""}
                       onChange={handleChange}
                       disabled={!isEditable}
                     />
@@ -495,7 +490,7 @@ export default function ClientViewerPage() {
                         !isEditable ? "gray-100" : "white"
                       }`}
                       placeholder="Preencha este campo"
-                      value={client.cep || ""}
+                      value={(client && client.cep) || ""}
                       onChange={handleChange}
                       disabled={!isEditable}
                     />
@@ -510,7 +505,7 @@ export default function ClientViewerPage() {
                       className={`h-10 border mt-1 rounded px-4 w-full bg-${
                         !isEditable ? "gray-100" : "white"
                       }`}
-                      value={client.city || ""}
+                      value={(client && client.city) || ""}
                       onChange={handleChange}
                       disabled={!isEditable}
                     />
@@ -526,7 +521,7 @@ export default function ClientViewerPage() {
                       className={`h-10 border mt-1 rounded px-4 w-full bg-${
                         !isEditable ? "gray-100" : "white"
                       }`}
-                      value={client.state || ""}
+                      value={(client && client.state) || ""}
                       onChange={handleChange}
                       disabled={!isEditable}
                     />
@@ -628,7 +623,7 @@ export default function ClientViewerPage() {
                     DataTreatments.map((treatmentItem) => (
                       <tr key={treatmentItem._id} className="text-gray-700">
                         <td className="px-4 py-3 border text-center">
-                          {service
+                          {services
                             .filter(
                               (serviceItem) =>
                                 serviceItem._id === treatmentItem.name
@@ -639,17 +634,6 @@ export default function ClientViewerPage() {
                           R$ {treatmentItem.price}
                         </td>
                         <td className="px-4 py-3 border text-center w-min">
-                          {/* {
-                            consultation
-                              .filter(
-                                (consultationItem) =>
-                                  consultationItem.service === treatmentItem._id
-                              )
-                              .filter(
-                                (consultationItem) =>
-                                  consultationItem.status === "Concluído"
-                              ).length
-                          } */}
                           {treatmentItem.sessionsCompleted}
                         </td>
                         <td className="px-4 py-3 border text-center">
@@ -784,7 +768,7 @@ export default function ClientViewerPage() {
                           {consultationItem.service === "Avulso" ||
                           consultationItem.service === "Avaliação"
                             ? consultationItem.service
-                            : service.find(
+                            : services.find(
                                 (serviceItem) =>
                                   serviceItem._id ===
                                   treatment.filter(
@@ -876,7 +860,7 @@ export default function ClientViewerPage() {
               <ModalTreatment
                 closeModalTreatment={closeModalTreatment}
                 reloadTreatments={reloadTreatments}
-                service={service}
+                service={services}
               />
             )}
             {modalConsultation && (
@@ -884,7 +868,7 @@ export default function ClientViewerPage() {
                 closeModalConsultation={closeModalConsultation}
                 reloadConsultations={reloadConsultations}
                 treatment={treatment}
-                service={service}
+                service={services}
                 consultations={consultation}
               />
             )}
@@ -896,7 +880,7 @@ export default function ClientViewerPage() {
                 treatment={treatment}
                 consultationItem={consultationSelect}
                 setConsultationSelect={setConsultationSelect}
-                service={service}
+                service={services}
                 consultations={consultation}
               />
             )}
@@ -905,7 +889,7 @@ export default function ClientViewerPage() {
                 closeTreatmentSelect={closeTreatmentSelect}
                 reloadTreatments={reloadTreatments}
                 treatmentSelect={treatmentSelect}
-                service={service}
+                service={services}
                 setTreatmentSelect={setTreatmentSelect}
                 consultations={consultation}
               />

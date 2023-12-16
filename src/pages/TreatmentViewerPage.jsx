@@ -1,51 +1,32 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useGetId, useGetAll } from "../services/apiService";
 import { useLoading } from "../utils/LoadingContext";
+import { useData } from "../utils/DataContext";
 
 export default function TreatmentViewerPage() {
-  const [client, setClient] = useState({});
-  const [services, setServices] = useState([]);
-  const [treatment, setTreatment] = useState({});
-  const [products, setProducts] = useState([]);
-  const [consultations, setConsultations] = useState([]);
-  const [error, setError] = useState(null);
+  const { clientid, treatmentid } = useParams();
+  const {
+    clients,
+    setClients,
+    services,
+    setServices,
+    treatments,
+    setTreatments,
+    consultations,
+    setConsultations,
+    products,
+    setProducts,
+    reload,
+  } = useData();
+  const client = clients.find((clientItem) => {
+    return clientItem._id === clientid;
+  });
+  const treatment = treatments.find((treatmentItem) => {
+    return treatmentItem._id === treatmentid;
+  });
   const [isEditable, setIsEditable] = useState(true);
   const navigate = useNavigate();
-  const token = localStorage.getItem("token");
-  const { clientid, treatmentid } = useParams();
   const { showLoading, hideLoading } = useLoading();
-
-  useEffect(() => {
-    async function fetchTreatmentsData() {
-      showLoading();
-      try {
-        const [
-          clientData,
-          treatmentsData,
-          servicesData,
-          consultationsData,
-          productsData,
-        ] = await Promise.all([
-          useGetId(clientid, "clients", token),
-          useGetId(treatmentid, "treatments", token),
-          useGetAll("services", token),
-          useGetId(clientid, "consultations/client", token),
-          useGetAll("products", token),
-        ]);
-        setTreatment(treatmentsData);
-        setClient(clientData);
-        setServices(servicesData);
-        setConsultations(consultationsData);
-        setProducts(productsData);
-        hideLoading();
-      } catch (error) {
-        console.error("Erro ao buscar dados:", error);
-      }
-    }
-
-    fetchTreatmentsData();
-  }, []);
 
   return (
     <div className=" min-h-screen p-6 bg-gray-100 flex items-center justify-center">

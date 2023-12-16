@@ -4,20 +4,30 @@ import { useGetAll, useDeleteData } from "../services/apiService";
 import { Link } from "react-router-dom";
 import { useLoading } from "../utils/LoadingContext";
 import ModalFiltrosTratamentos from "../components/forms/filtros/ModalFiltrosTratamentos";
+import { useData } from "../utils/DataContext";
+import { useFlashMessage } from "../utils/FlashMessageContext";
 
 function TreatmentsPage() {
   const token = localStorage.getItem("token");
+  const {
+    treatments,
+    setTreatments,
+    clients,
+    setClients,
+    services,
+    setServices,
+    consultations,
+    setConsultations,
+    reload,
+  } = useData();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [treatments, setTreatments] = useState([]);
-  const [clients, setClients] = useState([]);
-  const [services, setServices] = useState([]);
-  const [error, setError] = useState(null);
   const { showLoading, hideLoading } = useLoading();
   const [filters, setFilters] = useState(false);
   const [andamentos, setAndamentos] = useState(true);
   const [concluidos, setConcluidos] = useState(false);
   const [selectService, setSelectService] = useState("all");
   const [selectTime, setSelectTime] = useState("all");
+  const showMessage = useFlashMessage();
 
   const filteredTreatment = treatments
     .filter((treatmentItem) => {
@@ -47,41 +57,26 @@ function TreatmentsPage() {
     });
 
   useEffect(() => {
-    async function fetchTreatmentsData() {
-      try {
-        showLoading();
-        const [clientData, treatmentsData, servicesData] = await Promise.all([
-          useGetAll("clients", token),
-          useGetAll("treatments", token),
-          useGetAll("services", token),
-        ]);
-        setTreatments(treatmentsData);
-        setClients(clientData);
-        setServices(servicesData);
-        hideLoading();
-      } catch (error) {
-        hideLoading();
-        console.error("Erro ao buscar dados:", error);
-      }
-    }
-
-    fetchTreatmentsData();
+    reload(setTreatments, "treatments");
+    reload(setClients, "clients");
+    reload(setServices, "services");
   }, []);
 
   const toggleDeleteTreatment = async (consultationId) => {
     showLoading();
-    const consultations = await useGetAll("consultations", token);
+    await reload(setConsultations, "consultations");
     if (
       consultations.filter(
         (consultationItem) => consultationItem.service === consultationId
       ).length > 0
     ) {
-      setError("Existe consultas com esse tratamento");
       hideLoading();
+      showMessage("Existe consultas com esse tratamento", "error");
     } else {
       await useDeleteData(consultationId, "treatments", token);
       reloadTreatments();
       hideLoading();
+      showMessage("Tratamento Deletado com sucesso!", "success");
     }
   };
 
@@ -213,7 +208,6 @@ function TreatmentsPage() {
             )}
           </tbody>
         </table>
-        {error && <p className="text-red-500">{error}</p>}
       </div>
       {filters && (
         <ModalFiltrosTratamentos

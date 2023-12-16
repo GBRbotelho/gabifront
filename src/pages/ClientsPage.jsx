@@ -1,22 +1,19 @@
 import React, { useState, useEffect } from "react";
-import {
-  fetchClients,
-  deleteClient,
-  useGetId,
-  useGetAll,
-  useDeleteData,
-} from "../services/apiService";
+import { useGetId, useGetAll, useDeleteData } from "../services/apiService";
 import { Link } from "react-router-dom";
 import { useForm } from "../utils/useForm";
 import ModalFiltrosClients from "../components/forms/filtros/ModalFiltrosClients";
 import { useFlashMessage } from "../utils/FlashMessageContext";
 import { useLoading } from "../utils/LoadingContext";
+import { useData } from "../utils/DataContext";
 
 function ClientsPage() {
   const token = localStorage.getItem("token");
-  const [consultations, setConsultations] = useState([]);
+  const { consultations, setConsultations, setClients, clients, reload } =
+    useData();
+
   const [searchTerm, setSearchTerm] = useState("");
-  const [clients, setClients] = useState([]);
+
   const [filters, setFilters] = useState(false);
   const [selectTime, setSelectTime] = useState("all");
   const [selectMonth, setSelectMonth] = useState("all");
@@ -128,43 +125,19 @@ function ClientsPage() {
     });
 
   useEffect(() => {
-    async function fetchClientsData() {
-      try {
-        showLoading();
-        const [clientsData, consultationsData] = await Promise.all([
-          await useGetAll("clients", token),
-          await useGetAll("consultations", token),
-        ]);
-        setClients(clientsData);
-        setConsultations(consultationsData);
-        hideLoading();
-      } catch (error) {
-        hideLoading();
-        console.error("Erro ao buscar clientes:", error);
-      }
-    }
-
-    fetchClientsData();
+    reload(setConsultations, "consultations");
+    reload(setClients, "clients");
   }, []);
-
-  const reloadClients = async () => {
-    showLoading();
-    const response = await useGetAll("clients", token);
-    setClients(response);
-    hideLoading();
-  };
 
   const handleDeleteClient = async (clientId) => {
     try {
       showLoading();
-      const consultations = await useGetId(
-        clientId,
-        "consultations/client",
-        token
-      );
+      const consultationsClient = consultations.filter((consultationItem) => {
+        return consultationItem.client === clientId;
+      });
 
       if (
-        consultations.filter(
+        consultationsClient.filter(
           (consultationItem) => consultationItem.status === "Agendado"
         ).length > 0
       ) {
@@ -178,7 +151,9 @@ function ClientsPage() {
         await useDeleteData(clientId, "treatments/client", token);
 
         const response = await useDeleteData(clientId, "clients", token);
-        reloadClients();
+        await reload(setClients, "clients");
+        hideLoading();
+        showMessage("Cliente excluido com sucesso!", "success");
       }
     } catch (error) {
       hideLoading();

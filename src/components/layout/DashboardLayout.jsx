@@ -5,6 +5,8 @@ import MainLayout from "./MainLayout";
 import { useNavigate } from "react-router-dom";
 import { FlashMessageProvider } from "../../utils/FlashMessageContext";
 import { useGetAll, useUpdateData } from "../../services/apiService";
+import { DataProvider } from "../../utils/DataContext";
+import LoadingSpinner from "../../utils/LoadingSpinner";
 
 function DashboardLayout({ children }) {
   const navigate = useNavigate();
@@ -59,10 +61,12 @@ function DashboardLayout({ children }) {
 
   return (
     <>
-      <FlashMessageProvider>
-        <Sidebar />
-        <MainLayout>{children}</MainLayout>
-      </FlashMessageProvider>
+      <DataProvider>
+        <FlashMessageProvider>
+          <Sidebar />
+          <MainLayout>{children}</MainLayout>
+        </FlashMessageProvider>
+      </DataProvider>
     </>
   );
 }

@@ -5,13 +5,13 @@ import ModalAddProduct from "../components/forms/ModalAddProduct";
 import ModalViewProduct from "../components/forms/ModalViewProduct";
 import { useLoading } from "../utils/LoadingContext";
 import { useFlashMessage } from "../utils/FlashMessageContext";
+import { useData } from "../utils/DataContext";
 
 function ProductsPage() {
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [products, setProducts] = useState([]);
+  const { products, setProducts, consultations, setConsultations, reload } =
+    useData();
   const [addProductActive, setAddProductActive] = useState(false);
   const [viewProduct, setViewProduct] = useState(null);
-  const [error, setError] = useState(null);
   const token = localStorage.getItem("token");
   const { showLoading, hideLoading } = useLoading();
   const showMessage = useFlashMessage();
@@ -19,8 +19,8 @@ function ProductsPage() {
   const reloadProducts = async () => {
     try {
       showLoading();
-      const data = await useGetAll("products", token); // Passe o token na chamada
-      setProducts(data);
+      reload(setConsultations, "consultations");
+      await reload(setProducts, "products");
       hideLoading();
     } catch (error) {
       hideLoading();
@@ -30,7 +30,7 @@ function ProductsPage() {
 
   const handleDelete = async (productItem) => {
     showLoading();
-    const consultations = await useGetAll("consultations", token);
+    await reload(setConsultations, "consultations");
     const isUsedInConsultation = consultations.some((consultation) =>
       consultation.products.some(
         (productId) => productId.toString() === productItem._id
@@ -43,65 +43,22 @@ function ProductsPage() {
       hideLoading();
       showMessage("Produto excluído!", "success");
     } else if (isUsedInConsultation) {
+      hideLoading();
       showMessage(
         "O produto está sendo usado em alguma consulta. Não pode ser excluído.",
         "error"
       );
-      hideLoading();
     }
-  };
-
-  const handleSearchClick = (e) => {
-    e.preventDefault();
-    setIsSearchOpen(!isSearchOpen);
   };
 
   useEffect(() => {
-    async function fetchProductsData() {
-      showLoading();
-      try {
-        const token = await localStorage.getItem("token");
-        const data = await useGetAll("products", token); // Passe o token na chamada
-        setProducts(data);
-        hideLoading();
-      } catch (error) {
-        hideLoading();
-        console.error("Erro ao buscar produtos:", error);
-      }
-    }
-
-    fetchProductsData();
+    reload(setProducts, "products");
+    reload(setConsultations, "consultations");
   }, []);
+
   return (
     <section className="container mx-auto p-6 font-mono">
-      <div className="flex items-center w-full overflow-y-auto">
-        <ul className="ml-auto flex items-center">
-          <li className="mr-1 dropdown">
-            <button
-              type="button"
-              className="dropdown-toggle text-gray-400 w-8 h-8 rounded flex items-center justify-center hover:bg-gray-50 hover:text-gray-600"
-              onClick={handleSearchClick}
-            >
-              <i className="ri-search-line"></i>
-            </button>
-            <div
-              className={`dropdown-menu shadow-md shadow-black/5 z-30  max-w-xs w-full bg-white rounded-md border border-gray-100 ${
-                isSearchOpen ? "block" : "hidden"
-              }`}
-            >
-              <form action="" className="p-4 border-b border-b-gray-100">
-                <div className="relative w-full">
-                  <input
-                    type="text"
-                    className="py-2 pr-4 pl-10 bg-gray-50 w-full outline-none border border-gray-100 rounded-md text-sm focus:border-blue-500"
-                    placeholder="Search..."
-                  />
-                  <i className="ri-search-line absolute top-1/2 left-4 -translate-y-1/2 text-gray-400"></i>
-                </div>
-              </form>
-            </div>
-          </li>
-        </ul>
+      <div className="flex items-center w-full justify-end overflow-y-auto">
         <button
           className=" text-gray-400 w-8 h-8 rounded flex items-center justify-center hover:bg-gray-50 hover:text-green-600"
           onClick={() => setAddProductActive(true)}
@@ -190,7 +147,6 @@ function ProductsPage() {
             )}
           </tbody>
         </table>
-        {error && <div className="text-red-500">{error}</div>}
         {addProductActive && (
           <ModalAddProduct
             reloadProducts={reloadProducts}

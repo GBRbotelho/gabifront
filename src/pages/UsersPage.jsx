@@ -6,10 +6,10 @@ import { useLoading } from "../utils/LoadingContext";
 import ModalViewUsers from "../components/forms/ModalViewUsers";
 import { useGetAll } from "../services/apiService";
 import { useAuth } from "../utils/AuthContext";
+import { useData } from "../utils/DataContext";
 
 function UsersPage() {
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [users, setUsers] = useState([]);
+  const { users, setUsers, reload } = useData();
   const [userSelect, setUserSelect] = useState(null);
   const { showLoading, hideLoading } = useLoading();
   const [modal, setModal] = useState(false);
@@ -17,25 +17,13 @@ function UsersPage() {
   const { user } = useAuth();
 
   useEffect(() => {
-    async function fetchUsersData() {
-      showLoading();
-      try {
-        const data = await fetchUsers(); // Passe o token na chamada
-        setUsers(data);
-        hideLoading();
-      } catch (error) {
-        console.error("Erro ao buscar usuarios:", error);
-      }
-    }
-
-    fetchUsersData();
-  }, []);
+    reload(setUsers, "users");
+  });
 
   const reloadUsers = async () => {
     try {
       showLoading();
-      const data = await useGetAll("users", token); // Passe o token na chamada
-      setUsers(data);
+      await reload(setUsers, "users");
       hideLoading();
     } catch (error) {
       hideLoading();
@@ -46,11 +34,9 @@ function UsersPage() {
   const handleDeleteUsers = async (userId) => {
     showLoading();
     try {
-      const token = localStorage.getItem("token");
       const response = await deleteUser(userId, token);
+      await reloadUsers();
 
-      const updatedUsers = users.filter((user) => user._id !== userId);
-      setUsers(updatedUsers);
       hideLoading();
     } catch (error) {
       hideLoading();
@@ -58,10 +44,6 @@ function UsersPage() {
     }
   };
 
-  const handleSearchClick = (e) => {
-    e.preventDefault();
-    setIsSearchOpen(!isSearchOpen);
-  };
   return (
     <section className="container mx-auto p-6 font-mono">
       <div className="flex items-center justify-end w-full overflow-y-auto">

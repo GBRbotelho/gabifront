@@ -9,38 +9,27 @@ import ModalAddService from "../components/forms/ModalAddService";
 import ModalViewService from "../components/forms/ModalViewService";
 import { useLoading } from "../utils/LoadingContext";
 import { useFlashMessage } from "../utils/FlashMessageContext";
+import { useData } from "../utils/DataContext";
 
 function ServicesPage() {
+  const { services, setServices, treatments, setTreatments, reload } =
+    useData();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [addServiceActive, setAddServiceActive] = useState(false);
-  const [services, setServices] = useState([]);
   const [viewService, setViewService] = useState(null);
   const [error, setError] = useState(null);
   const { showLoading, hideLoading } = useLoading();
   const showMessage = useFlashMessage();
 
   useEffect(() => {
-    async function fetchServicesData() {
-      try {
-        showLoading();
-        const data = await fetchServices(); // Passe o token na chamada
-        setServices(data);
-        hideLoading();
-      } catch (error) {
-        hideLoading();
-        console.error("Erro ao buscar serviços:", error);
-      }
-    }
-
-    fetchServicesData();
+    reload(setServices, "services");
+    reload(setTreatments, "treatments");
   }, []);
 
   const reloadServices = async () => {
     try {
       showLoading();
-      const token = await localStorage.getItem("token");
-      const data = await useGetAll("services", token); // Passe o token na chamada
-      setServices(data);
+      await reload(setServices, "services");
       hideLoading();
     } catch (error) {
       hideLoading();
@@ -52,7 +41,7 @@ function ServicesPage() {
     try {
       showLoading();
       const token = localStorage.getItem("token");
-      const treatments = await useGetAll("treatments", token);
+      await reload(setTreatments, "treatments");
       if (
         treatments.filter((treatment) => treatment.name === serviceId)
           .length === 0
@@ -65,11 +54,11 @@ function ServicesPage() {
         treatments.filter((treatment) => treatment.name === serviceId)
           .length !== 0
       ) {
+        hideLoading();
         showMessage(
           "Esse serviço esta vinculado a algum tratamento, e não pode ser excluido!",
           "error"
         );
-        hideLoading();
       }
     } catch (error) {
       hideLoading();
@@ -77,40 +66,9 @@ function ServicesPage() {
     }
   };
 
-  const handleSearchClick = (e) => {
-    e.preventDefault();
-    setIsSearchOpen(!isSearchOpen);
-  };
   return (
     <section className="container mx-auto p-6 font-mono">
-      <div className="flex items-center w-full overflow-y-auto">
-        <ul className="ml-auto flex items-center">
-          <li className="mr-1 dropdown">
-            <button
-              type="button"
-              className="dropdown-toggle text-gray-400 w-8 h-8 rounded flex items-center justify-center hover:bg-gray-50 hover:text-gray-600"
-              onClick={handleSearchClick}
-            >
-              <i className="ri-search-line"></i>
-            </button>
-            <div
-              className={`dropdown-menu shadow-md shadow-black/5 z-30  max-w-xs w-full bg-white rounded-md border border-gray-100 ${
-                isSearchOpen ? "block" : "hidden"
-              }`}
-            >
-              <form action="" className="p-4 border-b border-b-gray-100">
-                <div className="relative w-full">
-                  <input
-                    type="text"
-                    className="py-2 pr-4 pl-10 bg-gray-50 w-full outline-none border border-gray-100 rounded-md text-sm focus:border-blue-500"
-                    placeholder="Search..."
-                  />
-                  <i className="ri-search-line absolute top-1/2 left-4 -translate-y-1/2 text-gray-400"></i>
-                </div>
-              </form>
-            </div>
-          </li>
-        </ul>
+      <div className="flex items-center w-full justify-end overflow-y-auto">
         <button
           onClick={() => setAddServiceActive(true)}
           className=" text-gray-400 w-8 h-8 rounded flex items-center justify-center hover:bg-gray-50 hover:text-green-600"

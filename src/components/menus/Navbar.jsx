@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../../utils/AuthContext";
-import { useGetAll } from "../../services/apiService";
+import { useData } from "../../utils/DataContext";
 import ModalProfile from "../forms/ModalProfile";
 
 //Import Images
@@ -60,27 +60,14 @@ const avatarImages = [
 //Fim IMporte Images
 
 function Navbar() {
+  const { consultations, clients } = useData();
   const location = useLocation();
   const pathSegments = location.pathname.split("/");
   const [activeProfile, setActiveProfile] = useState(false);
   const [activeNotify, setActiveNotify] = useState(false);
-  const [consultations, setConsultations] = useState([]);
   const [profileOpen, setProfileOpen] = useState(false);
-  const [clients, setClients] = useState([]);
   const { logout, user } = useAuth();
   const token = localStorage.getItem("token");
-
-  useEffect(() => {
-    const fetchConsultation = async () => {
-      const [clientData, consultationData] = await Promise.all([
-        useGetAll("clients", token),
-        useGetAll("consultations", token),
-      ]);
-      setConsultations(consultationData);
-      setClients(clientData);
-    };
-    fetchConsultation();
-  }, []);
 
   // Acesse o segmento da URL após "dashboard/"
   const currentSegment = pathSegments[2]
@@ -100,6 +87,12 @@ function Navbar() {
 
   const FilterConsultation = consultations.filter((consultationItem) => {
     const DateToday = new Date();
+
+    // Verifica se a propriedade 'date' e 'time' existem no objeto
+    if (!consultationItem.date || !consultationItem.time) {
+      // Se alguma das propriedades estiver faltando, ignora o item
+      return false;
+    }
 
     // Extrai ano, mês e dia da consulta
     const consultationDateParts = consultationItem.date.split("-");
@@ -251,7 +244,6 @@ function Navbar() {
             className="dropdown-toggle flex items-center"
             onClick={() => {
               setActiveProfile(!activeProfile);
-              console.log(user);
             }}
           >
             <img
