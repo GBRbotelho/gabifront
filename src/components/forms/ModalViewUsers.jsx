@@ -11,7 +11,14 @@ export default function ModalViewUsers({
   user,
 }) {
   const [isEditable, setIsEditable] = useState(false);
+  const [isUpdatePassword, setIsUpdatePassword] = useState(false);
+  const [dataPassword, setDataPassword] = useState({
+    currentPassword: "",
+    newPassword: "",
+    repitNewPassword: "",
+  });
   const [tempUser, setTempUser] = useState(null);
+
   const { showLoading, hideLoading } = useLoading();
   const showMessage = useFlashMessage();
 
@@ -25,6 +32,47 @@ export default function ModalViewUsers({
       ...userSelect,
       [name]: value,
     });
+  };
+
+  const handleChangePassword = (event) => {
+    const { name, value } = event.target;
+    setDataPassword({
+      ...dataPassword,
+      [name]: value,
+    });
+  };
+
+  const toggleSavePassword = async () => {
+    showLoading();
+    const token = localStorage.getItem("token");
+
+    if (dataPassword.newPassword !== dataPassword.repitNewPassword) {
+      hideLoading();
+      showMessage(
+        "Os Campos 'Nova senha' e 'Repita a nova senha' estão diferentes!",
+        "error"
+      );
+    } else {
+      const update = await useUpdateData(
+        userSelect._id,
+        "users/update-password",
+        dataPassword,
+        token
+      );
+
+      if (update.error) {
+        hideLoading();
+        showMessage(update.error, "error");
+      } else {
+        setIsUpdatePassword(false);
+        dataPassword.currentPassword = "";
+        dataPassword.newPassword = "";
+        dataPassword.repitNewPassword = "";
+        hideLoading();
+        showMessage("Senha trocada!", "success");
+        reloadUsers();
+      }
+    }
   };
 
   const toggleSave = async () => {
@@ -60,109 +108,184 @@ export default function ModalViewUsers({
           <h2 className="text-2xl font-semibold">Usuarios</h2>
         </div>
         <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-4">
-          <div className="md:col-span-2">
-            <label htmlFor="firstName">Nome</label>
-            <input
-              type="text"
-              name="firstName"
-              id="firstName"
-              className={`h-10 border mt-1 rounded px-4 w-full bg-${
-                !isEditable ? "gray-100" : "white"
-              }`}
-              value={userSelect.firstName || ""}
-              onChange={handleChange}
-              disabled={!isEditable}
-            />
-          </div>
+          {!isUpdatePassword ? (
+            <>
+              <div className="md:col-span-2">
+                <label htmlFor="firstName">Nome</label>
+                <input
+                  type="text"
+                  name="firstName"
+                  id="firstName"
+                  className={`h-10 border mt-1 rounded px-4 w-full bg-${
+                    !isEditable ? "gray-100" : "white"
+                  }`}
+                  value={userSelect.firstName || ""}
+                  onChange={handleChange}
+                  disabled={!isEditable}
+                />
+              </div>
 
-          <div className="md:col-span-2">
-            <label htmlFor="lastName">Sobrenome</label>
-            <input
-              type="text"
-              name="lastName"
-              id="lastName"
-              className={`h-10 border mt-1 rounded px-4 w-full bg-${
-                !isEditable ? "gray-100" : "white"
-              }`}
-              value={userSelect.lastName || ""}
-              onChange={handleChange}
-              disabled={!isEditable}
-            />
-          </div>
+              <div className="md:col-span-2">
+                <label htmlFor="lastName">Sobrenome</label>
+                <input
+                  type="text"
+                  name="lastName"
+                  id="lastName"
+                  className={`h-10 border mt-1 rounded px-4 w-full bg-${
+                    !isEditable ? "gray-100" : "white"
+                  }`}
+                  value={userSelect.lastName || ""}
+                  onChange={handleChange}
+                  disabled={!isEditable}
+                />
+              </div>
 
-          <div className="md:col-span-4">
-            <label htmlFor="email">Email</label>
-            <input
-              type="text"
-              name="email"
-              id="email"
-              className={`h-10 border mt-1 rounded px-4 w-full bg-${
-                true ? "gray-100" : "white"
-              }`}
-              value={userSelect.email || ""}
-              onChange={handleChange}
-              disabled={true}
-            />
-          </div>
+              <div className="md:col-span-4">
+                <label htmlFor="email">Email</label>
+                <input
+                  type="text"
+                  name="email"
+                  id="email"
+                  className={`h-10 border mt-1 rounded px-4 w-full bg-${
+                    true ? "gray-100" : "white"
+                  }`}
+                  value={userSelect.email || ""}
+                  onChange={handleChange}
+                  disabled={true}
+                />
+              </div>
 
-          <div className="md:col-span-4">
-            <label htmlFor="accountLevel">Nivel da Conta</label>
-            <select
-              type="text"
-              name="accountLevel"
-              id="accountLevel"
-              className={`h-10 border mt-1 rounded px-4 w-full bg-${
-                !isEditable ? "gray-100" : "white"
-              }`}
-              value={userSelect.accountLevel || ""}
-              onChange={handleChange}
-              disabled={!isEditable}
-            >
-              <option value={0}>Secretariado</option>
-              <option value={1}>Profissional</option>
-              <option value={2}>Administrador</option>
-              {user.accountLevel === 3 && (
-                <option value={3}>Desenvolvedor</option>
-              )}
-            </select>
-          </div>
+              <div className="md:col-span-4">
+                <label htmlFor="accountLevel">Nivel da Conta</label>
+                <select
+                  type="text"
+                  name="accountLevel"
+                  id="accountLevel"
+                  className={`h-10 border mt-1 rounded px-4 w-full bg-${
+                    !isEditable ? "gray-100" : "white"
+                  }`}
+                  value={userSelect.accountLevel || ""}
+                  onChange={handleChange}
+                  disabled={!isEditable}
+                >
+                  <option value={0}>Secretariado</option>
+                  <option value={1}>Profissional</option>
+                  <option value={2}>Administrador</option>
+                  {user.accountLevel === 3 && (
+                    <option value={3}>Desenvolvedor</option>
+                  )}
+                </select>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="md:col-span-4">
+                <label htmlFor="currentPassword">Senha atual</label>
+                <input
+                  type="text"
+                  name="currentPassword"
+                  id="currentPassword"
+                  className="h-10 border mt-1 rounded px-4 w-full bg-white"
+                  value={dataPassword.currentPassword || ""}
+                  onChange={handleChangePassword}
+                />
+              </div>
+              <div className="md:col-span-4">
+                <label htmlFor="newPassword">Nova senha</label>
+                <input
+                  type="text"
+                  name="newPassword"
+                  id="newPassword"
+                  className="h-10 border mt-1 rounded px-4 w-full bg-white"
+                  value={dataPassword.newPassword || ""}
+                  onChange={handleChangePassword}
+                />
+              </div>
+              <div className="md:col-span-4">
+                <label htmlFor="repitNewPassword">Repita a senha</label>
+                <input
+                  type="text"
+                  name="repitNewPassword"
+                  id="repitNewPassword"
+                  className="h-10 border mt-1 rounded px-4 w-full bg-white"
+                  value={dataPassword.repitNewPassword || ""}
+                  onChange={handleChangePassword}
+                />
+              </div>
+            </>
+          )}
         </div>
-        <div className="flex justify-between mt-3">
-          <button
-            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-            onClick={() => {
-              setModal(false);
-              setUserSelect(null);
-            }}
-          >
-            Concluído
-          </button>
-          {isEditable ? (
+        <div className="flex justify-center mt-3">
+          {!isUpdatePassword ? (
+            <button
+              className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded"
+              onClick={() => {
+                setIsUpdatePassword(true);
+              }}
+            >
+              Trocar senha
+            </button>
+          ) : (
             <div className="gap-2 flex">
               <button
                 className="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded"
-                onClick={toggleCancel}
+                onClick={() => {
+                  dataPassword.currentPassword = "";
+                  dataPassword.newPassword = "";
+                  dataPassword.repitNewPassword = "";
+                  setIsUpdatePassword(false);
+                }}
               >
                 Cancelar
               </button>
               <button
                 className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-                onClick={toggleSave}
+                onClick={toggleSavePassword}
               >
                 Salvar
               </button>
             </div>
-          ) : (
-            <button
-              className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded"
-              onClick={() => {
-                setIsEditable(true);
-              }}
-            >
-              Editar
-            </button>
           )}
         </div>
+        {!isUpdatePassword && (
+          <div className="flex justify-between mt-3">
+            <button
+              className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+              onClick={() => {
+                setModal(false);
+                setUserSelect(null);
+              }}
+            >
+              Concluído
+            </button>
+
+            {isEditable ? (
+              <div className="gap-2 flex">
+                <button
+                  className="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded"
+                  onClick={toggleCancel}
+                >
+                  Cancelar
+                </button>
+                <button
+                  className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                  onClick={toggleSave}
+                >
+                  Salvar
+                </button>
+              </div>
+            ) : (
+              <button
+                className="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded"
+                onClick={() => {
+                  setIsEditable(true);
+                }}
+              >
+                Editar
+              </button>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

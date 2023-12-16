@@ -298,13 +298,17 @@ export async function useUpdateData(userId, subroute, dataToUpdate, token) {
       body: JSON.stringify(dataToUpdate), // Envie os dados a serem atualizados no corpo da solicitação
     });
 
+    if (response.status === 401) {
+      const data = await response.json();
+      return data;
+    }
+
     if (!response.ok) {
       // Se a resposta do servidor não for bem-sucedida, lance um erro
       throw new Error(`Erro: (status ${response.status})`);
     }
 
     if (response.status === 450) {
-      const data = await response.json();
       localStorage.removeItem("token");
       verifyToken();
     }
