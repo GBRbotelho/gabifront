@@ -1,8 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { verifyToken, useGetUserData } from "../services/authService"; // Adicione a função para obter dados do usuário
-import { useNavigate } from "react-router-dom";
 import { useGetAll } from "../services/apiService";
 import { useLoading } from "./LoadingContext";
+import { useAuth } from "./AuthContext";
+import { useFlashMessage } from "./FlashMessageContext";
 
 const DataContext = createContext();
 
@@ -19,6 +19,8 @@ export const DataProvider = ({ children }) => {
   const [services, setServices] = useState([]);
   const [products, setProducts] = useState([]);
   const token = localStorage.getItem("token");
+  const { logout } = useAuth();
+  const showMessage = useFlashMessage();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -60,7 +62,12 @@ export const DataProvider = ({ children }) => {
 
   const reload = async (setState, subroute) => {
     const data = await useGetAll(subroute, token);
-    setState(data);
+    if (data.error === 450) {
+      logout();
+      showMessage("Faça login novamente, por conta da inatividade!", "error");
+    } else {
+      setState(data);
+    }
   };
 
   return (
