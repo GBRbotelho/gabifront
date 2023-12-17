@@ -48,7 +48,7 @@ export default function TreatmentViewerPage() {
                       id="name"
                       className="h-10 border mt-1 rounded px-4 w-full bg-white"
                       disabled={isEditable}
-                      value={client.name || ""}
+                      value={(client && client.name) || ""}
                     />
                   </div>
 
@@ -59,7 +59,7 @@ export default function TreatmentViewerPage() {
                       id="cpf"
                       className="h-10 border mt-1 rounded px-4 w-full bg-white"
                       disabled={isEditable}
-                      value={client.cpf || ""}
+                      value={(client && client.cpf) || ""}
                     />
                   </div>
                   <div className="md:col-span-2">
@@ -70,7 +70,7 @@ export default function TreatmentViewerPage() {
                         id="email"
                         className="h-10 border mt-1 rounded px-4 w-full bg-white"
                         disabled={isEditable}
-                        value={client.email || ""}
+                        value={(client && client.email) || ""}
                       />
                     </div>
                   </div>
@@ -82,11 +82,15 @@ export default function TreatmentViewerPage() {
                         id="name"
                         className="h-10 border mt-1 rounded px-4 w-full bg-white"
                         disabled={isEditable}
-                        value={services
-                          .filter(
-                            (serviceItem) => serviceItem._id === treatment.name
-                          )
-                          .map((item) => item.name)}
+                        value={
+                          treatment &&
+                          services
+                            .filter(
+                              (serviceItem) =>
+                                serviceItem._id === treatment.name
+                            )
+                            .map((item) => item.name)
+                        }
                       />
                     </div>
                   </div>
@@ -98,7 +102,7 @@ export default function TreatmentViewerPage() {
                       id="price"
                       className="h-10 border mt-1 rounded px-4 w-full bg-white"
                       disabled={isEditable}
-                      value={`R$ ${treatment.price}`}
+                      value={`R$ ${treatment && treatment.price}`}
                     />
                   </div>
                   <div className="md:col-span-1">
@@ -111,7 +115,7 @@ export default function TreatmentViewerPage() {
                       id="sessionsCompleted"
                       className="h-10 border mt-1 rounded px-4 w-full bg-white"
                       disabled={isEditable}
-                      value={treatment.sessionsCompleted}
+                      value={treatment && treatment.sessionsCompleted}
                     />
                   </div>
                   <div className="md:col-span-1">
@@ -122,7 +126,7 @@ export default function TreatmentViewerPage() {
                       id="totalSessions"
                       className="h-10 border mt-1 rounded px-4 w-full bg-white"
                       disabled={isEditable}
-                      value={treatment.totalSessions}
+                      value={treatment && treatment.totalSessions}
                     />
                   </div>
                   <div className="md:col-span-1">
@@ -133,7 +137,7 @@ export default function TreatmentViewerPage() {
                       id="status"
                       className="h-10 border mt-1 rounded px-4 w-full bg-white"
                       disabled={isEditable}
-                      value={treatment.status}
+                      value={treatment && treatment.status}
                     />
                   </div>
                   <div className="md:col-span-6">
@@ -144,7 +148,7 @@ export default function TreatmentViewerPage() {
                       id="description"
                       className="h-20 border mt-1 rounded px-4 w-full bg-white"
                       disabled={isEditable}
-                      value={treatment.description || ""}
+                      value={(treatment && treatment.description) || ""}
                     />
                   </div>
 
