@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { useUpdateData, useGetAll } from "../../services/apiService";
+import { useUpdateData } from "../../services/apiService";
 import Select from "react-select";
 import ModalEditConsultation from "./ModalEditConsultation";
 import { useFlashMessage } from "../../utils/FlashMessageContext";
 import { useLoading } from "../../utils/LoadingContext";
+import { useData } from "../../utils/DataContext";
 
 export default function ModalConsultation({
   closeSelectItem,
@@ -15,10 +15,9 @@ export default function ModalConsultation({
   service,
   consultations,
 }) {
-  const [error, setError] = useState("");
+  const { products, setProducts, reload } = useData();
   const [isEditable, setIsEditable] = useState(false);
   const [tempConsultation, setTempConsultation] = useState({});
-  const [products, setProducts] = useState([]);
   const [selectedProductIds, setSelectedProductIds] = useState([]);
   const [tempSelectedProductIds, setTempSelectedProductIds] = useState([]);
   const [confirmConsultation, setConfirmConsultation] = useState(false);
@@ -26,31 +25,42 @@ export default function ModalConsultation({
   const { showLoading, hideLoading } = useLoading();
 
   useEffect(() => {
-    setTempConsultation(consultationItem);
-
-    const fetchProducts = async () => {
-      showLoading();
-      const token = localStorage.getItem("token");
-      const data = await useGetAll("products", token);
-      setProducts(data);
+    const ReloadProducts = async () => {
+      await reload(setProducts, "products");
+      setTempConsultation(consultationItem);
 
       setTempSelectedProductIds(
         consultationItem.products.map((productId) => ({
           value: productId,
-          label: data.find((product) => product._id === productId).name,
+          label: products.find((product) => product._id === productId).name,
         }))
       );
 
       setSelectedProductIds(
         consultationItem.products.map((productId) => ({
           value: productId,
-          label: data.find((product) => product._id === productId).name,
+          label: products.find((product) => product._id === productId).name,
         }))
       );
-      hideLoading();
     };
 
-    fetchProducts();
+    setTempConsultation(consultationItem);
+
+    setTempSelectedProductIds(
+      consultationItem.products.map((productId) => ({
+        value: productId,
+        label: products.find((product) => product._id === productId).name,
+      }))
+    );
+
+    setSelectedProductIds(
+      consultationItem.products.map((productId) => ({
+        value: productId,
+        label: products.find((product) => product._id === productId).name,
+      }))
+    );
+
+    ReloadProducts();
   }, []);
 
   const handleChangeProducts = (selectedOptions) => {
@@ -330,7 +340,6 @@ export default function ModalConsultation({
             </table>
           </div>
         </div>
-        {error && <p className="text-red-500">{error}</p>}
         <div className="flex justify-between mt-3">
           <button
             className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
