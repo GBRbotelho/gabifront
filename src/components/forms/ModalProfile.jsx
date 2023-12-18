@@ -5,6 +5,7 @@ import ModalPhoto from "./ModalPhoto";
 import { useUpdateData } from "../../services/apiService";
 import { useLoading } from "../../utils/LoadingContext";
 import { useFlashMessage } from "../../utils/FlashMessageContext";
+import { useNavigate } from "react-router-dom";
 
 //Import Images
 import Photo1 from "../../assets/profiles/1.svg";
@@ -31,6 +32,7 @@ import Photo21 from "../../assets/profiles/21.svg";
 import Photo22 from "../../assets/profiles/22.svg";
 import Photo23 from "../../assets/profiles/23.svg";
 import Photo24 from "../../assets/profiles/24.svg";
+import { Navigate } from "react-router-dom";
 
 const avatarImages = [
   Photo1,
@@ -64,12 +66,14 @@ const avatarImages = [
 export default function ModalProfile({ setProfileOpen }) {
   const { showLoading, hideLoading } = useLoading();
   const [isEditable, setIsEditable] = useState(false);
-  const { user, reloadUser } = useAuth();
+  const { user, reloadUser, logout } = useAuth();
   const [modal, setModal] = useState(false);
   const [selectImage, setSelectImage] = useState(null);
   const showMessage = useFlashMessage();
+  const navigate = useNavigate();
   const [isUpdatePassword, setIsUpdatePassword] = useState(false);
   const [dataPassword, setDataPassword] = useState({
+    admin: "2",
     currentPassword: "",
     newPassword: "",
     repitNewPassword: "",
@@ -108,6 +112,11 @@ export default function ModalProfile({ setProfileOpen }) {
     showLoading();
     const token = localStorage.getItem("token");
 
+    setDataPassword({
+      ...dataPassword,
+      admin: "2",
+    });
+
     if (dataPassword.newPassword !== dataPassword.repitNewPassword) {
       hideLoading();
       showMessage(
@@ -126,11 +135,9 @@ export default function ModalProfile({ setProfileOpen }) {
         hideLoading();
         showMessage(update.error, "error");
       } else {
-        setIsUpdatePassword(false);
-        dataPassword.currentPassword = "";
-        dataPassword.newPassword = "";
-        dataPassword.repitNewPassword = "";
         hideLoading();
+        logout();
+        navigate("/");
         showMessage("Senha trocada!", "success");
       }
     }
@@ -172,7 +179,7 @@ export default function ModalProfile({ setProfileOpen }) {
                   <div className="md:col-span-6">
                     <label htmlFor="currentPassword">Senha atual</label>
                     <input
-                      type="text"
+                      type="password"
                       name="currentPassword"
                       id="currentPassword"
                       className="h-10 border mt-1 rounded px-4 w-full bg-white"
@@ -183,7 +190,7 @@ export default function ModalProfile({ setProfileOpen }) {
                   <div className="md:col-span-6">
                     <label htmlFor="newPassword">Nova senha</label>
                     <input
-                      type="text"
+                      type="password"
                       name="newPassword"
                       id="newPassword"
                       className="h-10 border mt-1 rounded px-4 w-full bg-white"
@@ -194,7 +201,7 @@ export default function ModalProfile({ setProfileOpen }) {
                   <div className="md:col-span-6">
                     <label htmlFor="repitNewPassword">Repita a senha</label>
                     <input
-                      type="text"
+                      type="password"
                       name="repitNewPassword"
                       id="repitNewPassword"
                       className="h-10 border mt-1 rounded px-4 w-full bg-white"
@@ -214,7 +221,7 @@ export default function ModalProfile({ setProfileOpen }) {
                       className={`h-10 border mt-1 rounded px-4 w-full bg-${
                         !isEditable ? "gray-100" : "white"
                       }`}
-                      value={useForm(user.firstName, "letras") || ""}
+                      value={(user && useForm(user.firstName, "letras")) || ""}
                       disabled={!isEditable}
                       maxLength={90}
                     />
@@ -228,7 +235,7 @@ export default function ModalProfile({ setProfileOpen }) {
                       className={`h-10 border mt-1 rounded px-4 w-full bg-${
                         !isEditable ? "gray-100" : "white"
                       }`}
-                      value={useForm(user.lastName, "letras") || ""}
+                      value={(user && useForm(user.lastName, "letras")) || ""}
                       disabled={!isEditable}
                       maxLength={90}
                     />
@@ -242,7 +249,7 @@ export default function ModalProfile({ setProfileOpen }) {
                       className={`h-10 border mt-1 rounded px-4 w-full bg-${
                         !isEditable ? "gray-100" : "white"
                       }`}
-                      value={user.email || ""}
+                      value={(user && user.email) || ""}
                       disabled={!isEditable}
                       maxLength={90}
                     />

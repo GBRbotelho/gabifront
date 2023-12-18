@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useLoading } from "../../utils/LoadingContext";
 import { useFlashMessage } from "../../utils/FlashMessageContext";
 import { useUpdateData } from "../../services/apiService";
+import { useAuth } from "../../utils/AuthContext";
 
 export default function ModalViewUsers({
   setModal,
@@ -13,11 +14,13 @@ export default function ModalViewUsers({
   const [isEditable, setIsEditable] = useState(false);
   const [isUpdatePassword, setIsUpdatePassword] = useState(false);
   const [dataPassword, setDataPassword] = useState({
+    admin: "1",
     currentPassword: "",
     newPassword: "",
     repitNewPassword: "",
   });
   const [tempUser, setTempUser] = useState(null);
+  const { logout } = useAuth();
 
   const { showLoading, hideLoading } = useLoading();
   const showMessage = useFlashMessage();
@@ -46,6 +49,13 @@ export default function ModalViewUsers({
     showLoading();
     const token = localStorage.getItem("token");
 
+    setDataPassword({
+      ...dataPassword,
+      admin: "1",
+    });
+
+    console.log("Data password inside async function:", dataPassword);
+
     if (dataPassword.newPassword !== dataPassword.repitNewPassword) {
       hideLoading();
       showMessage(
@@ -71,6 +81,9 @@ export default function ModalViewUsers({
         hideLoading();
         showMessage("Senha trocada!", "success");
         reloadUsers();
+        if (userSelect._id === user._id) {
+          logout();
+        }
       }
     }
   };
@@ -180,20 +193,9 @@ export default function ModalViewUsers({
           ) : (
             <>
               <div className="md:col-span-4">
-                <label htmlFor="currentPassword">Senha atual</label>
-                <input
-                  type="text"
-                  name="currentPassword"
-                  id="currentPassword"
-                  className="h-10 border mt-1 rounded px-4 w-full bg-white"
-                  value={dataPassword.currentPassword || ""}
-                  onChange={handleChangePassword}
-                />
-              </div>
-              <div className="md:col-span-4">
                 <label htmlFor="newPassword">Nova senha</label>
                 <input
-                  type="text"
+                  type="password"
                   name="newPassword"
                   id="newPassword"
                   className="h-10 border mt-1 rounded px-4 w-full bg-white"
@@ -204,7 +206,7 @@ export default function ModalViewUsers({
               <div className="md:col-span-4">
                 <label htmlFor="repitNewPassword">Repita a senha</label>
                 <input
-                  type="text"
+                  type="password"
                   name="repitNewPassword"
                   id="repitNewPassword"
                   className="h-10 border mt-1 rounded px-4 w-full bg-white"
@@ -216,16 +218,7 @@ export default function ModalViewUsers({
           )}
         </div>
         <div className="flex justify-center mt-3">
-          {!isUpdatePassword ? (
-            <button
-              className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded"
-              onClick={() => {
-                setIsUpdatePassword(true);
-              }}
-            >
-              Trocar senha
-            </button>
-          ) : (
+          {isUpdatePassword && (
             <div className="gap-2 flex">
               <button
                 className="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded"
@@ -258,6 +251,17 @@ export default function ModalViewUsers({
             >
               Concluído
             </button>
+
+            {!isEditable && (
+              <button
+                className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded"
+                onClick={() => {
+                  setIsUpdatePassword(true);
+                }}
+              >
+                Trocar senha
+              </button>
+            )}
 
             {isEditable ? (
               <div className="gap-2 flex">
