@@ -149,7 +149,7 @@ export default function ModalConsultation({
         <div className="flex items-center justify-center mb-4">
           <h2 className="text-2xl font-semibold">Consultas</h2>
         </div>
-        <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-4">
+        <div className="max-h-96 overflow-y-auto grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-4">
           <div className="md:col-span-2">
             <label htmlFor="date">Data da Consulta</label>
             <input
