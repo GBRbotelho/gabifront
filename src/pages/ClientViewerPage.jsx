@@ -13,6 +13,7 @@ import { useForm } from "../utils/useForm";
 import { useFlashMessage } from "../utils/FlashMessageContext";
 import { useLoading } from "../utils/LoadingContext";
 import { useData } from "../utils/DataContext";
+import Select from "react-select";
 
 export default function ClientViewerPage() {
   const {
@@ -48,6 +49,7 @@ export default function ClientViewerPage() {
   const [agendados, setAgendados] = useState(true);
   const [faltas, setFaltas] = useState(false);
   const { showLoading, hideLoading } = useLoading();
+  const [selectedClient, setSelectedClient] = useState(null);
   const [client, setClient] = useState(
     clients.find((clientItem) => {
       return clientItem._id === id;
@@ -242,6 +244,11 @@ export default function ClientViewerPage() {
     });
   };
 
+  const handleChangeSelect = (name, value) => {
+    setClient({ ...client, [name]: value.value });
+    setSelectedClient(value);
+  };
+
   useEffect(() => {
     const updateTreatments = async () => {
       for (const treatmentItem of treatment) {
@@ -307,7 +314,7 @@ export default function ClientViewerPage() {
             <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 lg:grid-cols-3">
               <div className="lg:col-span-3">
                 <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-6">
-                  <div className="md:col-span-6">
+                  <div className="md:col-span-4">
                     <label htmlFor="full_name">Nome Completo</label>
                     <input
                       type="text"
@@ -324,18 +331,66 @@ export default function ClientViewerPage() {
                   </div>
 
                   <div className="md:col-span-2">
-                    <label htmlFor="country">CPF</label>
-                    <input
-                      name="cpf"
-                      id="cpf"
+                    <label htmlFor="knowMyWork">
+                      Como conheceu meu trabalho
+                    </label>
+                    <select
+                      type="text"
+                      name="knowMyWork"
+                      id="knowMyWork"
                       placeholder="Preencha este campo"
                       className={`h-10 border mt-1 rounded px-4 w-full bg-${
                         !isEditable ? "gray-100" : "white"
                       }`}
-                      value={(client && useForm(client.cpf, "cpf")) || ""}
+                      value={(client && client.knowMyWork) || ""}
                       onChange={handleChange}
                       disabled={!isEditable}
-                      maxLength={14}
+                    >
+                      <option value="" hidden>
+                        Selecione uma opção
+                      </option>
+                      <option value="NULL">Nenhuma das opções</option>
+                      <option value="INSTAGRAM">INSTAGRAM</option>
+                      <option value="FACEBOOK">FACEBOOK</option>
+                      <option value="GOOGLE">GOOGLE</option>
+                    </select>
+                  </div>
+
+                  <div className="md:col-span-2">
+                    <label htmlFor="recommendation">Indicação</label>
+                    <Select
+                      name="recommendation"
+                      id="recommendation"
+                      placeholder="Preencha este campo"
+                      className="h-10 border mt-1 rounded w-full"
+                      value={
+                        client.recommendation
+                          ? {
+                              value: `${client.recommendation}`,
+                              label: `${
+                                clients.find(
+                                  (clientItem) =>
+                                    clientItem._id === client.recommendation
+                                )?.name || ""
+                              }`,
+                            }
+                          : null
+                      }
+                      onChange={(selectedOption) =>
+                        handleChangeSelect("recommendation", selectedOption)
+                      }
+                      options={[
+                        // Opção vazia
+                        { value: "", label: "NENHUM CLIENTE INDICOU" },
+                        // Mapeia os clientes para opções
+                        ...clients
+                          .sort((a, b) => a.name.localeCompare(b.name))
+                          .map((clientItem) => ({
+                            value: clientItem._id,
+                            label: clientItem.name,
+                          })),
+                      ]}
+                      isDisabled={!isEditable}
                     />
                   </div>
 
