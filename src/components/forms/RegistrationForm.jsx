@@ -359,7 +359,7 @@ function RegistrationForm({ closeModal }) {
                 <label htmlFor="respiratoryPain">
                   Dor ao respirar, tossir ou espirrar
                 </label>
-                <select
+                <input
                   type="text"
                   name="respiratoryPain"
                   id="respiratoryPain"
@@ -369,11 +369,7 @@ function RegistrationForm({ closeModal }) {
                   value={registrationForm.respiratoryPain || ""}
                   onChange={handleChange}
                   disabled={!isEditable}
-                >
-                  <option value="" hidden></option>
-                  <option value="Sim">Sim</option>
-                  <option value="Não">Não</option>
-                </select>
+                />
               </div>
               <div className="md:col-span-2">
                 <label htmlFor="vertigoSymptoms">
@@ -460,7 +456,7 @@ function RegistrationForm({ closeModal }) {
               </div>
               <div className="md:col-span-2">
                 <label htmlFor="sleepQuality">Qualidade de sono</label>
-                <select
+                <input
                   type="text"
                   name="sleepQuality"
                   id="sleepQuality"
@@ -470,16 +466,11 @@ function RegistrationForm({ closeModal }) {
                   value={registrationForm.sleepQuality || ""}
                   onChange={handleChange}
                   disabled={!isEditable}
-                >
-                  <option value="" hidden></option>
-                  <option value="Bom">Bom</option>
-                  <option value="Médio">Médio</option>
-                  <option value="Ruim">Ruim</option>
-                </select>
+                />
               </div>
               <div className="md:col-span-2">
                 <label htmlFor="anxietyStress">Ansiedade ou estresse</label>
-                <select
+                <input
                   type="text"
                   name="anxietyStress"
                   id="anxietyStress"
@@ -489,11 +480,7 @@ function RegistrationForm({ closeModal }) {
                   value={registrationForm.anxietyStress || ""}
                   onChange={handleChange}
                   disabled={!isEditable}
-                >
-                  <option value="" hidden></option>
-                  <option value="Sim">Sim</option>
-                  <option value="Não">Não</option>
-                </select>
+                />
               </div>
               <div className="md:col-span-2">
                 <label htmlFor="activityPause">
@@ -597,6 +584,20 @@ function RegistrationForm({ closeModal }) {
                   />
                 </div>
               )}
+              <div className="md:col-span-2">
+                <label htmlFor="circulatory">Problemas circulatorios</label>
+                <input
+                  type="text"
+                  name="circulatory"
+                  id="circulatory"
+                  className={`h-10 border mt-1 rounded px-4 w-full bg-${
+                    !isEditable ? "gray-100" : "white"
+                  }`}
+                  value={registrationForm.circulatory || ""}
+                  onChange={handleChange}
+                  disabled={!isEditable}
+                />
+              </div>
               <div className="md:col-span-2">
                 <label htmlFor="treatments">Tratamentos anteriores</label>
                 <input
