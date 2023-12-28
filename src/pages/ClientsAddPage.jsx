@@ -14,7 +14,7 @@ function ClientsAddPage() {
   const [clientData, setClientData] = useState({ recommendation: "" });
   const showMessage = useFlashMessage();
   const { showLoading, hideLoading } = useLoading();
-  const { clients } = useData();
+  const { clients, setClients, reload } = useData();
   const [selectedClient, setSelectedClient] = useState(null);
 
   const handleChange = (e) => {
@@ -23,16 +23,19 @@ function ClientsAddPage() {
       ...clientData,
       [name]: value,
     });
+    localStorage.setItem(
+      "clientData",
+      JSON.stringify({
+        ...clientData,
+        [name]: value,
+      })
+    );
   };
 
   const handleChangeSelect = (name, value) => {
     setClientData({ ...clientData, [name]: value.value });
     setSelectedClient(value);
   };
-
-  useEffect(() => {
-    console.log(clientData);
-  }, [clientData]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -54,9 +57,11 @@ function ClientsAddPage() {
         hideLoading();
         showMessage("Informações faltando!", "error");
       } else {
+        await reload(setClients, "clients");
         showMessage("Operação bem-sucedida!", "success");
         hideLoading();
-        navigate("/dashboard/clientes");
+        localStorage.removeItem("clientData");
+        navigate(`/dashboard/clientes/view/${response._id}`);
       }
     } catch (error) {
       if (error.error) {
@@ -68,6 +73,13 @@ function ClientsAddPage() {
       }
     }
   };
+
+  useEffect(() => {
+    const data = localStorage.getItem("clientData");
+    if (data) {
+      setClientData(JSON.parse(data));
+    }
+  }, []);
 
   return (
     <div className=" min-h-screen p-6 bg-gray-100 flex items-center justify-center">
@@ -91,6 +103,21 @@ function ClientsAddPage() {
                       className="h-10 border mt-1 rounded px-4 w-full bg-white"
                       value={useForm(clientData.name, "letras") || ""}
                       onChange={handleChange}
+                      onBlur={handleChange}
+                      maxLength={90}
+                    />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label htmlFor="surname">Como gosta de ser chamado</label>
+                    <input
+                      type="text"
+                      name="surname"
+                      id="surname"
+                      placeholder="Preencha este campo"
+                      className="h-10 border mt-1 rounded px-4 w-full bg-white"
+                      value={useForm(clientData.surname, "letras") || ""}
+                      onChange={handleChange}
+                      onBlur={handleChange}
                       maxLength={90}
                     />
                   </div>
@@ -153,22 +180,6 @@ function ClientsAddPage() {
                       ]}
                     />
                   </div>
-
-                  <div className="md:col-span-2">
-                    <label htmlFor="phone">Telefone</label>
-                    <div className="flex items-center">
-                      <input
-                        name="phone"
-                        id="phone"
-                        placeholder="Preencha este campo"
-                        className="h-10 border mt-1 rounded px-4 w-full bg-white"
-                        value={useForm(clientData.phone, "telefone") || ""}
-                        onChange={handleChange}
-                        maxLength={15}
-                      />
-                    </div>
-                  </div>
-
                   <div className="md:col-span-2">
                     <label htmlFor="zipcode">Sexo</label>
                     <select
@@ -190,7 +201,7 @@ function ClientsAddPage() {
                     </select>
                   </div>
                   <div className="md:col-span-2">
-                    <label htmlFor="email">Data de Nascimento</label>
+                    <label htmlFor="date">Data de Nascimento</label>
                     <input
                       type="date"
                       name="date"
@@ -198,11 +209,23 @@ function ClientsAddPage() {
                       className="h-10 border mt-1 rounded px-4 w-full bg-white"
                       value={clientData.date || ""}
                       onChange={handleChange}
-                      placeholder="email@domain.com"
                     />
                   </div>
-
-                  <div className="md:col-span-4">
+                  <div className="md:col-span-2">
+                    <label htmlFor="phone">Telefone</label>
+                    <div className="flex items-center">
+                      <input
+                        name="phone"
+                        id="phone"
+                        placeholder="Preencha este campo"
+                        className="h-10 border mt-1 rounded px-4 w-full bg-white"
+                        value={useForm(clientData.phone, "telefone") || ""}
+                        onChange={handleChange}
+                        maxLength={15}
+                      />
+                    </div>
+                  </div>
+                  <div className="md:col-span-2">
                     <label htmlFor="email">Email</label>
                     <input
                       type="text"

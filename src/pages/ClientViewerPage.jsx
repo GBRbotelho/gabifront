@@ -325,6 +325,24 @@ export default function ClientViewerPage() {
                       }`}
                       value={(client && client.name) || ""}
                       onChange={handleChange}
+                      onBlur={handleChange}
+                      disabled={!isEditable}
+                      maxLength={90}
+                    />
+                  </div>
+
+                  <div className="md:col-span-2">
+                    <label htmlFor="surname">Como gosta de ser chamado</label>
+                    <input
+                      type="text"
+                      name="surname"
+                      id="surname"
+                      className={`h-10 border mt-1 rounded px-4 w-full bg-${
+                        !isEditable ? "gray-100" : "white"
+                      }`}
+                      value={(client && client.surname) || ""}
+                      onChange={handleChange}
+                      onBlur={handleChange}
                       disabled={!isEditable}
                       maxLength={90}
                     />
@@ -364,7 +382,7 @@ export default function ClientViewerPage() {
                       placeholder="Preencha este campo"
                       className="h-10 border mt-1 rounded w-full"
                       value={
-                        client.recommendation
+                        client && client.recommendation
                           ? {
                               value: `${client.recommendation}`,
                               label: `${
@@ -391,6 +409,46 @@ export default function ClientViewerPage() {
                           })),
                       ]}
                       isDisabled={!isEditable}
+                    />
+                  </div>
+
+                  <div className="md:col-span-2">
+                    <label htmlFor="zipcode">Sexo</label>
+                    <select
+                      type="text"
+                      name="gender"
+                      id="gender"
+                      className={`h-10 border mt-1 rounded px-4 w-full bg-${
+                        !isEditable ? "gray-100" : "white"
+                      }`}
+                      placeholder="Preencha este campo"
+                      value={(client && client.gender) || ""}
+                      onChange={handleChange}
+                      disabled={!isEditable}
+                    >
+                      <option disabled>Selecione uma opção</option>
+                      <option>Masculino</option>
+                      <option>Feminino</option>
+                      <option>Prefiro não informar</option>
+                    </select>
+                  </div>
+
+                  <div className="md:col-span-2">
+                    <label htmlFor="date">Data de Nascimento</label>
+                    <input
+                      type="date"
+                      name="date"
+                      id="date"
+                      className={`h-10 border mt-1 rounded px-4 w-full bg-${
+                        !isEditable ? "gray-100" : "white"
+                      }`}
+                      value={
+                        (client &&
+                          new Date(client.date).toISOString().split("T")[0]) ||
+                        ""
+                      }
+                      onChange={handleChange}
+                      disabled={!isEditable}
                     />
                   </div>
 
@@ -433,46 +491,6 @@ export default function ClientViewerPage() {
                   </div>
 
                   <div className="md:col-span-2">
-                    <label htmlFor="zipcode">Sexo</label>
-                    <select
-                      type="text"
-                      name="gender"
-                      id="gender"
-                      className={`h-10 border mt-1 rounded px-4 w-full bg-${
-                        !isEditable ? "gray-100" : "white"
-                      }`}
-                      placeholder="Preencha este campo"
-                      value={(client && client.gender) || ""}
-                      onChange={handleChange}
-                      disabled={!isEditable}
-                    >
-                      <option disabled>Selecione uma opção</option>
-                      <option>Masculino</option>
-                      <option>Feminino</option>
-                      <option>Prefiro não informar</option>
-                    </select>
-                  </div>
-                  <div className="md:col-span-2">
-                    <label htmlFor="email">Data de Nascimento</label>
-                    <input
-                      type="date"
-                      name="date"
-                      id="date"
-                      className={`h-10 border mt-1 rounded px-4 w-full bg-${
-                        !isEditable ? "gray-100" : "white"
-                      }`}
-                      value={
-                        (client &&
-                          new Date(client.date).toISOString().split("T")[0]) ||
-                        ""
-                      }
-                      onChange={handleChange}
-                      placeholder="email@domain.com"
-                      disabled={!isEditable}
-                    />
-                  </div>
-
-                  <div className="md:col-span-4">
                     <label htmlFor="email">Email</label>
                     <input
                       type="text"
