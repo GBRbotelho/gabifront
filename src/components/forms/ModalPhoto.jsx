@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useLoading } from "../../utils/LoadingContext";
-import LoadingSpinner from "../../utils/LoadingSpinner"
+import LoadingSpinner from "../../utils/LoadingSpinner";
 
 import Photo1 from "../../assets/profiles/1.svg";
 import Photo2 from "../../assets/profiles/2.svg";
@@ -55,8 +55,12 @@ const avatarImages = [
   // Adicione outras fotos conforme necessário
 ];
 
-
-export default function ModalPhoto({ setModal, selectImage, setSelectImage, updatePhoto }) {
+export default function ModalPhoto({
+  setModal,
+  selectImage,
+  setSelectImage,
+  updatePhoto,
+}) {
   const { showLoading, hideLoading } = useLoading();
   const [loadedImageIndexes, setLoadedImageIndexes] = useState(new Set());
   const totalImages = avatarImages.length;
@@ -78,7 +82,6 @@ export default function ModalPhoto({ setModal, selectImage, setSelectImage, upda
     }
   }, [loadedImageIndexes, totalImages]);
 
-
   return (
     <div
       className="fixed top-0 left-0 w-full h-full flex items-center bg-black/50 justify-center"
@@ -88,8 +91,8 @@ export default function ModalPhoto({ setModal, selectImage, setSelectImage, upda
         <div className="flex items-center justify-center mb-4">
           <h2 className="text-2xl font-semibold">Avatares:</h2>
         </div>
-        <div className="grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-4">
-        {avatarImages.map((photo, index) => (
+        <div className="max-h-96 overflow-y-auto grid gap-4 gap-y-2 text-sm grid-cols-1 md:grid-cols-4">
+          {avatarImages.map((photo, index) => (
             <div
               key={index}
               className={`cursor-pointer transition-transform ${
