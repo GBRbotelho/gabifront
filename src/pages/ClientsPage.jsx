@@ -161,6 +161,31 @@ function ClientsPage() {
     }
   };
 
+  function obterDataUltimaConsulta(clientId) {
+    const consultationsClient = consultations
+      .filter((consultationItem) => {
+        return (
+          consultationItem.client === clientId &&
+          consultationItem.status === "Concluído"
+        );
+      })
+      .sort((a, b) => new Date(b.date) - new Date(a.date)); // Ordena as consultas por data decrescente
+
+    // Verifica se existem consultas para esse cliente
+    if (consultationsClient.length > 0) {
+      // Obtém a data da última consulta
+
+      const lastConsultationDate = new Date(
+        new Date(consultationsClient[0].date).getTime() + 24 * 60 * 60 * 1000
+      ).toLocaleDateString("pt-BR");
+
+      return lastConsultationDate;
+    } else {
+      // Caso não haja consultas para esse cliente
+      return "Nenhuma consulta concluída";
+    }
+  }
+
   return (
     <section className="container mx-auto p-6 font-mono">
       <h2 className="font-semibold text-xl text-gray-600">Clientes</h2>
@@ -215,7 +240,9 @@ function ClientsPage() {
                 <th className="px-4 py-3">Nome</th>
                 <th className="px-4 py-3">Data de Nascimento</th>
                 <th className="px-4 py-3">Telefone</th>
-                <th className="px-4 py-3">Email</th>
+                <th className="px-4 py-3">
+                  {selectTime === "all" ? "Email" : "Ultima Consulta Concluída"}
+                </th>
                 <th className="px-4 py-3">Options</th>
               </tr>
             </thead>
@@ -223,17 +250,17 @@ function ClientsPage() {
               {FilteredData.length > 0 ? (
                 FilteredData.map((client, index) => (
                   <tr key={index} className="text-gray-700">
-                    <td className="px-4 py-3 border" key={`name_${client.id}`}>
+                    <td className="px-4 py-3 border" key={`name_${client._id}`}>
                       {client.name}
                     </td>
-                    <td className="px-4 py-3 border" key={`date_${client.id}`}>
+                    <td className="px-4 py-3 border" key={`date_${client._id}`}>
                       {new Date(
                         new Date(client.date).getTime() + 24 * 60 * 60 * 1000
                       ).toLocaleDateString("pt-BR")}
                     </td>
                     <td
                       className="px-4 py-3 text-ms font-semibold border relative"
-                      key={`phone_${client.id}`}
+                      key={`phone_${client._id}`}
                     >
                       <div className="flex">
                         <p className="">{useForm(client.phone, "telefone")}</p>
@@ -252,14 +279,16 @@ function ClientsPage() {
                     </td>
                     <td
                       className="px-4 py-3 text-ms font-semibold border"
-                      key={`email_${client.id}`}
+                      key={`lastConsultation_${client._id}`}
                     >
-                      {client.email}
+                      {selectTime === "all"
+                        ? client.email
+                        : obterDataUltimaConsulta(client._id)}
                     </td>
                     <td
                       className="px-2 py-3 border options-cell"
                       style={{ width: "50px" }}
-                      key={`options_${client.id}`}
+                      key={`options_${client._id}`}
                     >
                       <div className="flex items-center space-x-2">
                         <Link
