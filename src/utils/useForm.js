@@ -29,7 +29,7 @@ export function useForm(value, validacao) {
 
   if (validacao === "letras") {
     // Certifique-se de que value não seja undefined ou null
-    const cleanedValue = value ? value.replace(/[^a-zA-Z\s]/g, "") : "";
+    const cleanedValue = value ? value.replace(/[^a-zA-ZçÇ\s]/g, "") : "";
 
     return cleanedValue;
   }
